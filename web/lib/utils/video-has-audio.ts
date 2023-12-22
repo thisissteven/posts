@@ -7,7 +7,7 @@ function hasAudio(video: any) {
   )
 }
 
-export function hasVideoGotAudio(src: string): Promise<boolean> {
+export async function hasVideoGotAudio(src: string): Promise<boolean> {
   const video = document.createElement('video')
   video.muted = true
   video.crossOrigin = 'anonymous'

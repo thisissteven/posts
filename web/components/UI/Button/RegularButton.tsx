@@ -21,7 +21,7 @@ const variantClassName = {
   underline:
     'rounded-lg text-primary text-sm hover:underline underline-offset-[3px]',
   primary:
-    'text-sm text-background px-3 py-1.5 rounded-lg disabled:bg-span active:opacity-80 bg-primary',
+    'text-sm text-background px-3 py-1.5 rounded-lg active:opacity-80 disabled:bg-span bg-primary',
   secondary:
     'text-sm text-primary px-3 py-1.5 rounded-lg disabled:bg-span active:bg-light-background bg-soft-background',
 }
@@ -43,7 +43,7 @@ export const RegularButton = React.forwardRef(function RegularButton(
     <Comp
       ref={ref}
       className={cn(
-        'relative overflow-hidden rounded-full duration-200',
+        'relative overflow-hidden rounded-full disabled:pointer-events-none',
         variantClassName[variant],
         className
       )}
@@ -53,7 +53,10 @@ export const RegularButton = React.forwardRef(function RegularButton(
       <>
         {isLoading && (
           <div className="absolute inset-0 w-full h-full grid place-items-center bg-inherit">
-            <LoadingBar visible={isLoading} />
+            <LoadingBar
+              color={variant === 'primary' ? '#121212' : '#eeeeee'}
+              visible={isLoading}
+            />
           </div>
         )}
         {children}

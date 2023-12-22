@@ -2,7 +2,7 @@ import Image from 'next/image'
 import React from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 
-import { hasVideoGotAudio } from '@/lib'
+import { useHasAudio } from '@/hooks/useHasAudio'
 
 import { Close, Muted, Unmuted } from '@/components/Icons'
 
@@ -42,14 +42,7 @@ export const MediaPreview = () => {
 
 const Media = React.memo(
   ({ src, type }: { src: string; type: 'video' | 'image' }) => {
-    const [muted, setMuted] = React.useState(true)
-    const [hasAudio, setHasAudio] = React.useState(false)
-
-    React.useEffect(() => {
-      if (type === 'video') {
-        hasVideoGotAudio(src).then(setHasAudio)
-      }
-    }, [src, type])
+    const { muted, setMuted, hasAudio } = useHasAudio(src)
     return (
       <div className="relative my-1 rounded-lg overflow-hidden">
         {type === 'video' && (

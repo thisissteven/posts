@@ -13,7 +13,7 @@ export default function Experiment() {
   const [message, setMessage] = React.useState<string>('')
   const [from, setFrom] = React.useState<string>('')
 
-  const { trigger, isMutating } = useMutation<Payload>('/message')
+  const { trigger, isLoading } = useMutation<Payload>('/message')
 
   return (
     <div className="p-8">
@@ -47,7 +47,7 @@ export default function Experiment() {
           />
         </div>
 
-        <RegularButton variant="secondary" isLoading={isMutating}>
+        <RegularButton variant="secondary" isLoading={isLoading}>
           Submit
         </RegularButton>
       </form>

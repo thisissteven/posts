@@ -10,6 +10,7 @@ type DialogContextProps = {
   overlayRef: React.RefObject<HTMLDivElement>
   contentRef: React.RefObject<HTMLDivElement>
   closeDialog: () => void
+  isOpen: boolean
 }
 
 const DialogContext = React.createContext({} as DialogContextProps)
@@ -105,6 +106,7 @@ export function Dialog({
           overlayRef,
           contentRef,
           closeDialog: () => onOpenChange(false),
+          isOpen: open,
         }}
       >
         {children}

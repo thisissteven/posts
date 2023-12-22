@@ -1,10 +1,34 @@
 import Image from 'next/image'
 import * as React from 'react'
 
-import { Dialog } from './LightboxDialog'
+import { useHasAudio } from '@/hooks/useHasAudio'
 
-function Video(props: React.ComponentPropsWithoutRef<'video'>) {
+import { Dialog, useDialog } from './LightboxDialog'
+import { Muted, Unmuted } from '../Icons'
+
+function Video(
+  props: React.ComponentPropsWithoutRef<'video'> & {
+    shouldMuteOnDialogOpen?: boolean
+    shouldMuteOnDialogClose?: boolean
+  }
+) {
   const videoRef = React.useRef<HTMLVideoElement>(null)
+
+  const { isOpen } = useDialog()
+
+  const { muted, setMuted, hasAudio } = useHasAudio(props.src)
+
+  React.useEffect(() => {
+    if (isOpen && props.shouldMuteOnDialogOpen) {
+      setMuted(true)
+    }
+  }, [isOpen, props.shouldMuteOnDialogOpen, setMuted])
+
+  React.useEffect(() => {
+    if (!isOpen && props.shouldMuteOnDialogClose) {
+      setMuted(true)
+    }
+  }, [isOpen, props.shouldMuteOnDialogClose, setMuted])
 
   React.useEffect(() => {
     const videoElement = videoRef.current
@@ -32,7 +56,29 @@ function Video(props: React.ComponentPropsWithoutRef<'video'>) {
     }
   }, [])
 
-  return <video {...props} ref={videoRef} muted autoPlay playsInline loop />
+  return (
+    <>
+      <video
+        {...props}
+        ref={videoRef}
+        muted={muted}
+        autoPlay
+        playsInline
+        loop
+      />
+      <button
+        type="button"
+        disabled={!hasAudio}
+        onClick={(e) => {
+          e.stopPropagation()
+          setMuted((prev) => !prev)
+        }}
+        className="absolute disabled:opacity-80 disabled:active:bg-black/50 active:bg-black/60 duration-200 bottom-0 right-0 mx-3 my-4 p-0.5 rounded-full bg-black/50"
+      >
+        {muted ? <Muted /> : <Unmuted />}
+      </button>
+    </>
+  )
 }
 
 export function Lightbox({
@@ -66,7 +112,9 @@ export function Lightbox({
             />
           )}
 
-          {mediaType === 'video' && <Video className="w-full" src={source} />}
+          {mediaType === 'video' && (
+            <Video shouldMuteOnDialogOpen className="w-full" src={source} />
+          )}
         </div>
       </Dialog.Trigger>
       <Dialog.Content
@@ -84,7 +132,11 @@ export function Lightbox({
         )}
 
         {mediaType === 'video' && (
-          <Video className="w-full h-full" src={highResSource} />
+          <Video
+            shouldMuteOnDialogClose
+            className="w-full h-full"
+            src={highResSource}
+          />
         )}
       </Dialog.Content>
     </Dialog>
