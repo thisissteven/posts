@@ -1,5 +1,3 @@
-import React from 'react'
-
 export function BookmarksIconInactive() {
   return (
     <svg

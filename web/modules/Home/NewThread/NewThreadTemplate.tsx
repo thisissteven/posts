@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import Image from 'next/image'
 import React from 'react'
 import {
   Controller,
@@ -18,6 +17,7 @@ import {
 } from '@/components/UI'
 
 import { NewThreadFormValues, newThreadSchema } from './Form'
+import { MediaPreview } from './MediaPreview'
 
 export function NewThreadTemplate({
   canEscape = true,
@@ -122,57 +122,6 @@ export function NewThreadTemplate({
   )
 }
 
-const MediaPreview = () => {
-  const { control } = useFormContext()
-
-  const input = useWatch({
-    control,
-    name: 'media',
-  })
-
-  const hasMedia = Boolean(input && input.length > 0)
-  const mediaUrl = React.useMemo(
-    () => input && URL.createObjectURL(input[0]),
-    [input]
-  )
-
-  if (!hasMedia) return null
-
-  const mediaType = input && input[0]?.type.split('/')[0]
-
-  return <Media src={mediaUrl} type={mediaType} />
-}
-
-const Media = React.memo(
-  ({ src, type }: { src: string; type: 'video' | 'image' }) => {
-    return (
-      <div className="relative my-1 rounded-lg overflow-hidden">
-        {type === 'video' && (
-          <video
-            src={src}
-            className="object-cover w-full h-full"
-            autoPlay
-            playsInline
-            loop
-          />
-        )}
-
-        {type === 'image' && (
-          <Image
-            src={src}
-            width={300}
-            height={200}
-            alt="image"
-            className="object-cover w-full h-full"
-          />
-        )}
-      </div>
-    )
-  },
-  (prevProps, nextProps) =>
-    prevProps.src === nextProps.src && prevProps.type === nextProps.type
-)
-
 function PostButton() {
   const {
     control,
@@ -184,9 +133,16 @@ function PostButton() {
     name: 'textContent',
   })
 
+  const media = useWatch({
+    control,
+    name: 'media',
+  })
+
   return (
     <RegularButton
-      disabled={input.length === 0 || Boolean(errors['textContent'])}
+      disabled={
+        !media && (input.length === 0 || Boolean(errors['textContent']))
+      }
     >
       Post
     </RegularButton>

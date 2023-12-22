@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { apiClient } from '@/lib'
 
 export const newThreadSchema = z.object({
-  textContent: z.string().min(1).max(280, 'Max length is 280 characters.'),
+  textContent: z.string().max(280, 'Max length is 280 characters.'),
   media: z
     .any()
     .refine((files) => {
