@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function hasAudio(video: any) {
+export function hasAudio(video: any) {
   return (
     video.mozHasAudio ||
     Boolean(video.webkitAudioDecodedByteCount) ||
@@ -13,7 +13,7 @@ export async function hasVideoGotAudio(src: string): Promise<boolean> {
   video.crossOrigin = 'anonymous'
   video.preload = 'auto'
 
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     video.addEventListener('error', reject)
 
     video.addEventListener(

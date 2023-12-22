@@ -42,12 +42,13 @@ export const MediaPreview = () => {
 
 const Media = React.memo(
   ({ src, type }: { src: string; type: 'video' | 'image' }) => {
-    const { muted, setMuted, hasAudio } = useHasAudio(src)
+    const { muted, setMuted, hasAudio, videoRef } = useHasAudio()
     return (
       <div className="relative my-1 rounded-lg overflow-hidden">
         {type === 'video' && (
           <>
             <video
+              ref={videoRef}
               src={src}
               className="object-cover w-full h-full"
               autoPlay

@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import React from 'react'
 
-import { RegularButton } from '@/components/UI'
+import { LinkButton } from '@/components/UI'
 
 import { Header, SupporterOnly } from '@/modules/Bookmarks'
 
@@ -12,7 +12,7 @@ export default function Bookmarks() {
         <title>Bookmarks</title>
       </Head>
       <Header />
-      <div className="absolute top-0 left-0 h-full w-full flex flex-col justify-center">
+      <div className="h-full w-full flex flex-col justify-center">
         <div className="px-3 max-w-[440px] mx-auto">
           <SupporterOnly />
 
@@ -22,15 +22,13 @@ export default function Bookmarks() {
             and more great features.
           </p>
 
-          <RegularButton
-            asChild
-            variant="filled"
-            className="rounded-lg w-fit tracking-normal text-sm font-normal px-3 py-2"
+          <LinkButton
+            variant="secondary"
+            className="px-3 py-2"
+            href="https://read.cv/about/supporters"
           >
-            <a href="https://read.cv/about/supporters" target="_blank">
-              Become a supporter
-            </a>
-          </RegularButton>
+            Become a supporter
+          </LinkButton>
         </div>
       </div>
     </>

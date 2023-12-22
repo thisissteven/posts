@@ -6,29 +6,29 @@ import { useHasAudio } from '@/hooks/useHasAudio'
 import { Dialog, useDialog } from './LightboxDialog'
 import { Muted, Unmuted } from '../Icons'
 
-function Video(
-  props: React.ComponentPropsWithoutRef<'video'> & {
-    shouldMuteOnDialogOpen?: boolean
-    shouldMuteOnDialogClose?: boolean
-  }
-) {
-  const videoRef = React.useRef<HTMLVideoElement>(null)
-
+function Video({
+  shouldMuteOnDialogClose,
+  shouldMuteOnDialogOpen,
+  ...props
+}: React.ComponentPropsWithoutRef<'video'> & {
+  shouldMuteOnDialogOpen?: boolean
+  shouldMuteOnDialogClose?: boolean
+}) {
   const { isOpen } = useDialog()
 
-  const { muted, setMuted, hasAudio } = useHasAudio(props.src)
+  const { muted, setMuted, hasAudio, videoRef } = useHasAudio()
 
   React.useEffect(() => {
-    if (isOpen && props.shouldMuteOnDialogOpen) {
+    if (isOpen && shouldMuteOnDialogOpen) {
       setMuted(true)
     }
-  }, [isOpen, props.shouldMuteOnDialogOpen, setMuted])
+  }, [isOpen, shouldMuteOnDialogOpen, setMuted])
 
   React.useEffect(() => {
-    if (!isOpen && props.shouldMuteOnDialogClose) {
+    if (!isOpen && shouldMuteOnDialogClose) {
       setMuted(true)
     }
-  }, [isOpen, props.shouldMuteOnDialogClose, setMuted])
+  }, [isOpen, shouldMuteOnDialogClose, setMuted])
 
   React.useEffect(() => {
     const videoElement = videoRef.current
@@ -54,7 +54,7 @@ function Video(
       observer.unobserve(videoElement)
       observer.disconnect()
     }
-  }, [])
+  }, [videoRef])
 
   return (
     <>

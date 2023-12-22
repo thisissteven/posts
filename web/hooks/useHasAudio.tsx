@@ -1,16 +1,18 @@
 import React from 'react'
 
-import { hasVideoGotAudio } from '@/lib'
+import { hasAudio as doesVideoHaveAudio } from '@/lib'
 
-export function useHasAudio(src?: string) {
+export function useHasAudio() {
   const [hasAudio, setHasAudio] = React.useState(false)
   const [muted, setMuted] = React.useState(true)
 
+  const videoRef = React.useRef<HTMLVideoElement>(null)
+
   React.useEffect(() => {
     async function setAudio() {
-      if (src) {
-        const hasAudio = await hasVideoGotAudio(src)
-        setHasAudio(hasAudio)
+      if (videoRef.current) {
+        const videoHasAudio = await doesVideoHaveAudio(videoRef.current)
+        setHasAudio(videoHasAudio)
       }
     }
 
@@ -21,11 +23,12 @@ export function useHasAudio(src?: string) {
     return () => {
       clearTimeout(timeout)
     }
-  }, [src])
+  }, [hasAudio])
 
   return {
     hasAudio,
     muted,
     setMuted,
+    videoRef,
   }
 }

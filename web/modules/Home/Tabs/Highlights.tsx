@@ -2,8 +2,6 @@ import { faker } from '@faker-js/faker'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 
-import { TabLoader } from '@/components/UI'
-
 import { Thread } from '..'
 
 import { ThreadItem } from '@/types'
@@ -61,7 +59,7 @@ export function Highlights() {
 
   return (
     <div className="relative">
-      <TabLoader visible={loading} />
+      {/* <TabLoader visible={loading} /> */}
 
       <div className="divide-y divide-divider">
         {threadItems.map((thread, i) => (
