@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "Posts.cv App Clone",
   "scripts": {
-    "dev:web": "turbo run dev --filter=@posts/web",
+    "build": "turbo run build",
+    "start": "turbo run start",
     "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=@posts/web",
+    "db:generate": "turbo run db:generate",
+    "db:migrate": "turbo run db:migrate",
     "lint:fix": "eslint . --fix && pnpm format",
     "lint:strict": "eslint --max-warnings=0 .",
     "format": "prettier -w .",
