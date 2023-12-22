@@ -1,22 +1,35 @@
 import type { AppProps } from 'next/app'
 import { Lexend } from 'next/font/google'
-import { ThemeProvider } from 'next-themes'
+import { SessionProvider } from 'next-auth/react'
 
 import '@/styles/globals.css'
 
-const lexend = Lexend({ subsets: ['latin'] })
+import { AuthProvider } from '@/modules/Auth'
+import { BookmarksDialogProvider } from '@/modules/Bookmarks'
+import { AppLayout } from '@/modules/Layout/AppLayout'
+import { OnboardingProvider } from '@/modules/Onboarding'
+
+const outfit = Lexend({ subsets: ['latin'] })
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <style jsx global>{`
         :root {
-          --font-sans: ${lexend.style.fontFamily};
+          --font-sans: ${outfit.style.fontFamily};
         }
       `}</style>
-      <ThemeProvider forcedTheme="dark">
-        <Component {...pageProps} />
-      </ThemeProvider>
+      <SessionProvider session={pageProps.session}>
+        <BookmarksDialogProvider>
+          <AuthProvider>
+            <OnboardingProvider>
+              <AppLayout>
+                <Component {...pageProps} />
+              </AppLayout>
+            </OnboardingProvider>
+          </AuthProvider>
+        </BookmarksDialogProvider>
+      </SessionProvider>
     </>
   )
 }

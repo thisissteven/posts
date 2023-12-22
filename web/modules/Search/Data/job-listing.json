@@ -1,0 +1,128 @@
+{
+  "data": {
+    "publishedJobListings": {
+      "edges": [
+        {
+          "node": {
+            "id": "listings/rGKXN11ofTGL7A0GI7lj",
+            "title": "Founding Designer",
+            "team": null,
+            "companyName": "CUT & SOLD",
+            "companyURL": "www.cutandsold.com",
+            "companyLogo": "https://firebasestorage.googleapis.com/v0/b/maitake-project.appspot.com/o/users%2FgaaCnyPTYDeeniAk4tvPzzCvXo52%2FteamLogo-3b0d864b-1fa0-4756-a4e2-23276d5537e4.png?alt=media&token=76b8c4ca-f6b1-4558-8b3b-2e590d78ad9f"
+          }
+        },
+        {
+          "node": {
+            "id": "teams/FkwsTHUziDAPzFUPUrjc/listing/6lduAykDG4X7ssE5ZbuC",
+            "title": "Lead Product Designer",
+            "team": {
+              "teamName": "Lapse",
+              "username": "lapse",
+              "profilePhotoURL": "https://firebasestorage.googleapis.com/v0/b/maitake-project.appspot.com/o/teams%2FFkwsTHUziDAPzFUPUrjc%2FprofilePhoto-c487e582-8a1c-49b4-82c9-1125c84f93ae.png?alt=media&token=baf92b7b-d657-4d3a-a4bc-99a889ea20b9",
+              "id": "teams/FkwsTHUziDAPzFUPUrjc"
+            },
+            "companyName": null,
+            "companyURL": null,
+            "companyLogo": null
+          }
+        },
+        {
+          "node": {
+            "id": "teams/vUGc0adfDLu53KJWmzJL/listing/Sb4Gm8E3QxOn13e0XFTm",
+            "title": "Senior Designer",
+            "team": {
+              "teamName": "Monogram",
+              "username": "monogram",
+              "profilePhotoURL": "https://firebasestorage.googleapis.com/v0/b/maitake-project.appspot.com/o/teams%2FvUGc0adfDLu53KJWmzJL%2FprofilePhoto-483d13e6-d0e7-4b3b-b91f-d822818369ef.png?alt=media&token=d6d52b1d-575e-4d51-8e1a-39fcf7bdb717",
+              "id": "teams/vUGc0adfDLu53KJWmzJL"
+            },
+            "companyName": null,
+            "companyURL": null,
+            "companyLogo": null
+          }
+        },
+        {
+          "node": {
+            "id": "teams/vUGc0adfDLu53KJWmzJL/listing/sA1hJ0bEMR31WZHe0zLk",
+            "title": "Senior Frontend Developer",
+            "team": {
+              "teamName": "Monogram",
+              "username": "monogram",
+              "profilePhotoURL": "https://firebasestorage.googleapis.com/v0/b/maitake-project.appspot.com/o/teams%2FvUGc0adfDLu53KJWmzJL%2FprofilePhoto-483d13e6-d0e7-4b3b-b91f-d822818369ef.png?alt=media&token=d6d52b1d-575e-4d51-8e1a-39fcf7bdb717",
+              "id": "teams/vUGc0adfDLu53KJWmzJL"
+            },
+            "companyName": null,
+            "companyURL": null,
+            "companyLogo": null
+          }
+        },
+        {
+          "node": {
+            "id": "listings/Lybi6N96nI0tppZa9bdf",
+            "title": "Product Designer",
+            "team": null,
+            "companyName": "White Rabbit Japan",
+            "companyURL": "https://whiterabbitjapan.com",
+            "companyLogo": "https://firebasestorage.googleapis.com/v0/b/maitake-project.appspot.com/o/users%2FUF3Tpw3jrSM52GQopJ5qfkNVzqP2%2FteamLogo-5c6f3b04-deb6-4475-9e98-5a878019f8dc.png?alt=media&token=d84d701e-ab43-44b5-bec5-39eeac0862c0"
+          }
+        },
+        {
+          "node": {
+            "id": "teams/eOGhHh83rklCMMuLUC3T/listing/0ciN87jQT2J7yYkQZnxV",
+            "title": "Product Designer",
+            "team": {
+              "teamName": "TipTop Labs",
+              "username": "tiptop",
+              "profilePhotoURL": "https://firebasestorage.googleapis.com/v0/b/maitake-project.appspot.com/o/teams%2FeOGhHh83rklCMMuLUC3T%2FprofilePhoto-38c90d12-cd8c-4511-ae98-81320dedba95.png?alt=media&token=111f24f9-4d01-40c6-b853-bfb11e2db54b",
+              "id": "teams/eOGhHh83rklCMMuLUC3T"
+            },
+            "companyName": null,
+            "companyURL": null,
+            "companyLogo": null
+          }
+        },
+        {
+          "node": {
+            "id": "listings/EI11uMP8RYBiVK3CkzyM",
+            "title": "Senior Product Designer, Apps",
+            "team": null,
+            "companyName": "Whop",
+            "companyURL": "Whop.com",
+            "companyLogo": "https://firebasestorage.googleapis.com/v0/b/maitake-project.appspot.com/o/users%2FJl2FORx7LfhahY3SkrR8MSiO60B3%2FteamLogo-86b17847-9ff7-488e-99d6-576dec823259.png?alt=media&token=c57a7337-3f0f-4bb3-9208-5a6a8b76d2fb"
+          }
+        },
+        {
+          "node": {
+            "id": "listings/JqhPTPaZeuVc9ikyMBli",
+            "title": "Senior Product Designer",
+            "team": null,
+            "companyName": "Motion",
+            "companyURL": "https://motionapp.com/",
+            "companyLogo": "https://firebasestorage.googleapis.com/v0/b/maitake-project.appspot.com/o/users%2FxHHEavGLrYeQcERbWMXwidJDDVA2%2FteamLogo-1bf721f2-b7eb-4761-9372-66c6cf1145bc.png?alt=media&token=57de9d92-379e-4376-8405-5cb7de015632"
+          }
+        },
+        {
+          "node": {
+            "id": "listings/5som33IpWGee6Kd1i0Yl",
+            "title": "Product Designer",
+            "team": null,
+            "companyName": "incident.io",
+            "companyURL": "https://incident.io",
+            "companyLogo": "https://firebasestorage.googleapis.com/v0/b/maitake-project.appspot.com/o/users%2FDrQEVzwLYCT67Rv2ivgHZ4qytjy1%2FteamLogo-de44d6f4-83bc-48fd-81d8-cf6bd3ffc0c2.png?alt=media&token=6c8799a5-94df-4472-85ff-776f3770b4cb"
+          }
+        },
+        {
+          "node": {
+            "id": "listings/XwZSsXBdhpej5lerCo4X",
+            "title": "UI/UX Designer",
+            "team": null,
+            "companyName": "Doccle",
+            "companyURL": "https://doccle.be",
+            "companyLogo": "https://firebasestorage.googleapis.com/v0/b/maitake-project.appspot.com/o/users%2Fl5Lzv1mZsFcfgcQJwCyMPif2HDG3%2FteamLogo-60e0250e-3bc8-4862-aa46-70e2df1fae19.png?alt=media&token=e1bb7fc1-e1dd-4226-86b1-7341a3cd9fe4"
+          }
+        }
+      ]
+    }
+  }
+}

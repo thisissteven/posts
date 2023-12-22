@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Posts.cv App Clone",
   "scripts": {
-    "dev:web": "pnpm --filter=@posts/web dev",
-    "dev": "pnpm turbo run dev",
+    "dev:web": "turbo run dev --filter=@posts/web",
+    "dev": "turbo run dev",
     "lint:fix": "eslint . --fix && pnpm format",
     "lint:strict": "eslint --max-warnings=0 .",
     "format": "prettier -w .",

@@ -12,11 +12,33 @@ const config: Config = {
   },
   theme: {
     extend: {
+      colors: {
+        background: '#222222',
+        black: '#111111',
+        'danger-soft': '#f04b4b',
+        danger: '#f10000',
+        divider: '#393939',
+        placeholder: '#595959',
+        popover: '#484848',
+        primary: '#eeeeee',
+        span: '#888888',
+        success: '#32bd64',
+        'black-shadow': '#191919',
+        'soft-background': '#333333',
+        'light-background': '#444444',
+        'soft-black': '#1f1f1f',
+        'soft-primary': '#bbbbbb',
+        'autumn-brown': '#654e18',
+        'autumn-yellow': '#f5b207',
+      },
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],
       },
+      screens: {
+        xs: '522px',
+      },
     },
   },
-  plugins: [],
+  plugins: [require('tailwindcss-animate')],
 }
 export default config

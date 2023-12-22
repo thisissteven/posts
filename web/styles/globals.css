@@ -7,8 +7,8 @@
     text-rendering: optimizeLegibility;
   }
 
-  html {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  body {
+    --removed-body-scroll-bar-size: 0px;
   }
 
   aside,
@@ -31,6 +31,20 @@
       0 0 0 2px var(--app-background),
       0 0 0 4px var(--focus-color);
   }
+
+  html {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    /* scrollbar-gutter: auto !important; */
+  }
+
+  ::selection {
+    background-color: rgb(255, 232, 152, 0.9);
+    color: #121212;
+  }
+
+  .bezier-quart {
+    transition-timing-function: cubic-bezier(0.77, 0, 0.18, 1);
+  }
 }
 
 @layer utilities {
@@ -41,7 +55,69 @@
   .min-h-screen {
     min-height: 100dvh;
   }
+
+  .max-h-dialog {
+    max-height: calc(100vh + 0.5rem);
+    max-height: calc(100dvh + 0.5rem);
+  }
 }
+
+/* #region /**=========== Dialog =========== */
+
+/* Dialog Overlay */
+[data-dialog-overlay] {
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@media (min-width: 448px) {
+  [data-dialog-overlay] {
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+}
+
+/* Dialog Content */
+
+[data-dialog-content] {
+  transition-property: opacity, transform, scale;
+  transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+[data-dialog-state='initial'] {
+  opacity: var(--opacity-from, 0);
+  transform: translate(var(--x-from, -50%), var(--y-from))
+    scale(var(--scale-from, 1));
+}
+
+[data-dialog-state='animate'] {
+  opacity: var(--opacity-to, 1);
+  transform: translate(var(--x-from, -50%), var(--y-to))
+    scale(var(--scale-to, 1));
+  transition-duration: 0.5s;
+}
+
+[data-dialog-state='exit'] {
+  opacity: var(--opacity-from, 0);
+  transform: translate(var(--x-from, -50%), var(--y-from))
+    scale(var(--scale-from, 1));
+  transition-duration: 0.5s;
+}
+
+@media (min-width: 448px) {
+  [data-dialog-content] {
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  [data-dialog-state='animate'] {
+    transition-duration: 0.3s;
+  }
+
+  [data-dialog-state='exit'] {
+    transition-duration: 0.2s;
+  }
+}
+
+/* #endregion /**=========== Dialog =========== */
 
 /* #region  /**=========== Scrollbar =========== */
 
