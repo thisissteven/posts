@@ -4,6 +4,8 @@ import React from 'react'
 
 import { useDialog } from '@/components/UI'
 
+import { useAuth } from '@/modules/Auth'
+
 import { CommandMenuItem } from '.'
 
 export function CommandMenuProfileItem() {
@@ -11,11 +13,13 @@ export function CommandMenuProfileItem() {
 
   const { closeDialog } = useDialog()
 
+  const { session } = useAuth()
+
   return (
     <Command.Group>
       <CommandMenuItem
-        onSelect={(value) => {
-          const profileUrl = `/${value}`.replace('@', '')
+        onSelect={(_) => {
+          const profileUrl = `/${session?.user.username}`.replace('@', '')
           router.push(profileUrl)
           closeDialog()
         }}

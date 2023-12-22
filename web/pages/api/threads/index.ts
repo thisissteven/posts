@@ -19,6 +19,8 @@ export default async function handler(
     POST: async (session) => {
       const { textContent, mediaType, source, urlEmbed } = req.body
 
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
       const user = await prisma.thread.create({
         data: {
           textContent,

@@ -3,11 +3,12 @@ import React from 'react'
 import {
   Controller,
   FormProvider,
-  SubmitHandler,
   useForm,
   useFormContext,
   useWatch,
 } from 'react-hook-form'
+
+import { useMutation } from '@/hooks'
 
 import {
   Dialog,
@@ -21,10 +22,10 @@ import { MediaPreview } from './MediaPreview'
 
 export function NewThreadTemplate({
   canEscape = true,
-  onSubmit,
+  onSubmitted,
 }: {
   canEscape?: boolean
-  onSubmit: SubmitHandler<NewThreadFormValues>
+  onSubmitted?: () => void
 }) {
   const [open, setOpen] = React.useState(false)
 
@@ -39,6 +40,7 @@ export function NewThreadTemplate({
   })
 
   const { handleSubmit, register, control, reset } = methods
+
   const onEscape = React.useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Escape' && canEscape) {
@@ -50,13 +52,17 @@ export function NewThreadTemplate({
     [canEscape, reset]
   )
 
+  const { trigger: createNewThread } =
+    useMutation<NewThreadFormValues>('/threads')
+
   return (
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(async function (data) {
-          await onSubmit(data)
+          await createNewThread(data)
           setOpen(false)
           reset()
+          onSubmitted?.()
         })}
         className="w-full"
       >
@@ -138,8 +144,11 @@ function PostButton() {
     name: 'media',
   })
 
+  const { isMutating } = useMutation<NewThreadFormValues>('/threads')
+
   return (
     <RegularButton
+      isLoading={isMutating}
       disabled={
         !media && (input.length === 0 || Boolean(errors['textContent']))
       }

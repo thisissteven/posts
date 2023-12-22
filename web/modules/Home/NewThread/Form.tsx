@@ -26,6 +26,6 @@ export const newThreadSchema = z.object({
 
 export type NewThreadFormValues = z.infer<typeof newThreadSchema>
 
-export async function onSubmit(data: NewThreadFormValues) {
+export async function createNewThread(data: NewThreadFormValues) {
   await apiClient.post('/threads', data)
 }

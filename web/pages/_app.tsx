@@ -1,8 +1,11 @@
 import type { AppProps } from 'next/app'
 import { Lexend } from 'next/font/google'
 import { SessionProvider } from 'next-auth/react'
+import { SWRConfig } from 'swr'
 
 import '@/styles/globals.css'
+
+import { apiClient } from '@/lib'
 
 import { AuthProvider } from '@/modules/Auth'
 import { BookmarksDialogProvider } from '@/modules/Bookmarks'
@@ -19,17 +22,23 @@ export default function App({ Component, pageProps }: AppProps) {
           --font-sans: ${outfit.style.fontFamily};
         }
       `}</style>
-      <SessionProvider session={pageProps.session}>
-        <BookmarksDialogProvider>
-          <AuthProvider>
-            <OnboardingProvider>
-              <AppLayout>
-                <Component {...pageProps} />
-              </AppLayout>
-            </OnboardingProvider>
-          </AuthProvider>
-        </BookmarksDialogProvider>
-      </SessionProvider>
+      <SWRConfig
+        value={{
+          fetcher: (url) => apiClient.get(url).then((res) => res.data),
+        }}
+      >
+        <SessionProvider session={pageProps.session}>
+          <BookmarksDialogProvider>
+            <AuthProvider>
+              <OnboardingProvider>
+                <AppLayout>
+                  <Component {...pageProps} />
+                </AppLayout>
+              </OnboardingProvider>
+            </AuthProvider>
+          </BookmarksDialogProvider>
+        </SessionProvider>
+      </SWRConfig>
     </>
   )
 }
