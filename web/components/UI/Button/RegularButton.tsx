@@ -21,7 +21,7 @@ const variantClassName = {
   underline:
     'rounded-lg text-primary text-sm hover:underline underline-offset-[3px]',
   primary:
-    'text-sm text-background px-3 py-1.5 rounded-lg disabled:bg-span active:opacity-80 bg-primary',
+    'text-sm text-background px-3 py-1.5 rounded-lg disabled:bg-span disabled:active:opacity-100 active:opacity-80 bg-primary',
   secondary:
     'text-sm text-primary px-3 py-1.5 rounded-lg disabled:bg-span active:bg-light-background bg-soft-background',
 }

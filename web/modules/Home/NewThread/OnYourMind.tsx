@@ -2,6 +2,7 @@ import React from 'react'
 
 import { useAuth } from '@/modules/Auth'
 
+import { onSubmit } from './Form'
 import { NewThreadTemplate } from './NewThreadTemplate'
 
 const OnYourMind = React.memo(function OnYourMind() {
@@ -16,7 +17,7 @@ const OnYourMind = React.memo(function OnYourMind() {
           <span className="text-3xl font-light">S</span>
         </div>
 
-        <NewThreadTemplate />
+        <NewThreadTemplate onSubmit={onSubmit} />
       </div>
     </section>
   )

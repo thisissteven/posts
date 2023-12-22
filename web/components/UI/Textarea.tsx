@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import React from 'react'
+import { useFormContext, useWatch } from 'react-hook-form'
 
 type TextareaProps = {
   onEscape?: (e: KeyboardEvent) => void
@@ -35,6 +36,13 @@ export function Textarea({
     }
   }, [onEscape])
 
+  const { control } = useFormContext()
+
+  const value = useWatch({
+    control,
+    name: rest.name as string,
+  })
+
   return (
     <div className="relative">
       <textarea
@@ -54,6 +62,7 @@ export function Textarea({
         aria-hidden
         className={clsx(
           'text-span absolute whitespace-nowrap pointer-events-none font-light left-0',
+          value.length > 0 && 'hidden',
           placeholderClassName
         )}
       >
