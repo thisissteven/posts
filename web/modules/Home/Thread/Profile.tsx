@@ -4,9 +4,11 @@ import React from 'react'
 
 import { getRelativeTimeString } from '@/lib'
 
-import { ThreadItem, ThreadUser } from '@/types'
+import { DefaultProfileLarge } from '@/components/Icons'
 
-export function Avatar({ threadUser }: { threadUser: ThreadUser }) {
+import { ThreadItem, ThreadOwner } from '@/types'
+
+export function Avatar({ threadUser }: { threadUser: ThreadOwner }) {
   return (
     <Link
       onClick={(e) => {
@@ -15,45 +17,54 @@ export function Avatar({ threadUser }: { threadUser: ThreadUser }) {
       href={`/${threadUser.username}`}
       className="h-fit"
     >
-      <div className="w-12 h-12 rounded-full overflow-hidden bg-soft-background">
-        <Image width={48} height={48} src={threadUser.avatarUrl} alt="avatar" />
+      <div className="w-12 h-12 rounded-full overflow-hidden">
+        {threadUser.avatarUrl ? (
+          <Image
+            width={48}
+            height={48}
+            src={threadUser.avatarUrl}
+            alt="avatar"
+          />
+        ) : (
+          <DefaultProfileLarge />
+        )}
       </div>
     </Link>
   )
 }
 
 export function UserDisplay({ thread }: { thread: ThreadItem }) {
-  const { threadUser, lastActivity } = thread
+  const { owner: threadOwner, createdAt } = thread
   return (
     <p className="text-sm space-x-1">
       <Link
         onClick={(e) => {
           e.stopPropagation()
         }}
-        href={`/${threadUser.username}`}
+        href={`/${threadOwner.username}`}
         className="hover:underline underline-offset-[3px]"
       >
-        {threadUser.displayName}
+        {threadOwner.displayName}
       </Link>
       <span className="text-[13px] text-span space-x-1">
         <Link
           onClick={(e) => {
             e.stopPropagation()
           }}
-          href={`/${threadUser.username}`}
+          href={`/${threadOwner.username}`}
           className="hover:underline underline-offset-[3px]"
         >
-          @{threadUser.username}
+          @{threadOwner.username}
         </Link>
         <span>·</span>
         <Link
           onClick={(e) => {
             e.stopPropagation()
           }}
-          href={`/${threadUser.username}/${thread.id}`}
+          href={`/${threadOwner.username}/${thread.id}`}
           className="hover:underline underline-offset-[3px]"
         >
-          {getRelativeTimeString(new Date(lastActivity))}
+          {getRelativeTimeString(new Date(createdAt))}
         </Link>
       </span>
     </p>

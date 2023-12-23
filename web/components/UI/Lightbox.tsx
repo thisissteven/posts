@@ -85,10 +85,14 @@ export function Lightbox({
   mediaType,
   source,
   highResSource,
+  width,
+  height,
 }: {
   mediaType: 'image' | 'video'
   source: string
-  highResSource: string
+  highResSource?: string
+  width?: number
+  height?: number
 }) {
   return (
     <Dialog>
@@ -107,13 +111,19 @@ export function Lightbox({
               className="w-full"
               src={source}
               alt="thread"
-              width={430}
-              height={263}
+              width={width}
+              height={height}
             />
           )}
 
           {mediaType === 'video' && (
-            <Video shouldMuteOnDialogOpen className="w-full" src={source} />
+            <Video
+              shouldMuteOnDialogOpen
+              className="w-full"
+              src={source}
+              width={width}
+              height={height}
+            />
           )}
         </div>
       </Dialog.Trigger>
@@ -121,7 +131,7 @@ export function Lightbox({
         overlayClassName="bg-background brightness-100 data-[dialog-state=exit]:duration-300 data-[dialog-state=exit]:delay-300"
         className="grid place-items-center data-[dialog-state=animate]:delay-500 data-[dialog-state=animate]:duration-500 data-[dialog-state=exit]:duration-500"
       >
-        {mediaType === 'image' && (
+        {mediaType === 'image' && highResSource && (
           <Image
             width={2048}
             height={2048}
@@ -136,6 +146,8 @@ export function Lightbox({
             shouldMuteOnDialogClose
             className="w-full h-full"
             src={highResSource}
+            width={width}
+            height={height}
           />
         )}
       </Dialog.Content>

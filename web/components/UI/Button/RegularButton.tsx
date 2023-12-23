@@ -21,7 +21,7 @@ const variantClassName = {
   underline:
     'rounded-lg text-primary text-sm hover:underline underline-offset-[3px]',
   primary:
-    'text-sm text-background px-3 py-1.5 rounded-lg active:opacity-80 disabled:bg-span bg-primary',
+    'text-sm text-background px-3 py-1.5 rounded-lg active:opacity-80 disabled:bg-span bg-primary disabled:data-[loading=true]:bg-primary',
   secondary:
     'text-sm text-primary px-3 py-1.5 rounded-lg disabled:bg-span active:bg-light-background bg-soft-background',
 }
@@ -48,6 +48,7 @@ export const RegularButton = React.forwardRef(function RegularButton(
         className
       )}
       disabled={disabled || isLoading}
+      data-loading={isLoading}
       {...rest}
     >
       <>

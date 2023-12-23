@@ -1,3 +1,4 @@
+import { useSession } from 'next-auth/react'
 import React from 'react'
 
 import { cn } from '@/lib'
@@ -19,6 +20,7 @@ type ThreadProps = {
 
 export function Thread({ thread, className, onClick }: ThreadProps) {
   const { width } = useWindowSize()
+  const { data: session } = useSession()
 
   const align = width < 522 ? 'end' : 'start'
 
@@ -32,21 +34,25 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
       )}
     >
       <div className="flex gap-3">
-        <Avatar threadUser={thread.threadUser} />
+        <Avatar threadUser={thread.owner} />
         <div className="flex-1">
           <UserDisplay thread={thread} />
 
           <div className="mt-1">
             <p className="text-sm text-soft-primary font-light">
-              {thread.threadContent.textContent}
+              {thread.textContent}
             </p>
           </div>
 
-          <Lightbox
-            mediaType={thread.threadContent.mediaType}
-            source={thread.threadContent.mediaSource}
-            highResSource={thread.threadContent.highResMediaSource}
-          />
+          {thread.mediaType && thread.source && (
+            <Lightbox
+              mediaType={thread.mediaType}
+              source={thread.source}
+              highResSource={thread.highResSource}
+              height={thread.height}
+              width={thread.width}
+            />
+          )}
 
           <div className="mt-4">
             <div className="grid grid-cols-4">
@@ -58,9 +64,9 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
                 <span className="text-xs text-span font-light">1</span>
               </button>
 
-              <RepostButton threadId="123" />
+              <RepostButton threadId={thread.id} />
 
-              <LikeButton threadId="123" />
+              <LikeButton threadId={thread.id} />
 
               <Popover>
                 <Popover.Trigger asChild>
@@ -80,7 +86,7 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
                   <Popover.Item onSelect={() => {}}>
                     Copy link to post
                   </Popover.Item>
-                  {thread.isOwnThread ? (
+                  {thread.owner.id === session?.user.id ? (
                     <Popover.Item
                       className="text-danger-soft"
                       onSelect={() => {}}

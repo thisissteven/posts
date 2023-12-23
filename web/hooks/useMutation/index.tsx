@@ -8,13 +8,11 @@ import { MutationState, swrObserver } from './state'
 
 export function useMutation<T>(
   key: string,
-  mutatorFn: <K = AxiosResponse>(
-    url: string,
-    data: {
-      arg: T
-    }
-  ) => Promise<K> = async (url, data) => {
-    return await apiClient.post(url, data.arg)
+  mutatorFn: (url: string, payload: T) => Promise<AxiosResponse> = async (
+    url,
+    payload
+  ) => {
+    return await apiClient.post(url, payload)
   }
 ) {
   const [status, setStatus] = React.useState<MutationState>('idle')
@@ -29,7 +27,7 @@ export function useMutation<T>(
     ) => {
       try {
         swrObserver.setMutationState(key, 'loading')
-        const response = await mutatorFn(url, data)
+        const response = await mutatorFn(url, data.arg)
         swrObserver.setMutationState(key, 'success')
         return response
       } catch (error) {

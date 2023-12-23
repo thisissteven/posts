@@ -1,10 +1,9 @@
 import { Command } from 'cmdk'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import React from 'react'
 
 import { useDialog } from '@/components/UI'
-
-import { useAuth } from '@/modules/Auth'
 
 import { CommandMenuItem } from '.'
 
@@ -13,7 +12,7 @@ export function CommandMenuProfileItem() {
 
   const { closeDialog } = useDialog()
 
-  const { session } = useAuth()
+  const { data: session } = useSession()
 
   return (
     <Command.Group>

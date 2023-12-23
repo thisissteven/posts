@@ -17,7 +17,12 @@ import {
   UploadImageInput,
 } from '@/components/UI'
 
-import { NewThreadFormValues, newThreadSchema } from './Form'
+import {
+  createNewThread,
+  NewThreadFormValues,
+  NewThreadPayload,
+  newThreadSchema,
+} from './Form'
 import { MediaPreview } from './MediaPreview'
 
 export function NewThreadTemplate({
@@ -35,7 +40,7 @@ export function NewThreadTemplate({
     mode: 'onChange',
     defaultValues: {
       textContent: '',
-      media: null,
+      source: null,
     },
   })
 
@@ -52,14 +57,13 @@ export function NewThreadTemplate({
     [canEscape, reset]
   )
 
-  const { trigger: createNewThread } =
-    useMutation<NewThreadFormValues>('/threads')
+  const { trigger } = useMutation<NewThreadPayload>('/threads', createNewThread)
 
   return (
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(async function (data) {
-          await createNewThread(data)
+          await trigger(data)
           setOpen(false)
           reset()
           onSubmitted?.()
@@ -93,7 +97,7 @@ export function NewThreadTemplate({
 
           {open && (
             <div className="flex justify-between mt-2">
-              <UploadImageInput {...register('media')} />
+              <UploadImageInput {...register('source')} />
               <div className="space-x-2">
                 {canEscape ? (
                   <RegularButton
@@ -132,7 +136,7 @@ function PostButton() {
   const {
     control,
     formState: { errors },
-  } = useFormContext()
+  } = useFormContext<NewThreadFormValues>()
 
   const input = useWatch({
     control,
@@ -141,7 +145,7 @@ function PostButton() {
 
   const media = useWatch({
     control,
-    name: 'media',
+    name: 'source',
   })
 
   const { status } = useMutation('/threads')

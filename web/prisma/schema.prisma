@@ -94,12 +94,15 @@ enum MediaType {
 }
 
 model Thread {
-  id          String     @id @default(cuid())
-  textContent String
-  mediaType   MediaType?
-  source      String?
-  urlEmbed    String?
-  createdAt   DateTime   @default(now())
+  id            String     @id @default(cuid())
+  textContent   String
+  mediaType     MediaType?
+  source        String?
+  highResSource String?
+  width         Int?
+  height        Int?
+  urlEmbed      String?
+  createdAt     DateTime   @default(now())
 
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId String
@@ -138,12 +141,15 @@ model ThreadRepost {
 }
 
 model Reply {
-  id          String     @id @default(cuid())
-  textContent String
-  mediaType   MediaType?
-  source      String?
-  urlEmbed    String?
-  createdAt   DateTime   @default(now())
+  id            String     @id @default(cuid())
+  textContent   String
+  mediaType     MediaType?
+  source        String?
+  highResSource String?
+  width         Int?
+  height        Int?
+  urlEmbed      String?
+  createdAt     DateTime   @default(now())
 
   parent   Reply?  @relation("Replies", fields: [parentId], references: [id])
   parentId String?

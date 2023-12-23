@@ -11,7 +11,7 @@ export const MediaPreview = () => {
 
   const input = useWatch({
     control,
-    name: 'media',
+    name: 'source',
   })
 
   const hasMedia = Boolean(input && input.length > 0)
@@ -30,7 +30,7 @@ export const MediaPreview = () => {
       <button
         type="button"
         onClick={() => {
-          setValue('media', null)
+          setValue('source', null)
         }}
         className="absolute active:bg-black/60 duration-200 left-0 top-0 mx-3 my-4 p-1.5 rounded-full bg-black/50"
       >

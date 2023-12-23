@@ -12,21 +12,38 @@ export default async function handler(
       POST: ['USER'],
     },
     GET: async (_) => {
-      const threads = await prisma.thread.findMany()
+      const threads = await prisma.thread.findMany({
+        orderBy: {
+          createdAt: 'desc',
+        },
+        include: {
+          owner: {
+            select: {
+              id: true,
+              avatarUrl: true,
+              isSupporter: true,
+              username: true,
+              displayName: true,
+            },
+          },
+          _count: {
+            select: {
+              likes: true,
+              replies: true,
+              reposts: true,
+            },
+          },
+        },
+      })
 
       res.status(200).json(threads)
     },
     POST: async (session) => {
-      const { textContent, mediaType, source, urlEmbed } = req.body
-
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
       const user = await prisma.thread.create({
         data: {
-          textContent,
-          mediaType,
-          source,
-          urlEmbed,
+          ...req.body,
           owner: {
             connect: {
               id: session?.user.id,
