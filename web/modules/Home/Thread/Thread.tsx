@@ -7,7 +7,7 @@ import { useWindowSize } from '@/hooks'
 import { Chat, MoreIcon } from '@/components/Icons'
 import { Lightbox, LikeButton, Popover, RepostButton } from '@/components/UI'
 
-import AddBookmark from './Popover/AddBookmark'
+import { AddBookmark, CopyLinkToPost } from './Popover'
 import { Avatar, UserDisplay } from './Profile'
 
 import { ThreadItem } from '@/types'
@@ -64,9 +64,9 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
                 <span className="text-xs text-span font-light">1</span>
               </button>
 
-              <RepostButton threadId={thread.id} />
+              <RepostButton thread={thread} />
 
-              <LikeButton threadId={thread.id} />
+              <LikeButton thread={thread} />
 
               <Popover>
                 <Popover.Trigger asChild>
@@ -83,9 +83,7 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
                 </Popover.Trigger>
                 <Popover.Content align={align}>
                   <AddBookmark />
-                  <Popover.Item onSelect={() => {}}>
-                    Copy link to post
-                  </Popover.Item>
+                  <CopyLinkToPost thread={thread} />
                   {thread.owner.id === session?.user.id ? (
                     <Popover.Item
                       className="text-danger-soft"

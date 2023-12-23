@@ -6,12 +6,6 @@ export type ThreadOwner = {
   avatarUrl?: string
 }
 
-export type ThreadCount = {
-  likes: number
-  replies: number
-  reposts: number
-}
-
 export type ThreadItem = {
   id: string
   createdAt: Date | string
@@ -23,5 +17,10 @@ export type ThreadItem = {
   height?: number
   urlEmbed?: string
   owner: ThreadOwner
-  _count: ThreadCount
+  repliesCount: number
+  likeCount: number
+  repostCount: number
+
+  likes: unknown[]
+  reposts: unknown[]
 }

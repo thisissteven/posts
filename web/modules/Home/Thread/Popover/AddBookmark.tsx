@@ -4,7 +4,7 @@ import { Popover } from '@/components/UI'
 
 import { useBookmarksDialog } from '@/modules/Bookmarks'
 
-export default function AddBookmark() {
+export function AddBookmark() {
   const { openBookmarksDialog } = useBookmarksDialog()
 
   return (

@@ -11,7 +11,7 @@ export default async function handler(
       GET: ['PUBLIC'],
       POST: ['USER'],
     },
-    GET: async (_) => {
+    GET: async (session) => {
       const threads = await prisma.thread.findMany({
         orderBy: {
           createdAt: 'desc',
@@ -26,11 +26,20 @@ export default async function handler(
               displayName: true,
             },
           },
-          _count: {
+          likes: {
+            where: {
+              userId: session?.user.id,
+            },
             select: {
-              likes: true,
-              replies: true,
-              reposts: true,
+              id: true,
+            },
+          },
+          reposts: {
+            where: {
+              userId: session?.user.id,
+            },
+            select: {
+              id: true,
             },
           },
         },

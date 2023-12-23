@@ -85,7 +85,9 @@ model User {
   receivedMessages Message[] @relation("receivedMessages")
 
   notifications Notification[]
-  ThreadReport  ThreadReport[]
+  threadReport  ThreadReport[]
+  replyLike     ReplyLike[]
+  replyRepost   ReplyRepost[]
 }
 
 enum MediaType {
@@ -107,11 +109,16 @@ model Thread {
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId String
 
-  replies Reply[]
+  replies      Reply[]
+  repliesCount Int     @default(0)
 
-  likes        ThreadLike[]
-  reposts      ThreadRepost[]
-  ThreadReport ThreadReport[]
+  likes     ThreadLike[]
+  likeCount Int          @default(0)
+
+  reposts     ThreadRepost[]
+  repostCount Int            @default(0)
+
+  threadReport ThreadReport[]
 }
 
 model ThreadLike {
@@ -154,13 +161,46 @@ model Reply {
   parent   Reply?  @relation("Replies", fields: [parentId], references: [id])
   parentId String?
 
-  replies Reply[] @relation("Replies")
+  replies      Reply[] @relation("Replies")
+  repliesCount Int     @default(0)
+
+  likes     ReplyLike[]
+  likeCount Int         @default(0)
+
+  reposts     ReplyRepost[]
+  repostCount Int           @default(0)
 
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId String
 
   thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
   threadId String
+}
+
+model ReplyLike {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  reply   Reply  @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  replyId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@unique([replyId, userId])
+}
+
+model ReplyRepost {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  reply   Reply  @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  replyId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@unique([replyId, userId])
 }
 
 model Message {

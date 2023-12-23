@@ -1,4 +1,5 @@
 import React from 'react'
+import useSWRImmutable from 'swr/immutable'
 
 import { useMutation } from '@/hooks'
 
@@ -15,8 +16,30 @@ export default function Experiment() {
 
   const { trigger, status } = useMutation<Payload>('/message')
 
+  const { data, mutate } = useSWRImmutable('/just-a-demo', () => {
+    return {
+      message: 'Hello',
+      from: 'World',
+    }
+  })
+
   return (
     <div className="p-8">
+      <button
+        onClick={() => {
+          mutate(
+            {
+              message: 'Hello 2',
+              from: 'World 2',
+            },
+            {
+              revalidate: false,
+            }
+          )
+        }}
+      >
+        just trying
+      </button>
       <form
         onSubmit={async (e) => {
           e.preventDefault()
