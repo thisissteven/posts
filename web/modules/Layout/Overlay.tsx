@@ -1,11 +1,12 @@
 // todo: start the transition on fetch finished instead
 
-import clsx from 'clsx'
 import React from 'react'
+
+import { cn } from '@/lib'
 
 const DURATION = 1000
 
-export function Overlay() {
+export function Overlay({ className }: { className?: string }) {
   const [show, setShow] = React.useState(true)
 
   const overlayRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
@@ -24,9 +25,10 @@ export function Overlay() {
   return (
     <div
       ref={overlayRef}
-      className={clsx(
+      className={cn(
         'fixed inset-0 z-50 w-screen h-[100vh] bg-background duration-300',
-        show ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        show ? 'opacity-100' : 'opacity-0 pointer-events-none',
+        className
       )}
       onTransitionEnd={(_) => {
         setTimeout(() => {

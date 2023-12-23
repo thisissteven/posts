@@ -1,3 +1,4 @@
+import { useSession } from 'next-auth/react'
 import React from 'react'
 
 import { cn } from '@/lib'
@@ -6,7 +7,7 @@ import { useWindowSize } from '@/hooks'
 import { Chat, MoreIcon } from '@/components/Icons'
 import { Lightbox, LikeButton, Popover, RepostButton } from '@/components/UI'
 
-import AddBookmark from './Popover/AddBookmark'
+import { AddBookmark, CopyLinkToPost } from './Popover'
 import { Avatar, UserDisplay } from './Profile'
 
 import { ThreadItem } from '@/types'
@@ -19,6 +20,7 @@ type ThreadProps = {
 
 export function Thread({ thread, className, onClick }: ThreadProps) {
   const { width } = useWindowSize()
+  const { data: session } = useSession()
 
   const align = width < 522 ? 'end' : 'start'
 
@@ -27,26 +29,30 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
       onClick={onClick}
       role="article"
       className={cn(
-        'cursor-pointer px-6 py-5 hover:bg-soft-black duration-200',
+        'cursor-pointer px-6 py-5 border-b border-divider hover:bg-soft-black transition-colors duration-200',
         className
       )}
     >
       <div className="flex gap-3">
-        <Avatar threadUser={thread.threadUser} />
+        <Avatar threadUser={thread.owner} />
         <div className="flex-1">
           <UserDisplay thread={thread} />
 
           <div className="mt-1">
             <p className="text-sm text-soft-primary font-light">
-              {thread.threadContent.textContent}
+              {thread.textContent}
             </p>
           </div>
 
-          <Lightbox
-            mediaType={thread.threadContent.mediaType}
-            source={thread.threadContent.mediaSource}
-            highResSource={thread.threadContent.highResMediaSource}
-          />
+          {thread.mediaType && thread.source && (
+            <Lightbox
+              mediaType={thread.mediaType}
+              source={thread.source}
+              highResSource={thread.highResSource}
+              height={thread.height}
+              width={thread.width}
+            />
+          )}
 
           <div className="mt-4">
             <div className="grid grid-cols-4">
@@ -58,9 +64,9 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
                 <span className="text-xs text-span font-light">1</span>
               </button>
 
-              <RepostButton threadId="123" />
+              <RepostButton thread={thread} />
 
-              <LikeButton threadId="123" />
+              <LikeButton thread={thread} />
 
               <Popover>
                 <Popover.Trigger asChild>
@@ -77,10 +83,8 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
                 </Popover.Trigger>
                 <Popover.Content align={align}>
                   <AddBookmark />
-                  <Popover.Item onSelect={() => {}}>
-                    Copy link to post
-                  </Popover.Item>
-                  {thread.isOwnThread ? (
+                  <CopyLinkToPost thread={thread} />
+                  {thread.owner.id === session?.user.id ? (
                     <Popover.Item
                       className="text-danger-soft"
                       onSelect={() => {}}

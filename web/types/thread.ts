@@ -1,25 +1,34 @@
-export type ThreadUser = {
+export type ThreadOwner = {
+  id: string
   username: string
   displayName: string
   isSupporter: boolean
-  avatarUrl: string
-}
-
-export type ThreadContent = {
-  textContent: string
-  mediaType: 'image' | 'video'
-  mediaSource: string
-  highResMediaSource: string
+  avatarUrl?: string
 }
 
 export type ThreadItem = {
   id: string
-  threadUser: ThreadUser
-  lastActivity: Date | string
-  isOwnThread: boolean
-  threadContent: ThreadContent
-  likesCount: number
-  repostsCount: number
+  createdAt: Date | string
+  textContent?: string
+  mediaType?: 'image' | 'video'
+  source?: string
+  highResSource?: string
+  width?: number
+  height?: number
+  urlEmbed?: string
+  owner: ThreadOwner
   repliesCount: number
-  reply?: Omit<ThreadItem, 'reply'> | null
+  likeCount: number
+  repostCount: number
+
+  likes?: {
+    user?: {
+      username: string
+    }
+  }[]
+  reposts?: {
+    user?: {
+      username: string
+    }
+  }[]
 }

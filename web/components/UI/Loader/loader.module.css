@@ -18,7 +18,6 @@
 }
 
 .sonnerLoadingBar {
-  --white: #eeeeee;
   animation: sonner-spin 1.2s linear infinite;
   background: var(--white);
   border-radius: 6px;

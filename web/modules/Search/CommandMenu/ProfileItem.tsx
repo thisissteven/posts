@@ -1,5 +1,6 @@
 import { Command } from 'cmdk'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import React from 'react'
 
 import { useDialog } from '@/components/UI'
@@ -11,11 +12,13 @@ export function CommandMenuProfileItem() {
 
   const { closeDialog } = useDialog()
 
+  const { data: session } = useSession()
+
   return (
     <Command.Group>
       <CommandMenuItem
-        onSelect={(value) => {
-          const profileUrl = `/${value}`.replace('@', '')
+        onSelect={(_) => {
+          const profileUrl = `/${session?.user.username}`.replace('@', '')
           router.push(profileUrl)
           closeDialog()
         }}

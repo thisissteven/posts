@@ -3,7 +3,7 @@ import { getServerSession, Session } from 'next-auth'
 
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 
-type Role = 'USER' | 'ADMIN'
+type Role = 'USER' | 'ADMIN' | 'PUBLIC'
 type HttpMethods = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
 type AllowedRoles = {
@@ -42,13 +42,16 @@ export async function requestHandler(
       return res.status(405).json({ message: 'Method not allowed' })
     }
 
-    const session = await getServerSession(req, res, authOptions)
-    const sessionRole: Role | null = session?.user?.role || null
+    const allowedRoles = handler.allowedRoles[method] ?? ['PUBLIC']
 
-    const requestValid = await isRequestValid(
-      handler.allowedRoles[method] ?? [],
-      sessionRole
-    )
+    const session =
+      allowedRoles.includes('PUBLIC') && allowedRoles.length === 1
+        ? null
+        : await getServerSession(req, res, authOptions)
+
+    const sessionRole: Role | null = session?.user?.role || 'PUBLIC'
+
+    const requestValid = await isRequestValid(allowedRoles, sessionRole)
 
     if (!requestValid) {
       return res.status(401).json({ message: 'Unauthorized' })

@@ -1,33 +1,32 @@
 import { useRouter } from 'next/navigation'
 import React from 'react'
+import useSWR from 'swr'
+
+import { useFakeLoading } from '@/hooks'
 
 import { TabLoader } from '@/components/UI'
 
 import { Thread } from '..'
 
-export function Everyone() {
-  const [loading, setLoading] = React.useState(true)
+import { ThreadItem } from '@/types'
 
-  React.useEffect(() => {
-    setTimeout(() => {
-      setLoading(false)
-    }, 300)
-  }, [])
+export function Everyone() {
+  const loading = useFakeLoading(300)
 
   const router = useRouter()
+
+  const { data: threadItems } = useSWR<ThreadItem[]>('/threads')
 
   return (
     <div className="relative">
       <TabLoader visible={loading} />
-      <div className="divide-y divide-divider">
-        {[].map((thread, i) => (
-          <Thread
-            key={i}
-            onClick={() => router.push(`${'username'}/${123}`)}
-            thread={thread}
-          />
-        ))}
-      </div>
+      {threadItems?.map((thread) => (
+        <Thread
+          key={thread.id}
+          onClick={() => router.push(`${thread.owner.username}/${thread.id}`)}
+          thread={thread}
+        />
+      ))}
     </div>
   )
 }

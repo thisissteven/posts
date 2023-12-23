@@ -1,32 +1,88 @@
 import clsx from 'clsx'
+import { useSession } from 'next-auth/react'
 import React from 'react'
+import useSWRImmutable from 'swr/immutable'
+
+import { apiClient } from '@/lib'
+import { useDebouncedCallback } from '@/hooks'
 
 import { RepostSmall, RepostSmallActive } from '@/components/Icons'
 
 import { AuthButton } from '.'
 
-export function RepostButton({ threadId }: { threadId: string }) {
-  const [reposted, setReposted] = React.useState(false)
+import { ThreadItem } from '@/types'
+
+export function RepostButton({ thread }: { thread: ThreadItem }) {
+  const { data: session } = useSession()
+  const { data, mutate } = useSWRImmutable(
+    `/threads/${thread.id}/repost`,
+    () => {
+      return {
+        reposted: thread.reposts?.some(
+          (value) => value?.user?.username === session?.user?.username
+        ),
+        count: thread.repostCount,
+      }
+    }
+  )
+
+  React.useEffect(() => {
+    mutate({
+      reposted: thread.reposts?.some(
+        (value) => value?.user?.username === session?.user?.username
+      ),
+      count: thread.repostCount,
+    })
+  }, [mutate, session?.user?.username, thread])
+
+  const repostState = data ?? {
+    reposted: false,
+    count: 0,
+  }
+
+  const threadId = thread.id
+
+  const debounce = useDebouncedCallback()
 
   return (
     <AuthButton
       className="flex items-center gap-2 group w-full justify-center -translate-x-[calc(50%-18.5px)]"
       onClick={() => {
-        setReposted(!reposted)
+        const currentState = {
+          reposted: repostState.reposted,
+          count: repostState.count,
+        }
+        mutate(
+          {
+            reposted: !repostState.reposted,
+            count: repostState.reposted
+              ? repostState.count - 1
+              : repostState.count + 1,
+          },
+          {
+            revalidate: false,
+          }
+        )
+        try {
+          debounce(() => apiClient.put(`/threads/${threadId}/repost`))()
+        } catch (error) {
+          mutate(currentState)
+        }
       }}
     >
       <div className="group-active:scale-90">
-        {reposted ? <RepostSmallActive /> : <RepostSmall />}
+        {repostState.reposted ? <RepostSmallActive /> : <RepostSmall />}
       </div>
 
       <span
-        aria-hidden={!reposted}
+        aria-hidden={!repostState.reposted}
         className={clsx(
-          'text-xs text-success font-light duration-75',
-          reposted ? 'opacity-100' : 'opacity-0'
+          'text-xs font-light duration-75',
+          repostState.count > 0 ? 'opacity-100' : 'opacity-0',
+          repostState.reposted ? 'text-success' : 'text-span'
         )}
       >
-        1
+        {repostState.count}
       </span>
     </AuthButton>
   )

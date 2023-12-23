@@ -22,11 +22,9 @@ import { SearchCommandMenu } from '@/modules/Search'
 
 import { BottomBanner } from './BottomBanner'
 import { NavItem, ProfileNavItem } from './Navigation'
-import { useAuth } from '../Auth'
 
 export function Sidebar() {
   const { width } = useWindowSize()
-  const { isAuthenticated } = useAuth()
 
   const side = width < 522 ? 'top' : 'right'
 

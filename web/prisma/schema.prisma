@@ -58,6 +58,8 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   avatarUrl     String?
+  website       String?
+  isSupporter   Boolean   @default(false)
 
   // --- Unused ---
   name  String?
@@ -69,14 +71,167 @@ model User {
   createdAt DateTime  @default(now())
   accounts  Account[]
   sessions  Session[]
-  Thread    Thread[]
+
+  threads Thread[]
+  replies Reply[]
+
+  likes   ThreadLike[]
+  reposts ThreadRepost[]
+
+  followedBy User[] @relation("UserFollows")
+  following  User[] @relation("UserFollows")
+
+  sentMessages     Message[] @relation("sentMessages")
+  receivedMessages Message[] @relation("receivedMessages")
+
+  notifications Notification[]
+  threadReport  ThreadReport[]
+  replyLike     ReplyLike[]
+  replyRepost   ReplyRepost[]
+}
+
+enum MediaType {
+  image
+  video
 }
 
 model Thread {
+  id            String     @id @default(cuid())
+  textContent   String
+  mediaType     MediaType?
+  source        String?
+  highResSource String?
+  width         Int?
+  height        Int?
+  urlEmbed      String?
+  createdAt     DateTime   @default(now())
+
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId String
+
+  replies      Reply[]
+  repliesCount Int     @default(0)
+
+  likes     ThreadLike[]
+  likeCount Int          @default(0)
+
+  reposts     ThreadRepost[]
+  repostCount Int            @default(0)
+
+  threadReport ThreadReport[]
+}
+
+model ThreadLike {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@unique([threadId, userId])
+}
+
+model ThreadRepost {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@unique([threadId, userId])
+}
+
+model Reply {
+  id            String     @id @default(cuid())
+  textContent   String
+  mediaType     MediaType?
+  source        String?
+  highResSource String?
+  width         Int?
+  height        Int?
+  urlEmbed      String?
+  createdAt     DateTime   @default(now())
+
+  parent   Reply?  @relation("Replies", fields: [parentId], references: [id])
+  parentId String?
+
+  replies      Reply[] @relation("Replies")
+  repliesCount Int     @default(0)
+
+  likes     ReplyLike[]
+  likeCount Int         @default(0)
+
+  reposts     ReplyRepost[]
+  repostCount Int           @default(0)
+
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId String
+
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadId String
+}
+
+model ReplyLike {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  reply   Reply  @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  replyId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@unique([replyId, userId])
+}
+
+model ReplyRepost {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  reply   Reply  @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  replyId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@unique([replyId, userId])
+}
+
+model Message {
   id        String   @id @default(cuid())
   content   String
   createdAt DateTime @default(now())
 
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId String
+  sender   User   @relation(name: "sentMessages", fields: [senderId], references: [id])
+  senderId String
+
+  receiver   User   @relation(name: "receivedMessages", fields: [receiverId], references: [id])
+  receiverId String
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
+model ThreadReport {
+  id        String   @id @default(cuid())
+  reason    String
+  createdAt DateTime @default(now())
+
+  thread   Thread @relation(fields: [threadId], references: [id])
+  threadId String
+
+  reporter User   @relation(fields: [userId], references: [id])
+  userId   String
 }
