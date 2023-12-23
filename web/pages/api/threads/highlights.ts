@@ -16,6 +16,14 @@ export default async function handler(
         orderBy: {
           createdAt: 'desc',
         },
+        where: {
+          likeCount: {
+            gt: 1,
+          },
+          repostCount: {
+            gt: 1,
+          },
+        },
         include: {
           owner: {
             select: {

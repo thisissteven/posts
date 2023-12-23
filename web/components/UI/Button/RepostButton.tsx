@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { useSession } from 'next-auth/react'
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
@@ -12,15 +13,27 @@ import { AuthButton } from '.'
 import { ThreadItem } from '@/types'
 
 export function RepostButton({ thread }: { thread: ThreadItem }) {
+  const { data: session } = useSession()
   const { data, mutate } = useSWRImmutable(
     `/threads/${thread.id}/repost`,
     () => {
       return {
-        reposted: thread.reposts.length > 0,
+        reposted: thread.reposts?.some(
+          (value) => value?.user?.username === session?.user?.username
+        ),
         count: thread.repostCount,
       }
     }
   )
+
+  React.useEffect(() => {
+    mutate({
+      reposted: thread.reposts?.some(
+        (value) => value?.user?.username === session?.user?.username
+      ),
+      count: thread.repostCount,
+    })
+  }, [mutate, session?.user?.username, thread])
 
   const repostState = data ?? {
     reposted: false,

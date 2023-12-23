@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { useSession } from 'next-auth/react'
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
@@ -12,12 +13,24 @@ import { AuthButton } from '.'
 import { ThreadItem } from '@/types'
 
 export function LikeButton({ thread }: { thread: ThreadItem }) {
+  const { data: session } = useSession()
   const { data, mutate } = useSWRImmutable(`/threads/${thread.id}/like`, () => {
     return {
-      liked: thread.likes.length > 0,
+      liked: thread.likes?.some(
+        (value) => value?.user?.username === session?.user?.username
+      ),
       count: thread.likeCount,
     }
   })
+
+  React.useEffect(() => {
+    mutate({
+      liked: thread.likes?.some(
+        (value) => value?.user?.username === session?.user?.username
+      ),
+      count: thread.likeCount,
+    })
+  }, [mutate, session?.user?.username, thread])
 
   const likeState = data ?? {
     liked: false,
@@ -46,7 +59,7 @@ export function LikeButton({ thread }: { thread: ThreadItem }) {
           }
         )
         try {
-          debounce(() => apiClient.put(`/threads/${threadId}/repost`))()
+          debounce(() => apiClient.put(`/threads/${threadId}/like`))()
         } catch (error) {
           mutate(currentState)
         }
@@ -59,6 +72,7 @@ export function LikeButton({ thread }: { thread: ThreadItem }) {
       <span
         className={clsx(
           'text-xs font-light',
+          likeState.count > 0 ? 'opacity-100' : 'opacity-0',
           likeState.liked ? 'text-danger-soft' : 'text-span'
         )}
       >

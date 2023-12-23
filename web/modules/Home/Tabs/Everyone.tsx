@@ -20,15 +20,13 @@ export function Everyone() {
   return (
     <div className="relative">
       <TabLoader visible={loading} />
-      <div className="divide-y divide-divider">
-        {threadItems?.map((thread, i) => (
-          <Thread
-            key={i}
-            onClick={() => router.push(`${thread.owner.username}/${thread.id}`)}
-            thread={thread}
-          />
-        ))}
-      </div>
+      {threadItems?.map((thread) => (
+        <Thread
+          key={thread.id}
+          onClick={() => router.push(`${thread.owner.username}/${thread.id}`)}
+          thread={thread}
+        />
+      ))}
     </div>
   )
 }

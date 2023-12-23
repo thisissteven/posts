@@ -29,7 +29,7 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
       onClick={onClick}
       role="article"
       className={cn(
-        'cursor-pointer px-6 py-5 hover:bg-soft-black duration-200',
+        'cursor-pointer px-6 py-5 border-b border-divider hover:bg-soft-black transition-colors duration-200',
         className
       )}
     >

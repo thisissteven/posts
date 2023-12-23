@@ -44,9 +44,10 @@ export async function requestHandler(
 
     const allowedRoles = handler.allowedRoles[method] ?? ['PUBLIC']
 
-    const session = allowedRoles.includes('PUBLIC')
-      ? null
-      : await getServerSession(req, res, authOptions)
+    const session =
+      allowedRoles.includes('PUBLIC') && allowedRoles.length === 1
+        ? null
+        : await getServerSession(req, res, authOptions)
 
     const sessionRole: Role | null = session?.user?.role || 'PUBLIC'
 

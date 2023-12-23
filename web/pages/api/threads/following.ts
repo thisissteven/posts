@@ -13,6 +13,22 @@ export default async function handler(
     },
     GET: async (session) => {
       const threads = await prisma.thread.findMany({
+        where: {
+          owner: {
+            OR: [
+              {
+                followedBy: {
+                  some: {
+                    id: session?.user.id,
+                  },
+                },
+              },
+              {
+                id: session?.user.id,
+              },
+            ],
+          },
+        },
         orderBy: {
           createdAt: 'desc',
         },

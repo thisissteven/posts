@@ -21,6 +21,14 @@ export type ThreadItem = {
   likeCount: number
   repostCount: number
 
-  likes: unknown[]
-  reposts: unknown[]
+  likes?: {
+    user?: {
+      username: string
+    }
+  }[]
+  reposts?: {
+    user?: {
+      username: string
+    }
+  }[]
 }

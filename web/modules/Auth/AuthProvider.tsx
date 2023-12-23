@@ -3,6 +3,7 @@ import { Session } from 'next-auth'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import React from 'react'
 import { isMobile } from 'react-device-detect'
+import { mutate } from 'swr'
 
 import { newWindow } from '@/lib'
 import { useDialogState } from '@/hooks/useDialogState'
@@ -73,6 +74,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         },
         signOut: () => {
+          // clear cache for like and repost on sign out
+          mutate(
+            (key) =>
+              typeof key === 'string' &&
+              (key.includes('like') || key.includes('repost')),
+            undefined,
+            { revalidate: false }
+          )
           signOut({ redirect: false }).then(() => router.replace('/'))
         },
         session,
