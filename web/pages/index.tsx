@@ -22,6 +22,7 @@ export default function Home() {
         <title>{title}</title>
       </Head>
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
+
       <OnYourMind />
       {activeTab === 'Highlights' && <Highlights />}
       {activeTab === 'Everyone' && <Everyone />}

@@ -2,6 +2,10 @@ import { faker } from '@faker-js/faker'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 
+import { useFakeLoading } from '@/hooks'
+
+import { TabLoader } from '@/components/UI'
+
 import { Thread } from '..'
 
 import { ThreadItem } from '@/types'
@@ -47,19 +51,13 @@ const threadItems = new Array(8).fill(0).map(
 )
 
 export function Highlights() {
-  const [loading, setLoading] = React.useState(true)
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      setLoading(false)
-    }, 300)
-  }, [])
+  const loading = useFakeLoading(500)
 
   const router = useRouter()
 
   return (
     <div className="relative">
-      {/* <TabLoader visible={loading} /> */}
+      <TabLoader visible={loading} />
 
       <div className="divide-y divide-divider">
         {threadItems.map((thread, i) => (

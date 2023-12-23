@@ -1,12 +1,14 @@
-type SubscriberFn = (isLoading: boolean) => void
+type SubscriberFn = (state: MutationState) => void
+
+export type MutationState = 'idle' | 'loading' | 'success' | 'error'
 
 class SWRObserver {
   subscribers: Record<string, Array<SubscriberFn>>
-  loadingStates: Record<string, boolean>
+  mutationStates: Record<string, MutationState>
 
   constructor() {
     this.subscribers = {}
-    this.loadingStates = {}
+    this.mutationStates = {}
   }
 
   subscribe = (key: string, subscriber: SubscriberFn) => {
@@ -16,8 +18,8 @@ class SWRObserver {
 
     this.subscribers[key].push(subscriber)
 
-    // Provide current loading state to the subscriber upon subscription
-    subscriber(this.loadingStates[key] || false)
+    // Provide current mutation state to the subscriber upon subscription
+    subscriber(this.mutationStates[key] || 'idle')
 
     return () => {
       this.subscribers[key] = this.subscribers[key].filter(
@@ -26,14 +28,14 @@ class SWRObserver {
     }
   }
 
-  setLoadingState = (key: string, isLoading: boolean) => {
-    this.loadingStates[key] = isLoading
-    this.notify(key, isLoading)
+  setMutationState = (key: string, state: MutationState) => {
+    this.mutationStates[key] = state
+    this.notify(key, state)
   }
 
-  notify = (key: string, isLoading: boolean) => {
+  notify = (key: string, state: MutationState) => {
     if (this.subscribers[key]) {
-      this.subscribers[key].forEach((s) => s(isLoading))
+      this.subscribers[key].forEach((s) => s(state))
     }
   }
 }

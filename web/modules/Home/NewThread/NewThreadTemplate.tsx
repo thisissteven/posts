@@ -144,11 +144,11 @@ function PostButton() {
     name: 'media',
   })
 
-  const { isLoading } = useMutation('/threads')
+  const { status } = useMutation('/threads')
 
   return (
     <RegularButton
-      isLoading={isLoading}
+      isLoading={status === 'loading'}
       disabled={
         !media && (input.length === 0 || Boolean(errors['textContent']))
       }

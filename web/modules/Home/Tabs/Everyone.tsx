@@ -1,18 +1,14 @@
 import { useRouter } from 'next/navigation'
 import React from 'react'
 
+import { useFakeLoading } from '@/hooks'
+
 import { TabLoader } from '@/components/UI'
 
 import { Thread } from '..'
 
 export function Everyone() {
-  const [loading, setLoading] = React.useState(true)
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      setLoading(false)
-    }, 300)
-  }, [])
+  const loading = useFakeLoading(300)
 
   const router = useRouter()
 

@@ -4,15 +4,22 @@ import useSWRMutation from 'swr/mutation'
 
 import { apiClient } from '@/lib'
 
-import { swrObserver } from './state'
+import { MutationState, swrObserver } from './state'
 
 export function useMutation<T>(
   key: string,
-  mutatorFn?: <K = AxiosResponse>(url: string, data: T) => Promise<K>
+  mutatorFn: <K = AxiosResponse>(
+    url: string,
+    data: {
+      arg: T
+    }
+  ) => Promise<K> = async (url, data) => {
+    return await apiClient.post(url, data.arg)
+  }
 ) {
-  const [isLoading, setIsLoading] = React.useState(false)
+  const [status, setStatus] = React.useState<MutationState>('idle')
 
-  const { trigger, ...rest } = useSWRMutation(
+  const { trigger, data, error, reset } = useSWRMutation(
     key,
     async (
       url: string,
@@ -20,24 +27,21 @@ export function useMutation<T>(
         arg: T
       }
     ) => {
-      const { arg } = data
       try {
-        swrObserver.setLoadingState(key, true)
-        if (!mutatorFn) {
-          const response = await apiClient.post(url, arg)
-          return response
-        } else {
-          return await mutatorFn(url, arg)
-        }
-      } finally {
-        swrObserver.setLoadingState(key, false)
+        swrObserver.setMutationState(key, 'loading')
+        const response = await mutatorFn(url, data)
+        swrObserver.setMutationState(key, 'success')
+        return response
+      } catch (error) {
+        swrObserver.setMutationState(key, 'error')
+        throw error
       }
     }
   )
 
   React.useEffect(() => {
-    const unsubscribe = swrObserver.subscribe(key, (observerIsLoading) => {
-      setIsLoading(observerIsLoading)
+    const unsubscribe = swrObserver.subscribe(key, (mutationState) => {
+      setStatus(mutationState)
     })
 
     return () => {
@@ -47,35 +51,12 @@ export function useMutation<T>(
 
   return {
     trigger,
-    isLoading,
-    ...rest,
+    status,
+    data,
+    error,
+    reset: () => {
+      reset()
+      swrObserver.setMutationState(key, 'idle')
+    },
   }
 }
-
-// export function useMutation<T>(
-//   key: string,
-//   mutatorFn?: <K = AxiosResponse>(url: string, data: T) => Promise<K>
-// ) {
-//   const { trigger, ...rest } = useSWRMutation(
-//     key,
-//     async (
-//       url: string,
-//       data: {
-//         arg: T
-//       }
-//     ) => {
-//       const { arg } = data
-//       if (!mutatorFn) {
-//         const response = await apiClient.post(url, arg)
-//         return response
-//       } else {
-//         return await mutatorFn(url, arg)
-//       }
-//     }
-//   )
-
-//   return {
-//     trigger: trigger as <K = AxiosResponse>(data: T) => Promise<K>,
-//     ...rest,
-//   }
-// }
