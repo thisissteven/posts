@@ -15,7 +15,7 @@ export function ReportDialogContent() {
 
   const { trigger, status } = useMutation(`/threads/report/${thread.id}`)
 
-  if (status === 'success') {
+  if (status.state === 'success') {
     return (
       <div className="bg-background p-6">
         <p className="mt-3 text-sm text-soft-primary font-light leading-6">
@@ -61,7 +61,7 @@ export function ReportDialogContent() {
             })
           }}
           disabled={reason.length === 0}
-          isLoading={status === 'loading'}
+          isLoading={status.state === 'loading'}
           variant="secondary"
           className="text-danger disabled:bg-soft-background disabled:text-span"
         >

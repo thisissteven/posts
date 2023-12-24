@@ -22,11 +22,13 @@ export function Everyone() {
 
   const virtualizer = useWindowVirtualizer({
     count: threadItems?.length ?? 0,
-    estimateSize: () => 300,
-    overscan: 5,
+    estimateSize: () => 600,
+    overscan: 4,
   })
 
   const items = virtualizer.getVirtualItems()
+
+  // useLastSeenFeed(listRef, '/everyone')
 
   return (
     <div className="relative">

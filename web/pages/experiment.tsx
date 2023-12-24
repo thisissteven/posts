@@ -70,7 +70,10 @@ export default function Experiment() {
           />
         </div>
 
-        <RegularButton variant="secondary" isLoading={status === 'loading'}>
+        <RegularButton
+          variant="secondary"
+          isLoading={status.state === 'loading'}
+        >
           Submit
         </RegularButton>
       </form>

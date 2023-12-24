@@ -13,9 +13,14 @@ export function useMutation<T>(
     payload
   ) => {
     return await apiClient.post(url, payload)
+  },
+  options?: {
+    mutatedBy?: string
   }
 ) {
-  const [status, setStatus] = React.useState<MutationState>('idle')
+  const [status, setStatus] = React.useState<MutationState>({
+    state: 'idle',
+  })
 
   const { trigger, data, error, reset } = useSWRMutation(
     key,
@@ -26,12 +31,21 @@ export function useMutation<T>(
       }
     ) => {
       try {
-        swrObserver.setMutationState(key, 'loading')
+        swrObserver.setMutationState(key, {
+          state: 'loading',
+          mutatedBy: options?.mutatedBy,
+        })
         const response = await mutatorFn(url, data.arg)
-        swrObserver.setMutationState(key, 'success')
+        swrObserver.setMutationState(key, {
+          state: 'success',
+          mutatedBy: options?.mutatedBy,
+        })
         return response
       } catch (error) {
-        swrObserver.setMutationState(key, 'error')
+        swrObserver.setMutationState(key, {
+          state: 'error',
+          mutatedBy: options?.mutatedBy,
+        })
         throw error
       }
     }
@@ -54,7 +68,10 @@ export function useMutation<T>(
     error,
     reset: () => {
       reset()
-      swrObserver.setMutationState(key, 'idle')
+      swrObserver.setMutationState(key, {
+        state: 'idle',
+        mutatedBy: options?.mutatedBy,
+      })
     },
   }
 }

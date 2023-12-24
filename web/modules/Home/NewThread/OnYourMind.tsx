@@ -28,7 +28,7 @@ const OnYourMind = React.memo(function OnYourMind() {
           )}
         </div>
 
-        <NewThreadTemplate />
+        <NewThreadTemplate id="on-your-mind" />
       </div>
     </section>
   )

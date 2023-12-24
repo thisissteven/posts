@@ -27,7 +27,7 @@ export function DeletePost({
         onDelete()
       }}
     >
-      {status === 'loading' ? 'Deleting...' : 'Delete Post'}
+      {status.state === 'loading' ? 'Deleting...' : 'Delete Post'}
     </Popover.Item>
   )
 }

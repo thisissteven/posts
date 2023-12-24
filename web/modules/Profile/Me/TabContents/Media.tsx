@@ -25,7 +25,7 @@ export function Media() {
   const username = pathname?.split('/')[1]
 
   const { data: medias, isLoading } = useSWR<Media[]>(
-    pathname && `/threads/${username}/posts`
+    pathname && `/threads/${username}/media`
   )
 
   const isEmpty = medias?.length === 0

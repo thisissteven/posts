@@ -17,6 +17,9 @@ export default async function handler(
           owner: {
             username,
           },
+          mediaType: {
+            not: null,
+          },
         },
         orderBy: {
           createdAt: 'desc',

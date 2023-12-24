@@ -1,19 +1,21 @@
-import { Router } from 'next/router'
+import { useRouter } from 'next/router'
 import * as React from 'react'
 
 import { useScrollPosition } from '@/store'
 
-export function useScrollRestoration(router: Router, paths: string[] = []) {
+export function useLastSeenFeed(key: string) {
   const scrollPosition = useScrollPosition((state) => state.scrollPosition)
   const setScrollPosition = useScrollPosition(
     (state) => state.setScrollPosition
   )
 
+  const router = useRouter()
+
   React.useEffect(() => {
     let timeout: NodeJS.Timeout
 
     const handleRouteChangeStart = () => {
-      setScrollPosition(router.pathname, document.documentElement.scrollTop)
+      setScrollPosition(key, document.documentElement.scrollTop)
     }
 
     router.events.on('routeChangeStart', handleRouteChangeStart)
@@ -22,20 +24,20 @@ export function useScrollRestoration(router: Router, paths: string[] = []) {
       router.events.off('routeChangeStart', handleRouteChangeStart)
       clearTimeout(timeout)
     }
-  }, [router.events, router.pathname, scrollPosition, setScrollPosition])
+  }, [router.events, key, scrollPosition, setScrollPosition])
 
   const timeoutRef = React.useRef<NodeJS.Timeout>()
 
   React.useEffect(() => {
     clearTimeout(timeoutRef.current!)
 
-    if (scrollPosition && paths.includes(router.pathname)) {
+    if (scrollPosition) {
       timeoutRef.current = setTimeout(() => {
         document.documentElement.scrollTo({
-          top: scrollPosition[router.pathname] || 0,
-          // behavior: 'smooth',
+          top: scrollPosition[key] || 0,
+          behavior: 'smooth',
         })
       }, 300)
     }
-  }, [router.pathname, scrollPosition, setScrollPosition, paths])
+  }, [key, scrollPosition, setScrollPosition])
 }

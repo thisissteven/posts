@@ -29,9 +29,11 @@ import { MediaPreview } from './MediaPreview'
 export function NewThreadTemplate({
   canEscape = true,
   onSubmitted,
+  id,
 }: {
   canEscape?: boolean
-  onSubmitted?: () => void
+  onSubmitted?: () => void | Promise<void>
+  id: string
 }) {
   const [open, setOpen] = React.useState(false)
   const { data: session } = useSession()
@@ -59,7 +61,13 @@ export function NewThreadTemplate({
     [canEscape, reset]
   )
 
-  const { trigger } = useMutation<NewThreadPayload>('/threads', createNewThread)
+  const { trigger } = useMutation<NewThreadPayload>(
+    '/threads',
+    createNewThread,
+    {
+      mutatedBy: id,
+    }
+  )
 
   return (
     <FormProvider {...methods}>
@@ -69,9 +77,9 @@ export function NewThreadTemplate({
             ...data,
             userId: session?.user.id as string,
           })
+          await onSubmitted?.()
           reset()
           setOpen(false)
-          onSubmitted?.()
         })}
         className="w-full"
       >
@@ -127,7 +135,7 @@ export function NewThreadTemplate({
                     </RegularButton>
                   </Dialog.Close>
                 )}
-                <PostButton />
+                <PostButton mutatedBy={id} />
               </div>
             </div>
           )}
@@ -137,7 +145,7 @@ export function NewThreadTemplate({
   )
 }
 
-function PostButton() {
+function PostButton({ mutatedBy }: { mutatedBy: string }) {
   const {
     control,
     formState: { errors },
@@ -157,7 +165,7 @@ function PostButton() {
 
   return (
     <RegularButton
-      isLoading={status === 'loading'}
+      isLoading={status.state === 'loading' && status.mutatedBy === mutatedBy}
       disabled={
         !media && (input.length === 0 || Boolean(errors['textContent']))
       }

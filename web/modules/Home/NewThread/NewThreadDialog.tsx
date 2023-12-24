@@ -9,7 +9,14 @@ export function NewThreadDialog() {
   return (
     <section className="bg-background rounded-xl">
       <div className="flex p-6 gap-3 items-start">
-        <NewThreadTemplate onSubmitted={closeDialog} canEscape={false} />
+        <NewThreadTemplate
+          id="dialog"
+          onSubmitted={async () => {
+            closeDialog()
+            await new Promise((resolve) => setTimeout(resolve, 500))
+          }}
+          canEscape={false}
+        />
       </div>
     </section>
   )
