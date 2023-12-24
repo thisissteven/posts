@@ -28,6 +28,8 @@ export function useAuth() {
   return React.useContext(AuthContext)
 }
 
+const needAuthPathnames = ['/replies', '/notifications', '/bookmarks']
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession()
 
@@ -53,12 +55,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [dialogState, isAuthenticated])
 
   React.useEffect(() => {
-    const needAuthPathnames = ['/replies', '/notifications', '/bookmarks']
     if (!isAuthenticated && needAuthPathnames.includes(pathname)) {
       router.replace('/')
+    }
+  }, [isAuthenticated, pathname, router])
+
+  React.useEffect(() => {
+    if (!isAuthenticated && needAuthPathnames.includes(pathname)) {
       dialogState.onOpenChange(true)
     }
-  }, [dialogState, isAuthenticated, pathname, router])
+  }, [dialogState, isAuthenticated, pathname])
 
   return (
     <AuthContext.Provider
@@ -88,7 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }}
     >
       <SharedDialog dialogState={dialogState}>
-        <SharedDialog.Content>
+        <SharedDialog.Content canEscape={!needAuthPathnames.includes(pathname)}>
           <AuthDialogContent />
         </SharedDialog.Content>
       </SharedDialog>

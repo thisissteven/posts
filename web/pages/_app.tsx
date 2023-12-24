@@ -10,9 +10,10 @@ import { apiClient } from '@/lib'
 import { useScrollRestoration } from '@/hooks'
 
 import { AuthProvider } from '@/modules/Auth'
-import { BookmarksDialogProvider } from '@/modules/Bookmarks'
+import { BookmarksDialog } from '@/modules/Bookmarks'
 import { AppLayout } from '@/modules/Layout/AppLayout'
 import { OnboardingProvider } from '@/modules/Onboarding'
+import { ReportDialog } from '@/modules/Report'
 
 const outfit = Lexend({ subsets: ['latin'] })
 
@@ -32,15 +33,15 @@ export default function App({ Component, pageProps }: AppProps) {
         }}
       >
         <SessionProvider session={pageProps.session}>
-          <BookmarksDialogProvider>
-            <AuthProvider>
-              <OnboardingProvider>
-                <AppLayout>
-                  <Component {...pageProps} />
-                </AppLayout>
-              </OnboardingProvider>
-            </AuthProvider>
-          </BookmarksDialogProvider>
+          <BookmarksDialog />
+          <ReportDialog />
+          <AuthProvider>
+            <OnboardingProvider>
+              <AppLayout>
+                <Component {...pageProps} />
+              </AppLayout>
+            </OnboardingProvider>
+          </AuthProvider>
         </SessionProvider>
       </SWRConfig>
     </>

@@ -13,8 +13,8 @@ import { useMutation } from '@/hooks'
 
 import {
   Dialog,
+  FormTextarea,
   RegularButton,
-  Textarea,
   UploadImageInput,
 } from '@/components/UI'
 
@@ -82,7 +82,7 @@ export function NewThreadTemplate({
             control={control}
             name="textContent"
             render={({ field: { onChange, onBlur, value, name } }) => (
-              <Textarea
+              <FormTextarea
                 style={{
                   height: open ? '48px' : '40px',
                 }}

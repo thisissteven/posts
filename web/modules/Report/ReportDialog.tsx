@@ -6,16 +6,16 @@ import { SharedDialog } from '@/components/UI'
 
 import { useGlobalDialogStore } from '@/store'
 
-import { BookmarksDialogContent } from './BookmarksDialogContent'
+import { ReportDialogContent } from './ReportDialogContent'
 
-export function BookmarksDialog() {
+export function ReportDialog() {
   const dialogState = useDialogState()
 
   const open = useGlobalDialogStore((state) => state.currentOpen)
   const closeDialog = useGlobalDialogStore((state) => state.closeDialog)
 
   React.useEffect(() => {
-    if (open === 'BOOKMARKS') {
+    if (open === 'REPORT') {
       dialogState.onOpenChange(true)
     } else {
       dialogState.onOpenChange(false)
@@ -33,7 +33,7 @@ export function BookmarksDialog() {
       }}
     >
       <SharedDialog.Content className="max-w-[415px]">
-        <BookmarksDialogContent />
+        <ReportDialogContent />
       </SharedDialog.Content>
     </SharedDialog>
   )

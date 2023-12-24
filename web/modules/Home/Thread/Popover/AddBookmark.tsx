@@ -2,15 +2,15 @@ import React from 'react'
 
 import { Popover } from '@/components/UI'
 
-import { useBookmarksDialog } from '@/modules/Bookmarks'
+import { useGlobalDialogStore } from '@/store'
 
 export function AddBookmark() {
-  const { openBookmarksDialog } = useBookmarksDialog()
+  const openDialog = useGlobalDialogStore((state) => state.openDialog)
 
   return (
     <Popover.Item
       onSelect={() => {
-        openBookmarksDialog()
+        openDialog('BOOKMARKS')
       }}
     >
       Add bookmark

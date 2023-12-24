@@ -2,14 +2,14 @@ import { useSession } from 'next-auth/react'
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
-import { apiClient, cn } from '@/lib'
+import { cn } from '@/lib'
 import { useWindowSize } from '@/hooks'
 
 import { MoreIcon } from '@/components/Icons'
 import { Lightbox, Popover } from '@/components/UI'
 
 import { ChatButton, LikeButton, RepostButton } from './Buttons'
-import { AddBookmark, CopyLinkToPost } from './Popover'
+import { AddBookmark, CopyLinkToPost, DeletePost, ReportPost } from './Popover'
 import { Avatar, UserDisplay } from './Profile'
 
 import { ThreadItem } from '@/types'
@@ -23,6 +23,11 @@ type ThreadProps = {
 export function Thread({ thread, className, onClick }: ThreadProps) {
   const { width } = useWindowSize()
   const { data: session } = useSession()
+
+  const userId = session?.user?.id
+  const ownerId = thread.owner.id
+
+  const isOwner = userId === ownerId
 
   const align = width < 522 ? 'end' : 'start'
 
@@ -100,25 +105,17 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
                 <Popover.Content align={align}>
                   <AddBookmark />
                   <CopyLinkToPost thread={thread} />
-                  {thread.owner.id === session?.user.id ? (
-                    <Popover.Item
-                      className="text-danger-soft"
-                      onSelect={async () => {
-                        await apiClient.delete(`/threads/${thread.id}`)
+                  {isOwner ? (
+                    <DeletePost
+                      threadId={thread.id}
+                      onDelete={() => {
                         mutate(null, {
                           revalidate: false,
                         })
                       }}
-                    >
-                      Delete Post
-                    </Popover.Item>
+                    />
                   ) : (
-                    <Popover.Item
-                      className="text-danger-soft"
-                      onSelect={() => {}}
-                    >
-                      Report post
-                    </Popover.Item>
+                    <ReportPost thread={thread} />
                   )}
                 </Popover.Content>
               </Popover>
