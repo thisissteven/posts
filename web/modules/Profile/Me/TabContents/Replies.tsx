@@ -1,31 +1,39 @@
+import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/router'
 import React from 'react'
-import useSWR from 'swr'
 
-import { useFakeLoading } from '@/hooks'
+import { useDelayedSWR } from '@/hooks'
 
 import { TabLoader } from '@/components/UI'
 
 import { Thread } from '@/modules/Home'
 
 import { EmptyPlaceholder } from './EmptyPlaceholder'
+import { ErrorPlaceholder } from './ErrorPlaceholder'
 
 import { ThreadItem } from '@/types'
 
 export function Replies() {
-  const { data: threadItems, isLoading } =
-    useSWR<ThreadItem[]>('/threads/replies')
+  const pathname = usePathname()
 
-  const isEmpty = threadItems?.length === 0
-  const loading = useFakeLoading() || !threadItems || isLoading
+  const username = pathname?.split('/')[1]
+
+  const {
+    data: threadItems,
+    hasData,
+    isLoading,
+    isEmpty,
+    isError,
+  } = useDelayedSWR<ThreadItem[]>(`/threads/${username}/replies`)
 
   const router = useRouter()
 
   return (
     <div className="relative">
-      <TabLoader visible={loading} />
+      <TabLoader visible={isLoading} overlayOnly={hasData} />
 
-      {isEmpty && <EmptyPlaceholder />}
+      <EmptyPlaceholder visible={isEmpty} />
+      <ErrorPlaceholder visible={isError} />
 
       {threadItems?.map((thread) => (
         <Thread

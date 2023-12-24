@@ -2,9 +2,8 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/router'
 import React from 'react'
-import useSWR from 'swr'
 
-import { useFakeLoading } from '@/hooks'
+import { useDelayedSWR } from '@/hooks/useDelayedSWR'
 
 import { TabLoader, Video } from '@/components/UI'
 
@@ -24,20 +23,20 @@ export function Media() {
 
   const username = pathname?.split('/')[1]
 
-  const { data: medias, isLoading } = useSWR<Media[]>(
-    pathname && `/threads/${username}/media`
-  )
-
-  const isEmpty = medias?.length === 0
-  const loading = useFakeLoading() || !medias || isLoading
+  const {
+    data: medias,
+    hasData,
+    isLoading,
+    isEmpty,
+  } = useDelayedSWR<Media[]>(`/threads/${username}/media`)
 
   const router = useRouter()
 
   return (
     <div className="relative">
-      <TabLoader visible={loading} />
+      <TabLoader visible={isLoading} overlayOnly={hasData} />
 
-      {isEmpty && <EmptyPlaceholder />}
+      <EmptyPlaceholder visible={isEmpty} />
 
       <ul className="p-2 columns-2 gap-2 space-y-2">
         {medias?.map((media) => {

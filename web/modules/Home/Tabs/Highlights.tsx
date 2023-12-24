@@ -1,8 +1,7 @@
 import { useRouter } from 'next/navigation'
 import React from 'react'
-import useSWR from 'swr'
 
-import { useFakeLoading } from '@/hooks'
+import { useDelayedSWR } from '@/hooks'
 
 import { TabLoader } from '@/components/UI'
 
@@ -13,15 +12,13 @@ import { ThreadItem } from '@/types'
 export function Highlights() {
   const router = useRouter()
 
-  const { data: threadItems, isLoading } = useSWR<ThreadItem[]>(
+  const { data: threadItems, isLoading } = useDelayedSWR<ThreadItem[]>(
     '/threads/highlights'
   )
 
-  const loading = useFakeLoading() || !threadItems || isLoading
-
   return (
     <div className="relative">
-      <TabLoader visible={loading} />
+      <TabLoader visible={isLoading} />
 
       {threadItems?.map((thread) => (
         <Thread

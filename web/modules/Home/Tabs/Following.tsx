@@ -1,8 +1,7 @@
 import { useRouter } from 'next/navigation'
 import React from 'react'
-import useSWR from 'swr'
 
-import { useFakeLoading } from '@/hooks'
+import { useDelayedSWR } from '@/hooks'
 
 import { TabLoader } from '@/components/UI'
 
@@ -14,13 +13,11 @@ export function Following() {
   const router = useRouter()
 
   const { data: threadItems, isLoading } =
-    useSWR<ThreadItem[]>('/threads/following')
-
-  const loading = useFakeLoading() || !threadItems || isLoading
+    useDelayedSWR<ThreadItem[]>('/threads/following')
 
   return (
     <div className="relative">
-      <TabLoader visible={loading} />
+      <TabLoader visible={isLoading} />
       {threadItems?.map((thread) => (
         <Thread
           key={thread.id}

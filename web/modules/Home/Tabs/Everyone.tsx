@@ -1,9 +1,8 @@
 import { useWindowVirtualizer } from '@tanstack/react-virtual'
 import { useRouter } from 'next/navigation'
 import React from 'react'
-import useSWR from 'swr'
 
-import { useFakeLoading } from '@/hooks'
+import { useDelayedSWR } from '@/hooks'
 
 import { TabLoader } from '@/components/UI'
 
@@ -14,9 +13,8 @@ import { ThreadItem } from '@/types'
 export function Everyone() {
   const router = useRouter()
 
-  const { data: threadItems, isLoading } = useSWR<ThreadItem[]>('/threads')
-
-  const loading = useFakeLoading() || !threadItems || isLoading
+  const { data: threadItems, isLoading } =
+    useDelayedSWR<ThreadItem[]>('/threads')
 
   const listRef = React.useRef<HTMLDivElement | null>(null)
 
@@ -32,7 +30,7 @@ export function Everyone() {
 
   return (
     <div className="relative">
-      <TabLoader visible={loading} />
+      <TabLoader visible={isLoading} />
       <div ref={listRef}>
         <div
           style={{

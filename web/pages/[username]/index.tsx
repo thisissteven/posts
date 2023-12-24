@@ -14,9 +14,7 @@ export default function ProfilePage() {
 
   const { data, mutate } = useSWRImmutable<ProfileTab>(
     `/profile/${username}`,
-    () => {
-      return 'Posts' as const
-    }
+    () => 'Posts' as const
   )
 
   const activeTab = data ?? 'Posts'
@@ -27,22 +25,21 @@ export default function ProfilePage() {
         <title>Profile</title>
       </Head>
       <Header />
-      <div className="overflow-y-hidden">
-        <ProfileInfo />
-        <ProfileTabs
-          activeTab={activeTab}
-          setActiveTab={(activeTab) => {
-            mutate(activeTab, {
-              revalidate: false,
-            })
-          }}
-        />
 
-        <div className="mt-0.5">
-          {activeTab === 'Media' && <Media />}
-          {activeTab === 'Posts' && <Posts />}
-          {activeTab === 'Replies' && <Replies />}
-        </div>
+      <ProfileInfo />
+      <ProfileTabs
+        activeTab={activeTab}
+        setActiveTab={(activeTab) => {
+          mutate(activeTab, {
+            revalidate: false,
+          })
+        }}
+      />
+
+      <div className="mt-0.5">
+        {activeTab === 'Media' && <Media />}
+        {activeTab === 'Posts' && <Posts />}
+        {activeTab === 'Replies' && <Replies />}
       </div>
     </>
   )

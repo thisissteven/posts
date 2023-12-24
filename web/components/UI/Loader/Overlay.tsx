@@ -16,7 +16,7 @@ export function Overlay({ visible }: { visible: boolean }) {
           if (overlayRef.current) {
             overlayRef.current.remove()
           }
-        }, 500)
+        })
       }}
       aria-hidden
     ></div>
