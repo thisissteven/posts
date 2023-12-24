@@ -16,12 +16,12 @@ import { ThreadItem } from '@/types'
 export function Posts() {
   const pathname = usePathname()
 
-  const { data: threadItems, isValidating } = useSWR<ThreadItem[]>(
+  const { data: threadItems, isLoading } = useSWR<ThreadItem[]>(
     pathname && `/threads/${pathname.replace('/', '')}/posts`
   )
 
   const isEmpty = threadItems?.length === 0
-  const loading = useFakeLoading() || !threadItems || isValidating
+  const loading = useFakeLoading() || !threadItems || isLoading
 
   const router = useRouter()
 

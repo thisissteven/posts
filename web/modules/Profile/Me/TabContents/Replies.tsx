@@ -13,11 +13,11 @@ import { EmptyPlaceholder } from './EmptyPlaceholder'
 import { ThreadItem } from '@/types'
 
 export function Replies() {
-  const { data: threadItems, isValidating } =
+  const { data: threadItems, isLoading } =
     useSWR<ThreadItem[]>('/threads/replies')
 
   const isEmpty = threadItems?.length === 0
-  const loading = useFakeLoading() || !threadItems || isValidating
+  const loading = useFakeLoading() || !threadItems || isLoading
 
   const router = useRouter()
 

@@ -24,12 +24,12 @@ export function Media() {
 
   const username = pathname?.split('/')[1]
 
-  const { data: medias, isValidating } = useSWR<Media[]>(
+  const { data: medias, isLoading } = useSWR<Media[]>(
     pathname && `/threads/${username}/posts`
   )
 
   const isEmpty = medias?.length === 0
-  const loading = useFakeLoading() || !medias || isValidating
+  const loading = useFakeLoading() || !medias || isLoading
 
   const router = useRouter()
 

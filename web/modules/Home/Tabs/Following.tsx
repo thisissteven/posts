@@ -13,14 +13,14 @@ import { ThreadItem } from '@/types'
 export function Following() {
   const router = useRouter()
 
-  const { data: threadItems, isValidating } =
+  const { data: threadItems, isLoading } =
     useSWR<ThreadItem[]>('/threads/following')
 
-  const isLoading = useFakeLoading() || !threadItems || isValidating
+  const loading = useFakeLoading() || !threadItems || isLoading
 
   return (
     <div className="relative">
-      <TabLoader visible={isLoading} />
+      <TabLoader visible={loading} />
       {threadItems?.map((thread) => (
         <Thread
           key={thread.id}
