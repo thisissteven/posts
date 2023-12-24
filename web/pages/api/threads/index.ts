@@ -64,8 +64,6 @@ export default async function handler(
       res.status(200).json(threads)
     },
     POST: async (session) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
       const user = await prisma.thread.create({
         data: {
           ...req.body,

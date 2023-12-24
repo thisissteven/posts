@@ -1,7 +1,8 @@
 import { useSession } from 'next-auth/react'
 import React from 'react'
+import useSWRImmutable from 'swr/immutable'
 
-import { cn } from '@/lib'
+import { apiClient, cn } from '@/lib'
 import { useWindowSize } from '@/hooks'
 
 import { MoreIcon } from '@/components/Icons'
@@ -24,6 +25,26 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
   const { data: session } = useSession()
 
   const align = width < 522 ? 'end' : 'start'
+
+  const { data, mutate } = useSWRImmutable<unknown>(
+    `/threads/${thread.id}/temp`,
+    () => thread
+  )
+
+  if (!data) {
+    return (
+      <div className="flex gap-3 px-6 py-5 border-b border-b-divider">
+        <div className="pointer-events-none">
+          <Avatar threadUser={thread.owner} />
+        </div>
+        <div className="w-full p-3.5 rounded-2xl border border-divider">
+          <p className="text-sm text-center text-span font-light">
+            This post has been deleted.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <article
@@ -82,7 +103,12 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
                   {thread.owner.id === session?.user.id ? (
                     <Popover.Item
                       className="text-danger-soft"
-                      onSelect={() => {}}
+                      onSelect={async () => {
+                        await apiClient.delete(`/threads/${thread.id}`)
+                        mutate(null, {
+                          revalidate: false,
+                        })
+                      }}
                     >
                       Delete Post
                     </Popover.Item>

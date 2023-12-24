@@ -7,20 +7,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { username, displayName } = req.body
-
+  const id = req.query.id as string
   await requestHandler(req, res, {
     allowedRoles: {
       DELETE: ['USER'],
     },
     DELETE: async (session) => {
-      const user = await prisma.user.update({
+      const user = await prisma.thread.delete({
         where: {
-          id: session?.user.id,
-        },
-        data: {
-          username,
-          displayName,
+          id,
+          ownerId: session?.user.id,
         },
       })
 

@@ -69,8 +69,8 @@ export function NewThreadTemplate({
             ...data,
             userId: session?.user.id as string,
           })
-          setOpen(false)
           reset()
+          setOpen(false)
           onSubmitted?.()
         })}
         className="w-full"
