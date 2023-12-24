@@ -1,3 +1,4 @@
+export * from './useDebounce'
 export * from './useDebouncedCallback'
 export * from './useDialogState'
 export * from './useDragToScroll'

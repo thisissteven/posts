@@ -15,7 +15,7 @@ export default function ProfilePage() {
         <title>Profile</title>
       </Head>
       <Header />
-      <div className="overflow-x-hidden">
+      <div className="overflow-y-hidden">
         <ProfileInfo />
         <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 

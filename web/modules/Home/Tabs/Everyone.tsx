@@ -11,13 +11,11 @@ import { Thread } from '..'
 import { ThreadItem } from '@/types'
 
 export function Everyone() {
-  const loading = useFakeLoading(300)
-
   const router = useRouter()
 
-  const { data: threadItems } = useSWR<ThreadItem[]>('/threads')
+  const { data: threadItems, isValidating } = useSWR<ThreadItem[]>('/threads')
 
-  const isLoading = loading || !threadItems
+  const isLoading = useFakeLoading() || !threadItems || isValidating
 
   return (
     <div className="relative">

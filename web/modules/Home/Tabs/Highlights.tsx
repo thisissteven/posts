@@ -11,13 +11,13 @@ import { Thread } from '@/modules/Home'
 import { ThreadItem } from '@/types'
 
 export function Highlights() {
-  const loading = useFakeLoading(300)
-
   const router = useRouter()
 
-  const { data: threadItems } = useSWR<ThreadItem[]>('/threads/highlights')
+  const { data: threadItems, isValidating } = useSWR<ThreadItem[]>(
+    '/threads/highlights'
+  )
 
-  const isLoading = loading || !threadItems
+  const isLoading = useFakeLoading() || !threadItems || isValidating
 
   return (
     <div className="relative">

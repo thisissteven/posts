@@ -1,22 +1,39 @@
+import { useRouter } from 'next/router'
 import React from 'react'
+import useSWR from 'swr'
+
+import { useFakeLoading } from '@/hooks'
 
 import { TabLoader } from '@/components/UI'
 
+import { Thread } from '@/modules/Home'
+
 import { EmptyPlaceholder } from './EmptyPlaceholder'
 
-export function Replies() {
-  const [loading, setLoading] = React.useState(true)
+import { ThreadItem } from '@/types'
 
-  React.useEffect(() => {
-    setTimeout(() => {
-      setLoading(false)
-    }, 300)
-  }, [])
+export function Replies() {
+  const { data: threadItems, isValidating } =
+    useSWR<ThreadItem[]>('/threads/replies')
+
+  const isEmpty = threadItems?.length === 0
+  const loading = useFakeLoading() || !threadItems || isValidating
+
+  const router = useRouter()
 
   return (
     <div className="relative">
       <TabLoader visible={loading} />
-      <EmptyPlaceholder />
+
+      {isEmpty && <EmptyPlaceholder />}
+
+      {threadItems?.map((thread) => (
+        <Thread
+          key={thread.id}
+          onClick={() => router.push(`${thread.owner.username}/${thread.id}`)}
+          thread={thread}
+        />
+      ))}
     </div>
   )
 }
