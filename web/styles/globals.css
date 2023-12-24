@@ -5,6 +5,7 @@
 @layer base {
   :root {
     text-rendering: optimizeLegibility;
+    /* image-rendering: pixelated; */
   }
 
   body {

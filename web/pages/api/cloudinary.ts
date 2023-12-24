@@ -13,7 +13,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const timestamp = Math.round(new Date().getTime() / 1000)
   const signature = cl.utils.api_sign_request(
     {
-      folder: process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER,
+      folder: `${process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER}/${req.query.user_id}`,
       timestamp,
     },
     process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET

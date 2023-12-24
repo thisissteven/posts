@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useSession } from 'next-auth/react'
 import React from 'react'
 import {
   Controller,
@@ -33,6 +34,7 @@ export function NewThreadTemplate({
   onSubmitted?: () => void
 }) {
   const [open, setOpen] = React.useState(false)
+  const { data: session } = useSession()
 
   const methods = useForm<NewThreadFormValues>({
     shouldUnregister: true,
@@ -63,7 +65,10 @@ export function NewThreadTemplate({
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(async function (data) {
-          await trigger(data)
+          await trigger({
+            ...data,
+            userId: session?.user.id as string,
+          })
           setOpen(false)
           reset()
           onSubmitted?.()

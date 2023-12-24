@@ -4,17 +4,21 @@ import { ImageResponse, MediaAttributes, UploadFileProps } from './types'
 
 export const uploadVideo = async ({
   formData,
+  userId,
   onUploadProgress,
 }: UploadFileProps): Promise<MediaAttributes> => {
   const { timestamp, signature } = await axios
-    .get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cloudinary`)
+    .get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cloudinary?user_id=${userId}`)
     .then((res) => res.data)
 
   const fd = new FormData()
 
   if (formData) {
     fd.append('api_key', process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY)
-    fd.append('folder', process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER)
+    fd.append(
+      'folder',
+      `${process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER}/${userId}`
+    )
     fd.append('file', formData.get('file')!)
     fd.append('timestamp', timestamp)
     fd.append('signature', signature)

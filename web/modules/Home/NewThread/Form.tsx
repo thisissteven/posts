@@ -31,6 +31,7 @@ export type NewThreadPayload = {
   highResSource?: string
   width?: number
   height?: number
+  userId?: string
 } & NewThreadFormValues
 
 export async function createNewThread(url: string, payload: NewThreadPayload) {
@@ -45,9 +46,11 @@ export async function createNewThread(url: string, payload: NewThreadPayload) {
       mediaType === 'video'
         ? await uploadVideo({
             formData,
+            userId: payload.userId as string,
           })
         : await uploadImage({
             formData,
+            userId: payload.userId as string,
           })
 
     payload = {
@@ -59,6 +62,8 @@ export async function createNewThread(url: string, payload: NewThreadPayload) {
       height,
     }
   }
+
+  delete payload.userId
 
   return await apiClient.post(url, payload)
 }

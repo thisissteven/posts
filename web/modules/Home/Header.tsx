@@ -32,10 +32,10 @@ export function Header({
               )}
               <button
                 onClick={() => {
-                  setActiveTab(tab)
-                  if (tab === 'Everyone') {
+                  if (tab === 'Everyone' || activeTab === 'Everyone') {
                     reset()
                   }
+                  setActiveTab(tab)
                 }}
                 data-active={activeTab === tab}
                 className="data-[active=true]:text-primary duration-200"
