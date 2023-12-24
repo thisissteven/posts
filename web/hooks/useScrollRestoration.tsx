@@ -1,15 +1,13 @@
-import { useRouter } from 'next/router'
+import { Router } from 'next/router'
 import * as React from 'react'
 
 import { useScrollPosition } from '@/store'
 
-export function useScrollRestoration(paths: string[] = []) {
+export function useScrollRestoration(router: Router, paths: string[] = []) {
   const scrollPosition = useScrollPosition((state) => state.scrollPosition)
   const setScrollPosition = useScrollPosition(
     (state) => state.setScrollPosition
   )
-
-  const router = useRouter()
 
   React.useEffect(() => {
     let timeout: NodeJS.Timeout

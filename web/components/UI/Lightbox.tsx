@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import * as React from 'react'
 
-import { useHasAudio } from '@/hooks/useHasAudio'
+import { useHasAudio } from '@/hooks'
 
 import { Dialog, useDialog } from './LightboxDialog'
 import { Muted, Unmuted } from '../Icons'

@@ -17,8 +17,8 @@ import { ReportDialog } from '@/modules/Report'
 
 const outfit = Lexend({ subsets: ['latin'] })
 
-export default function App({ Component, pageProps }: AppProps) {
-  useScrollRestoration(['/'])
+export default function App({ Component, pageProps, router }: AppProps) {
+  useScrollRestoration(router, ['/'])
 
   return (
     <>
