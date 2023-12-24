@@ -17,9 +17,11 @@ export function Everyone() {
 
   const { data: threadItems } = useSWR<ThreadItem[]>('/threads')
 
+  const isLoading = loading || !threadItems
+
   return (
     <div className="relative">
-      <TabLoader visible={loading} />
+      <TabLoader visible={isLoading} />
       {threadItems?.map((thread) => (
         <Thread
           key={thread.id}

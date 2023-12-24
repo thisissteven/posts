@@ -11,15 +11,17 @@ import { Thread } from '@/modules/Home'
 import { ThreadItem } from '@/types'
 
 export function Highlights() {
-  const loading = useFakeLoading(500)
+  const loading = useFakeLoading(300)
 
   const router = useRouter()
 
   const { data: threadItems } = useSWR<ThreadItem[]>('/threads/highlights')
 
+  const isLoading = loading || !threadItems
+
   return (
     <div className="relative">
-      <TabLoader visible={loading} />
+      <TabLoader visible={isLoading} />
 
       {threadItems?.map((thread) => (
         <Thread

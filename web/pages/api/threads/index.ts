@@ -69,11 +69,7 @@ export default async function handler(
       const user = await prisma.thread.create({
         data: {
           ...req.body,
-          owner: {
-            connect: {
-              id: session?.user.id,
-            },
-          },
+          ownerId: session?.user.id,
         },
       })
 

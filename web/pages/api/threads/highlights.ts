@@ -17,12 +17,18 @@ export default async function handler(
           createdAt: 'desc',
         },
         where: {
-          likeCount: {
-            gt: 1,
-          },
-          repostCount: {
-            gt: 1,
-          },
+          OR: [
+            {
+              likeCount: {
+                gt: 2,
+              },
+            },
+            {
+              repostCount: {
+                gt: 2,
+              },
+            },
+          ],
         },
         include: {
           owner: {

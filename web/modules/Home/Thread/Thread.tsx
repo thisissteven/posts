@@ -4,9 +4,10 @@ import React from 'react'
 import { cn } from '@/lib'
 import { useWindowSize } from '@/hooks'
 
-import { Chat, MoreIcon } from '@/components/Icons'
-import { Lightbox, LikeButton, Popover, RepostButton } from '@/components/UI'
+import { MoreIcon } from '@/components/Icons'
+import { Lightbox, Popover } from '@/components/UI'
 
+import { ChatButton, LikeButton, RepostButton } from './Buttons'
 import { AddBookmark, CopyLinkToPost } from './Popover'
 import { Avatar, UserDisplay } from './Profile'
 
@@ -56,13 +57,7 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
 
           <div className="mt-4">
             <div className="grid grid-cols-4">
-              <button className="flex items-center gap-2 group">
-                <div className="group-active:scale-90">
-                  <Chat />
-                </div>
-
-                <span className="text-xs text-span font-light">1</span>
-              </button>
+              <ChatButton thread={thread} />
 
               <RepostButton thread={thread} />
 
