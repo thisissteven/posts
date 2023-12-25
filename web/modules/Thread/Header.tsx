@@ -10,7 +10,9 @@ export function Header() {
     <header className="bg-background sticky top-0 h-[61px]">
       <div className="flex items-center gap-9 h-full px-6">
         <button
-          onClick={() => router.back()}
+          onClick={() => {
+            router.back()
+          }}
           className="active:opacity-80 duration-200"
         >
           <BackIcon />

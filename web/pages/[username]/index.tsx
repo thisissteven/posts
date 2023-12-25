@@ -1,13 +1,23 @@
 import Head from 'next/head'
+import { usePathname } from 'next/navigation'
 import React from 'react'
+import useSWRImmutable from 'swr/immutable'
 
 import { Header, ProfileInfo } from '@/modules/Profile'
-import { Media, Posts, ProfileTabs, Replies } from '@/modules/Profile/Me'
+import { Media, Posts, ProfileTabs, Replies } from '@/modules/Profile'
 
 import { ProfileTab } from '@/types'
 
 export default function ProfilePage() {
-  const [activeTab, setActiveTab] = React.useState<ProfileTab>('Posts')
+  const pathname = usePathname()
+  const username = pathname?.split('/')[1]
+
+  const { data, mutate } = useSWRImmutable<ProfileTab>(
+    `/profile/${username}`,
+    () => 'Posts' as const
+  )
+
+  const activeTab = data ?? 'Posts'
 
   return (
     <>
@@ -15,15 +25,21 @@ export default function ProfilePage() {
         <title>Profile</title>
       </Head>
       <Header />
-      <div className="overflow-x-hidden">
-        <ProfileInfo />
-        <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        <div className="mt-0.5">
-          {activeTab === 'Media' && <Media />}
-          {activeTab === 'Posts' && <Posts />}
-          {activeTab === 'Replies' && <Replies />}
-        </div>
+      <ProfileInfo />
+      <ProfileTabs
+        activeTab={activeTab}
+        setActiveTab={(activeTab) => {
+          mutate(activeTab, {
+            revalidate: false,
+          })
+        }}
+      />
+
+      <div className="mt-0.5">
+        {activeTab === 'Media' && <Media />}
+        {activeTab === 'Posts' && <Posts />}
+        {activeTab === 'Replies' && <Replies />}
       </div>
     </>
   )

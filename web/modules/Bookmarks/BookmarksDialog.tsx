@@ -4,41 +4,37 @@ import { useDialogState } from '@/hooks'
 
 import { SharedDialog } from '@/components/UI'
 
+import { useGlobalDialogStore } from '@/store'
+
 import { BookmarksDialogContent } from './BookmarksDialogContent'
 
-type BookmarksDialogContextValues = {
-  openBookmarksDialog: () => void
-  closeBookmarksDialog: () => void
-}
-
-const BookmarksDialogContext = React.createContext(
-  {} as BookmarksDialogContextValues
-)
-
-export function useBookmarksDialog() {
-  return React.useContext(BookmarksDialogContext)
-}
-
-export function BookmarksDialogProvider({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export function BookmarksDialog() {
   const dialogState = useDialogState()
 
+  const open = useGlobalDialogStore((state) => state.currentOpen)
+  const closeDialog = useGlobalDialogStore((state) => state.closeDialog)
+
+  React.useEffect(() => {
+    if (open === 'BOOKMARKS') {
+      dialogState.onOpenChange(true)
+    } else {
+      dialogState.onOpenChange(false)
+    }
+  }, [open, dialogState])
+
   return (
-    <BookmarksDialogContext.Provider
-      value={{
-        openBookmarksDialog: () => dialogState.onOpenChange(true),
-        closeBookmarksDialog: () => dialogState.onOpenChange(false),
+    <SharedDialog
+      dialogState={{
+        ...dialogState,
+        onOpenChange(open) {
+          if (!open) closeDialog()
+          dialogState.onOpenChange(open)
+        },
       }}
     >
-      <SharedDialog dialogState={dialogState}>
-        <SharedDialog.Content className="max-w-[415px]">
-          <BookmarksDialogContent />
-        </SharedDialog.Content>
-      </SharedDialog>
-      {children}
-    </BookmarksDialogContext.Provider>
+      <SharedDialog.Content className="max-w-[415px]">
+        <BookmarksDialogContent />
+      </SharedDialog.Content>
+    </SharedDialog>
   )
 }

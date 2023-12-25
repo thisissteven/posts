@@ -55,7 +55,7 @@ Popover.Content = function PopoverContent({
 
 Popover.Trigger = RadixPopover.Trigger
 
-type PopoverItemProps = { onSelect: () => void } & Omit<
+type PopoverItemProps = { onSelect: () => Promise<void> | void } & Omit<
   React.ComponentPropsWithoutRef<'button'>,
   'onClick'
 >
@@ -75,9 +75,9 @@ Popover.Item = function PopoverItem({
       <button
         className={cn(popoverItemClassName, className)}
         value={children?.toString()}
-        onClick={(e) => {
+        onClick={async (e) => {
           e.stopPropagation()
-          onSelect()
+          await onSelect()
           closePopover()
         }}
       >

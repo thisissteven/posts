@@ -1,13 +1,15 @@
 import { useSession } from 'next-auth/react'
 import React from 'react'
+import useSWRImmutable from 'swr/immutable'
 
 import { cn } from '@/lib'
 import { useWindowSize } from '@/hooks'
 
-import { Chat, MoreIcon } from '@/components/Icons'
-import { Lightbox, LikeButton, Popover, RepostButton } from '@/components/UI'
+import { MoreIcon } from '@/components/Icons'
+import { Lightbox, Popover } from '@/components/UI'
 
-import { AddBookmark, CopyLinkToPost } from './Popover'
+import { ChatButton, LikeButton, RepostButton } from './Buttons'
+import { AddBookmark, CopyLinkToPost, DeletePost, ReportPost } from './Popover'
 import { Avatar, UserDisplay } from './Profile'
 
 import { ThreadItem } from '@/types'
@@ -22,7 +24,32 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
   const { width } = useWindowSize()
   const { data: session } = useSession()
 
+  const userId = session?.user?.id
+  const ownerId = thread.owner.id
+
+  const isOwner = userId === ownerId
+
   const align = width < 522 ? 'end' : 'start'
+
+  const { data, mutate } = useSWRImmutable<unknown>(
+    `/threads/${thread.id}/temp`,
+    () => thread
+  )
+
+  if (!data) {
+    return (
+      <div className="flex gap-3 px-6 py-5 border-b border-b-divider">
+        <div className="pointer-events-none">
+          <Avatar threadUser={thread.owner} />
+        </div>
+        <div className="w-full p-3.5 rounded-2xl border border-divider">
+          <p className="text-sm text-center text-span font-light">
+            This post has been deleted.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <article
@@ -56,13 +83,7 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
 
           <div className="mt-4">
             <div className="grid grid-cols-4">
-              <button className="flex items-center gap-2 group">
-                <div className="group-active:scale-90">
-                  <Chat />
-                </div>
-
-                <span className="text-xs text-span font-light">1</span>
-              </button>
+              <ChatButton thread={thread} />
 
               <RepostButton thread={thread} />
 
@@ -84,20 +105,17 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
                 <Popover.Content align={align}>
                   <AddBookmark />
                   <CopyLinkToPost thread={thread} />
-                  {thread.owner.id === session?.user.id ? (
-                    <Popover.Item
-                      className="text-danger-soft"
-                      onSelect={() => {}}
-                    >
-                      Delete Post
-                    </Popover.Item>
+                  {isOwner ? (
+                    <DeletePost
+                      threadId={thread.id}
+                      onDelete={() => {
+                        mutate(null, {
+                          revalidate: false,
+                        })
+                      }}
+                    />
                   ) : (
-                    <Popover.Item
-                      className="text-danger-soft"
-                      onSelect={() => {}}
-                    >
-                      Report post
-                    </Popover.Item>
+                    <ReportPost thread={thread} />
                   )}
                 </Popover.Content>
               </Popover>

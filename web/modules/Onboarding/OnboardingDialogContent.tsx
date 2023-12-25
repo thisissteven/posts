@@ -1,7 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import clsx from 'clsx'
-import { FormProvider, useForm } from 'react-hook-form'
+import * as React from 'react'
+import {
+  FormProvider,
+  useForm,
+  useFormContext,
+  useWatch,
+} from 'react-hook-form'
+import useSWR from 'swr'
 import { z } from 'zod'
+
+import { useDebounce } from '@/hooks'
 
 import { FormInput, RegularButton } from '@/components/UI'
 
@@ -22,8 +31,7 @@ type OnboardingFormValues = z.infer<typeof onboardingSchema>
 
 export function OnboardingDialogContent() {
   const { signOut } = useAuth()
-  const { isUpdating, closeOnboardingDialog, updateOnboardingState } =
-    useOnboarding()
+  const { closeOnboardingDialog, updateOnboardingState } = useOnboarding()
 
   const methods = useForm<OnboardingFormValues>({
     resolver: zodResolver(onboardingSchema),
@@ -34,10 +42,7 @@ export function OnboardingDialogContent() {
     },
   })
 
-  const {
-    handleSubmit,
-    formState: { errors },
-  } = methods
+  const { handleSubmit } = methods
 
   return (
     <div className="bg-background overflow-x-hidden">
@@ -55,12 +60,7 @@ export function OnboardingDialogContent() {
                 className="mt-3 space-y-3"
                 onSubmit={handleSubmit(updateOnboardingState)}
               >
-                <FormInput
-                  id="username"
-                  label="Username"
-                  placeholder="your unique @username"
-                  autoComplete="off"
-                />
+                <UsernameInput />
 
                 <FormInput
                   id="displayName"
@@ -84,14 +84,7 @@ export function OnboardingDialogContent() {
                     Log in with a different email
                   </RegularButton>
 
-                  <RegularButton
-                    variant="secondary"
-                    disabled={Boolean(errors.username || errors.displayName)}
-                    isLoading={isUpdating}
-                    className="disabled:bg-soft-background disabled:text-span"
-                  >
-                    Continue
-                  </RegularButton>
+                  <SubmitButton />
                 </div>
               </form>
             </FormProvider>
@@ -99,5 +92,78 @@ export function OnboardingDialogContent() {
         </div>
       </div>
     </div>
+  )
+}
+
+function UsernameInput() {
+  const { control, setError } = useFormContext<OnboardingFormValues>()
+
+  const value = useWatch({
+    control,
+    name: 'username',
+  })
+
+  const debouncedValue = useDebounce(value, 300)
+
+  const { data: user } = useSWR<{
+    id: string
+  }>(`/user/${debouncedValue}`)
+
+  const usernameTaken = Boolean(user?.id)
+
+  React.useEffect(() => {
+    if (usernameTaken) {
+      setError('username', {
+        type: 'manual',
+        message: 'This username is taken',
+      })
+    }
+  }, [usernameTaken, setError])
+
+  return (
+    <FormInput
+      id="username"
+      label="Username"
+      placeholder="your unique @username"
+      autoComplete="off"
+    />
+  )
+}
+
+function SubmitButton() {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<OnboardingFormValues>()
+
+  const value = useWatch({
+    control,
+    name: 'username',
+  })
+
+  const debouncedValue = useDebounce(value, 300)
+
+  const { data: user, isLoading } = useSWR<{
+    id: string
+  }>(`/user/${debouncedValue}`)
+
+  const { isUpdating } = useOnboarding()
+
+  const usernameTaken = Boolean(user?.id)
+
+  return (
+    <RegularButton
+      variant="secondary"
+      disabled={
+        Boolean(errors.username || errors.displayName) ||
+        value !== debouncedValue ||
+        isLoading ||
+        usernameTaken
+      }
+      isLoading={isUpdating}
+      className="disabled:bg-soft-background disabled:text-span"
+    >
+      Continue
+    </RegularButton>
   )
 }

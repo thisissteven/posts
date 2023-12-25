@@ -1,26 +1,40 @@
 // todo: start the transition on fetch finished instead
 
+import { useSession } from 'next-auth/react'
 import React from 'react'
 
 import { cn } from '@/lib'
 
-const DURATION = 1000
+const DURATION = 500
 
 export function Overlay({ className }: { className?: string }) {
   const [show, setShow] = React.useState(true)
 
   const overlayRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const { status } = useSession()
+
+  const startTimeRef = React.useRef<number | null>(null)
 
   React.useEffect(() => {
     document.documentElement.style.scrollbarGutter = 'stable'
-    const interval = setInterval(() => {
-      setShow(false)
-    }, DURATION)
+
+    let timeout: NodeJS.Timeout
+
+    if (status === 'loading' && !startTimeRef.current) {
+      startTimeRef.current = Date.now()
+    } else if (startTimeRef.current && status !== 'loading') {
+      const elapsedTime = Date.now() - startTimeRef.current
+      const remainingTime = Math.max(DURATION - elapsedTime, 0)
+
+      timeout = setTimeout(() => {
+        setShow(false)
+      }, remainingTime)
+    }
 
     return () => {
-      clearInterval(interval)
+      clearTimeout(timeout)
     }
-  }, [])
+  }, [status])
 
   return (
     <div

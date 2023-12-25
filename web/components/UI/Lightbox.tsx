@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import * as React from 'react'
 
-import { useHasAudio } from '@/hooks/useHasAudio'
+import { useHasAudio } from '@/hooks'
 
 import { Dialog, useDialog } from './LightboxDialog'
 import { Muted, Unmuted } from '../Icons'
@@ -102,10 +102,7 @@ export function Lightbox({
           e.stopPropagation()
         }}
       >
-        <div
-          tabIndex={-1}
-          className="mt-3 bg-soft-background relative rounded-lg overflow-hidden"
-        >
+        <div tabIndex={-1} className="mt-3 relative rounded-lg overflow-hidden">
           {mediaType === 'image' && (
             <Image
               className="w-full"

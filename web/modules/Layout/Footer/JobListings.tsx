@@ -118,7 +118,7 @@ function ListingItem(data: Job) {
       target="_blank"
       className="py-1.5 px-3 flex items-center gap-2 hover:bg-divider active:bg-divider"
     >
-      <div className="rounded-full w-6 h-6 overflow-hidden">
+      <div className="shrink-0 rounded-full w-6 h-6 overflow-hidden">
         <Image
           src={companyOrTeamLogo}
           alt={companyOrTeamName}
@@ -130,7 +130,9 @@ function ListingItem(data: Job) {
         <span className="text-span text-xs font-light tracking-wide">
           {companyOrTeamName}
         </span>
-        <span className="text-xs font-light tracking-wide">{jobRole}</span>
+        <span className="text-xs font-light tracking-wide line-clamp-1">
+          {jobRole}
+        </span>
       </div>
     </a>
   )

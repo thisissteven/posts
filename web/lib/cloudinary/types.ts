@@ -15,5 +15,6 @@ export type MediaAttributes = {
 
 export type UploadFileProps = {
   formData: FormData | null
+  userId: string
   onUploadProgress?: (progress: number) => void
 }

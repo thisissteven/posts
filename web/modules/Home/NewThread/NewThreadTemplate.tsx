@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useSession } from 'next-auth/react'
 import React from 'react'
 import {
   Controller,
@@ -12,8 +13,8 @@ import { useMutation } from '@/hooks'
 
 import {
   Dialog,
+  FormTextarea,
   RegularButton,
-  Textarea,
   UploadImageInput,
 } from '@/components/UI'
 
@@ -28,11 +29,14 @@ import { MediaPreview } from './MediaPreview'
 export function NewThreadTemplate({
   canEscape = true,
   onSubmitted,
+  id,
 }: {
   canEscape?: boolean
-  onSubmitted?: () => void
+  onSubmitted?: () => void | Promise<void>
+  id: string
 }) {
   const [open, setOpen] = React.useState(false)
+  const { data: session } = useSession()
 
   const methods = useForm<NewThreadFormValues>({
     shouldUnregister: true,
@@ -57,16 +61,25 @@ export function NewThreadTemplate({
     [canEscape, reset]
   )
 
-  const { trigger } = useMutation<NewThreadPayload>('/threads', createNewThread)
+  const { trigger } = useMutation<NewThreadPayload>(
+    '/threads',
+    createNewThread,
+    {
+      mutatedBy: id,
+    }
+  )
 
   return (
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(async function (data) {
-          await trigger(data)
-          setOpen(false)
+          await trigger({
+            ...data,
+            userId: session?.user.id as string,
+          })
+          await onSubmitted?.()
           reset()
-          onSubmitted?.()
+          setOpen(false)
         })}
         className="w-full"
       >
@@ -77,7 +90,7 @@ export function NewThreadTemplate({
             control={control}
             name="textContent"
             render={({ field: { onChange, onBlur, value, name } }) => (
-              <Textarea
+              <FormTextarea
                 style={{
                   height: open ? '48px' : '40px',
                 }}
@@ -122,7 +135,7 @@ export function NewThreadTemplate({
                     </RegularButton>
                   </Dialog.Close>
                 )}
-                <PostButton />
+                <PostButton mutatedBy={id} />
               </div>
             </div>
           )}
@@ -132,7 +145,7 @@ export function NewThreadTemplate({
   )
 }
 
-function PostButton() {
+function PostButton({ mutatedBy }: { mutatedBy: string }) {
   const {
     control,
     formState: { errors },
@@ -152,7 +165,7 @@ function PostButton() {
 
   return (
     <RegularButton
-      isLoading={status === 'loading'}
+      isLoading={status.state === 'loading' && status.mutatedBy === mutatedBy}
       disabled={
         !media && (input.length === 0 || Boolean(errors['textContent']))
       }

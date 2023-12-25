@@ -1,6 +1,9 @@
 type SubscriberFn = (state: MutationState) => void
 
-export type MutationState = 'idle' | 'loading' | 'success' | 'error'
+export type MutationState = {
+  state: 'idle' | 'loading' | 'success' | 'error'
+  mutatedBy?: string
+}
 
 class SWRObserver {
   subscribers: Record<string, Array<SubscriberFn>>
@@ -19,7 +22,11 @@ class SWRObserver {
     this.subscribers[key].push(subscriber)
 
     // Provide current mutation state to the subscriber upon subscription
-    subscriber(this.mutationStates[key] || 'idle')
+    subscriber(
+      this.mutationStates[key] || {
+        state: 'idle',
+      }
+    )
 
     return () => {
       this.subscribers[key] = this.subscribers[key].filter(

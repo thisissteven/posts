@@ -11,6 +11,7 @@ import { ThreadItem, ThreadOwner } from '@/types'
 export function Avatar({ threadUser }: { threadUser: ThreadOwner }) {
   return (
     <Link
+      scroll={false}
       onClick={(e) => {
         e.stopPropagation()
       }}
@@ -38,6 +39,7 @@ export function UserDisplay({ thread }: { thread: ThreadItem }) {
   return (
     <p className="text-sm space-x-1">
       <Link
+        scroll={false}
         onClick={(e) => {
           e.stopPropagation()
         }}
@@ -48,6 +50,7 @@ export function UserDisplay({ thread }: { thread: ThreadItem }) {
       </Link>
       <span className="text-[13px] text-span space-x-1">
         <Link
+          scroll={false}
           onClick={(e) => {
             e.stopPropagation()
           }}

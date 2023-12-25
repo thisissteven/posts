@@ -208,10 +208,10 @@ model Message {
   content   String
   createdAt DateTime @default(now())
 
-  sender   User   @relation(name: "sentMessages", fields: [senderId], references: [id])
+  sender   User   @relation(name: "sentMessages", fields: [senderId], references: [id], onDelete: Cascade)
   senderId String
 
-  receiver   User   @relation(name: "receivedMessages", fields: [receiverId], references: [id])
+  receiver   User   @relation(name: "receivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
   receiverId String
 }
 
@@ -220,7 +220,7 @@ model Notification {
   content   String
   createdAt DateTime @default(now())
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 }
 
@@ -229,9 +229,9 @@ model ThreadReport {
   reason    String
   createdAt DateTime @default(now())
 
-  thread   Thread @relation(fields: [threadId], references: [id])
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
   threadId String
 
-  reporter User   @relation(fields: [userId], references: [id])
-  userId   String
+  reporter   User?   @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  reporterId String?
 }

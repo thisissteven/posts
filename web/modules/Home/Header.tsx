@@ -27,15 +27,15 @@ export function Header({
         {tabs.map((tab) => {
           return (
             <li key={tab} className="relative">
-              {tab === 'Everyone' && status === 'success' && (
+              {tab === 'Everyone' && status.state === 'success' && (
                 <span className="absolute top-1 -right-1.5 w-1 h-1 rounded-full bg-danger-soft" />
               )}
               <button
                 onClick={() => {
-                  setActiveTab(tab)
-                  if (tab === 'Everyone') {
-                    reset()
+                  if (tab === 'Everyone' || activeTab === 'Everyone') {
+                    if (status.state === 'success') reset()
                   }
+                  setActiveTab(tab)
                 }}
                 data-active={activeTab === tab}
                 className="data-[active=true]:text-primary duration-200"
