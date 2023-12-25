@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { getPaginatedThreads, requestHandler } from '@/lib'
+import { getPaginatedThreadReplies, requestHandler } from '@/lib'
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,26 +16,15 @@ export default async function handler(
 
       const username = req.query.id as string
 
-      const threads = await getPaginatedThreads({
+      const threads = await getPaginatedThreadReplies({
         session,
-        category: 'media',
+        category: 'replies',
         previousCursor,
         params: {
           where: {
             owner: {
               username,
             },
-            mediaType: {
-              not: null,
-            },
-          },
-          select: {
-            id: true,
-            mediaType: true,
-            source: true,
-            highResSource: true,
-            width: true,
-            height: true,
           },
         },
       })

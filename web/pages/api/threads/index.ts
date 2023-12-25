@@ -75,12 +75,12 @@ export function getWhereParams(session: Session | null, category: Category) {
           OR: [
             {
               likeCount: {
-                gt: 2,
+                gte: 2,
               },
             },
             {
               repostCount: {
-                gt: 2,
+                gte: 2,
               },
             },
           ],
@@ -127,14 +127,14 @@ export default async function handler(
       const cursor = getCursor(previousCursor)
 
       const threads = await prisma.thread.findMany({
+        ...getWhereParams(session, category),
+        ...getIncludeParams(session),
         orderBy: {
           createdAt: 'desc',
         },
         skip,
         cursor,
         take: 10,
-        ...getWhereParams(session, category),
-        ...getIncludeParams(session),
       })
 
       const lastThread = threads.length === 10 ? threads[9] : null

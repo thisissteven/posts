@@ -4,7 +4,7 @@ import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
 import { Header, ProfileInfo } from '@/modules/Profile'
-import { Media, Posts, ProfileTabs, Replies } from '@/modules/Profile/Me'
+import { Media, Posts, ProfileTabs, Replies } from '@/modules/Profile'
 
 import { ProfileTab } from '@/types'
 

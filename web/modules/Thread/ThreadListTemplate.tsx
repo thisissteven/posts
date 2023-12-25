@@ -7,11 +7,12 @@ import { useDelayedInfiniteSWR, useMutation } from '@/hooks'
 import { LoadMore, TabLoader, VirtualizedList } from '@/components/UI'
 
 import { Thread } from '@/modules/Home'
-import { EmptyPlaceholder } from '@/modules/Profile/Me/TabContents/EmptyPlaceholder'
+
+import { EmptyPlaceholder } from './EmptyPlaceholder'
 
 import { ThreadItem } from '@/types'
 
-export function HomeThreadListTemplate({ url }: { url: string }) {
+export function ThreadListTemplate({ url }: { url: string }) {
   const router = useRouter()
 
   const {

@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { HomeThreadListTemplate } from './Template'
+import { ThreadListTemplate } from '@/modules/Thread'
 
 export function Following() {
-  return <HomeThreadListTemplate url="/threads?category=following" />
+  return <ThreadListTemplate url="/threads?category=following" />
 }

@@ -3,9 +3,9 @@ import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/router'
 import React from 'react'
 
-import { useDelayedSWR } from '@/hooks/useDelayedSWR'
+import { useDelayedInfiniteSWR } from '@/hooks'
 
-import { TabLoader, Video } from '@/components/UI'
+import { LoadMore, TabLoader, Video } from '@/components/UI'
 
 import { EmptyPlaceholder } from './EmptyPlaceholder'
 
@@ -28,7 +28,11 @@ export function Media() {
     hasData,
     isLoading,
     isEmpty,
-  } = useDelayedSWR<Media[]>(`/threads/${username}/media`)
+    isEnd,
+    loadMore,
+  } = useDelayedInfiniteSWR<Media[]>(`/threads/${username}/media`, {
+    duration: 300,
+  })
 
   const router = useRouter()
 
@@ -45,7 +49,7 @@ export function Media() {
             <li
               onClick={() => router.push(`/${username}/${media.id}`)}
               key={media.id}
-              className="cursor-pointer bg-soft-background relative rounded-lg overflow-hidden"
+              className="cursor-pointer relative rounded-lg overflow-hidden"
             >
               {mediaType === 'image' && (
                 <Image
@@ -59,7 +63,6 @@ export function Media() {
 
               {mediaType === 'video' && (
                 <Video
-                  shouldMuteOnDialogOpen
                   className="w-full"
                   src={source}
                   width={width}
@@ -70,6 +73,8 @@ export function Media() {
           )
         })}
       </ul>
+
+      <LoadMore isEnd={isEnd} whenInView={loadMore} />
     </div>
   )
 }
