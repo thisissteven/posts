@@ -16,7 +16,7 @@ import { FollowButton } from './FollowButton'
 function UserListContent({ data }: { data?: FollowList }) {
   const { data: session } = useSession()
   return (
-    <div className="space-y-2 py-4">
+    <div className="space-y-3 py-4">
       {data?.list.map((data) => {
         const user = {
           ...data,
@@ -29,7 +29,7 @@ function UserListContent({ data }: { data?: FollowList }) {
         return (
           <div
             key={data.id}
-            className="flex items-center justify-between gap-3"
+            className="flex items-center justify-between gap-5"
           >
             <div className="flex items-center gap-3">
               <div className="shrink-0 relative w-12 h-12 bg-black rounded-full overflow-hidden">

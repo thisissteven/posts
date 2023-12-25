@@ -31,8 +31,12 @@ Popover.Content = function PopoverContent({
   children,
   className,
   align = 'end',
+  customContent = false,
   ...rest
-}: { children: React.ReactNode } & RadixPopover.PopoverContentProps) {
+}: {
+  children: React.ReactNode
+  customContent?: boolean
+} & RadixPopover.PopoverContentProps) {
   return (
     <RadixPopover.Portal>
       <RadixPopover.Content
@@ -47,12 +51,13 @@ Popover.Content = function PopoverContent({
         )}
         {...rest}
       >
-        <ul>{children}</ul>
+        {customContent ? children : <ul>{children}</ul>}
       </RadixPopover.Content>
     </RadixPopover.Portal>
   )
 }
 
+Popover.Close = RadixPopover.Close
 Popover.Trigger = RadixPopover.Trigger
 
 type PopoverItemProps = { onSelect: () => Promise<void> | void } & Omit<

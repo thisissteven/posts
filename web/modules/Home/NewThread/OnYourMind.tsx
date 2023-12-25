@@ -17,15 +17,19 @@ const OnYourMind = React.memo(function OnYourMind() {
       <div className="flex px-6 py-5 gap-3 items-start">
         <div className="shrink-0 w-12 h-12 rounded-full overflow-hidden">
           {session?.user.avatarUrl ? (
-            <Image
-              width={48}
-              height={48}
-              src={session?.user.avatarUrl}
-              alt="avatar"
-              className="w-full h-full object-cover"
-            />
+            <div className="w-full h-full bg-black">
+              <Image
+                width={48}
+                height={48}
+                src={session?.user.avatarUrl}
+                alt="avatar"
+                className="w-full h-full object-cover"
+              />
+            </div>
           ) : (
-            <DefaultProfileLarge />
+            <div className="bg-background">
+              <DefaultProfileLarge />
+            </div>
           )}
         </div>
 

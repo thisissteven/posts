@@ -5,6 +5,7 @@ import { useFormContext, useWatch } from 'react-hook-form'
 import { useHasAudio } from '@/hooks/useHasAudio'
 
 import { Close, Muted, Unmuted } from '@/components/Icons'
+import { Popover, RegularButton, Textarea } from '@/components/UI'
 
 export const MediaPreview = () => {
   const { control, setValue } = useFormContext()
@@ -27,6 +28,7 @@ export const MediaPreview = () => {
   return (
     <div className="relative">
       <Media src={mediaUrl} type={mediaType} />
+
       <button
         type="button"
         onClick={() => {
@@ -36,6 +38,39 @@ export const MediaPreview = () => {
       >
         <Close />
       </button>
+      {mediaType === 'image' && (
+        <Popover>
+          <Popover.Trigger asChild>
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+              }}
+              className="absolute active:bg-black/60 duration-200 right-0 top-0 mx-3 my-4 w-7 h-7 rounded-full bg-black/50 text-[10px]"
+            >
+              ALT
+            </button>
+          </Popover.Trigger>
+          <Popover.Content
+            sideOffset={8}
+            align="center"
+            customContent
+            className="w-[calc(100vw-1rem)] xs:w-[320px]"
+          >
+            <div className="flex flex-col gap-2 px-4 py-2">
+              <Textarea
+                className="text-sm text-primary"
+                placeholder="Add descriptive text for screen readers"
+              />
+            </div>
+            <div className="flex justify-end gap-2 px-2">
+              <Popover.Close asChild>
+                <RegularButton variant="underline">Cancel</RegularButton>
+              </Popover.Close>
+              <RegularButton variant="secondary">Save</RegularButton>
+            </div>
+          </Popover.Content>
+        </Popover>
+      )}
     </div>
   )
 }
