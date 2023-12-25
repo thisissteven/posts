@@ -3,7 +3,9 @@ import { Session } from 'next-auth'
 
 import { prisma, requestHandler } from '@/lib'
 
-export function getThreadParams(session: Session | null) {
+type Category = 'everyone' | 'highlights' | 'following'
+
+export function getIncludeParams(session: Session | null) {
   return {
     include: {
       owner: {
@@ -61,6 +63,53 @@ export function getCursor(previousCursor?: string | null) {
   return cursor
 }
 
+export function getWhereParams(session: Session | null, category: Category) {
+  switch (category) {
+    case 'everyone':
+      return {
+        where: undefined,
+      }
+    case 'highlights':
+      return {
+        where: {
+          OR: [
+            {
+              likeCount: {
+                gt: 2,
+              },
+            },
+            {
+              repostCount: {
+                gt: 2,
+              },
+            },
+          ],
+        },
+      }
+    case 'following':
+      return {
+        where: {
+          owner: {
+            OR: [
+              {
+                followedBy: {
+                  some: {
+                    id: session?.user.id,
+                  },
+                },
+              },
+              {
+                id: session?.user.id,
+              },
+            ],
+          },
+        },
+      }
+    default:
+      return undefined
+  }
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -72,6 +121,7 @@ export default async function handler(
     },
     GET: async (session) => {
       const previousCursor = req.query.cursor as string
+      const category = req.query.category as Category
 
       const skip = previousCursor ? 1 : 0
       const cursor = getCursor(previousCursor)
@@ -83,7 +133,8 @@ export default async function handler(
         skip,
         cursor,
         take: 10,
-        ...getThreadParams(session),
+        ...getWhereParams(session, category),
+        ...getIncludeParams(session),
       })
 
       const lastThread = threads.length === 10 ? threads[9] : null

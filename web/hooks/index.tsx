@@ -1,5 +1,6 @@
 export * from './useDebounce'
 export * from './useDebouncedCallback'
+export * from './useDelayedInfiniteSWR'
 export * from './useDelayedSWR'
 export * from './useDialogState'
 export * from './useDragToScroll'

@@ -24,7 +24,7 @@ export function VirtualizedList<T>({
   const virtualizer = useWindowVirtualizer({
     count: data.length,
     estimateSize,
-    overscan: 4,
+    overscan: 3,
   })
 
   const items = virtualizer.getVirtualItems()

@@ -32,3 +32,8 @@ export type ThreadItem = {
     }
   }[]
 }
+
+export type PaginatedThreadResponse = {
+  data: ThreadItem[]
+  cursor?: string | null
+}
