@@ -12,11 +12,6 @@ export type UninterceptedApiError = {
 }
 
 export interface PaginatedApiResponse<T> {
-  code: number
-  status: string
-  data: T
-  meta: {
-    last_page: number
-    total: number
-  }
+  data: T[]
+  cursor?: string
 }

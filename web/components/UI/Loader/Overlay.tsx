@@ -8,8 +8,10 @@ export function Overlay({ visible }: { visible: boolean }) {
     <div
       ref={overlayRef}
       className={clsx(
-        'absolute z-10 top-0 left-0 w-full h-full bg-background duration-300 ease-in-out',
-        visible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        'absolute z-10 top-0 left-0 w-full h-full bg-background ease-in-out',
+        visible
+          ? 'opacity-100 duration-0'
+          : 'duration-300 opacity-0 pointer-events-none'
       )}
       onTransitionEnd={(_) => {
         setTimeout(() => {

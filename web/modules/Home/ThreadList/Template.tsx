@@ -25,6 +25,7 @@ export function HomeThreadListTemplate({ url }: { url: string }) {
   return (
     <div className="relative">
       <TabLoader visible={isLoading} overlayOnly={hasData} />
+
       <VirtualizedList data={threadItems} estimateSize={() => 600}>
         {(items, virtualizer) => {
           if (!threadItems) return null

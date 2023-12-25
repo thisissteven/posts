@@ -18,7 +18,7 @@ export function TabLoader({
       {!overlayOnly && (
         <div
           style={{
-            top: offset,
+            top: `${offset}px`,
           }}
           className={clsx(
             `absolute z-10 left-1/2 -translate-x-1/2`,
