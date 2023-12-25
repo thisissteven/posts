@@ -12,7 +12,7 @@ export default function Bookmarks() {
         <title>Bookmarks</title>
       </Head>
       <Header />
-      <div className="h-full w-full flex flex-col justify-center">
+      <div className="h-[calc(100%-61px)] w-full flex flex-col justify-center">
         <div className="px-3 max-w-[440px] mx-auto">
           <SupporterOnly />
 

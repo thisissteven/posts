@@ -29,6 +29,7 @@ export function NavItem({
   return (
     <li className={cn('h-[28px] shrink-0', className)}>
       <Link
+        scroll={false}
         onClick={(e) => {
           if (needAuth && !isAuthenticated) {
             e.preventDefault()

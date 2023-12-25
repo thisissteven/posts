@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { prisma, requestHandler } from '@/lib'
 
+import { getThreadParams } from '.'
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -30,49 +32,7 @@ export default async function handler(
             },
           ],
         },
-        include: {
-          owner: {
-            select: {
-              id: true,
-              avatarUrl: true,
-              isSupporter: true,
-              username: true,
-              displayName: true,
-            },
-          },
-          likes: !session
-            ? false
-            : {
-                where: {
-                  user: {
-                    id: session?.user?.id,
-                  },
-                },
-                select: {
-                  user: {
-                    select: {
-                      username: true,
-                    },
-                  },
-                },
-              },
-          reposts: !session
-            ? false
-            : {
-                where: {
-                  user: {
-                    id: session?.user?.id,
-                  },
-                },
-                select: {
-                  user: {
-                    select: {
-                      username: true,
-                    },
-                  },
-                },
-              },
-        },
+        ...getThreadParams(session),
       })
 
       res.status(200).json(threads)
