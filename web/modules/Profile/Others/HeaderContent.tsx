@@ -1,12 +1,20 @@
+import { usePathname } from 'next/navigation'
 import React from 'react'
+import useSWR from 'swr'
 
 import { MoreIconWhite } from '@/components/Icons'
 import { Popover } from '@/components/UI'
 
+import { ThreadOwner } from '@/types'
+
 export function HeaderContent() {
+  const pathname = usePathname()
+  const username = pathname?.split('/')[1]
+  const { data: user } = useSWR<ThreadOwner>(`/profile/${username}`)
+
   return (
     <>
-      <h1 className="text-sm font-light">@random</h1>
+      <h1 className="text-sm font-light">@{user?.username}</h1>
 
       <Popover>
         <Popover.Trigger asChild>

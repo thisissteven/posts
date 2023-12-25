@@ -1,41 +1,94 @@
 import Image from 'next/image'
+import { useSession } from 'next-auth/react'
 import React from 'react'
 
-import { Camera, PencilIcon, ReadIcon } from '@/components/Icons'
-import { IconButton, Tooltip } from '@/components/UI'
+import { apiClient, uploadImage } from '@/lib'
+import { useMutation } from '@/hooks'
 
-import { useAuth } from '@/modules/Auth'
+import { Camera, PencilIcon, ReadIcon } from '@/components/Icons'
+import { IconButton, LoadingBar, Tooltip } from '@/components/UI'
 
 import Followers from './Followers'
 import { Following } from './Following'
 
+function ProfilePhoto() {
+  const { data: session, update } = useSession()
+
+  const username = session?.user?.username
+
+  const { trigger, status } = useMutation<{
+    file: File
+  }>(`/profile/${username}/change-avatar`, async (url, args) => {
+    const formData = new FormData()
+    formData.append('file', args.file)
+    formData.append('type', 'image')
+    const { source } = await uploadImage({
+      formData,
+      userId: session?.user.id as string,
+    })
+
+    const avatarUrl = source.replace('w_430', 'h_92,w_92')
+    const { data } = await apiClient.put(url, {
+      avatarUrl,
+    })
+    const sessionObj = {
+      ...session,
+      user: {
+        ...session?.user,
+        avatarUrl,
+      },
+    }
+    await update(sessionObj)
+    return data
+  })
+
+  const isLoading = status.state === 'loading'
+
+  const avatarUrl = session?.user?.avatarUrl
+
+  const useImage = !isLoading && avatarUrl
+  const useCamera = !isLoading && Boolean(!avatarUrl)
+
+  return (
+    <div className="w-[92px] h-[92px] rounded-full bg-background border border-divider flex items-center justify-center relative overflow-hidden">
+      {useImage && (
+        <Image
+          src={avatarUrl}
+          width={92}
+          height={92}
+          alt={username ?? 'profile'}
+          className="object-cover w-full h-full"
+        />
+      )}
+      {useCamera && <Camera />}
+
+      <div className="absolute scale-125">
+        <LoadingBar visible={isLoading} />
+      </div>
+
+      <input
+        title="Change profile picture"
+        onChange={async (e) => {
+          if (e.target.files) {
+            const file = e.target.files[0]
+            await trigger({ file })
+          }
+        }}
+        className="peer cursor-pointer absolute inset-0 w-full h-full opacity-0"
+        type="file"
+        accept="image/jpeg, image/png, image/gif"
+      />
+    </div>
+  )
+}
 export function ProfileInformation() {
-  const { isAuthenticated, session } = useAuth()
-
-  if (!isAuthenticated) return null
-
-  const hasImage = Boolean(session?.user?.avatarUrl)
-  const hasUsername = Boolean(session?.user?.username)
-
-  const userAvatarUrl = session?.user?.avatarUrl as string
-  const username = session?.user?.username as string
-
-  const displayName = session?.user?.displayName as string
-
-  const hasProfilePhoto = hasImage && hasUsername
-
+  const { data: session } = useSession()
   return (
     <>
       <div className="px-6 py-4 flex items-center gap-4">
-        <div className="w-[92px] h-[92px] rounded-full bg-background border border-divider flex items-center justify-center">
-          {hasProfilePhoto ? (
-            <Image src={userAvatarUrl} width={24} height={24} alt={username} />
-          ) : (
-            <Camera />
-          )}
-        </div>
+        <ProfilePhoto />
 
-        <p className="text-lg">{displayName}</p>
+        <p className="text-lg">{session?.user.displayName}</p>
       </div>
 
       <div className="mx-6 my-4 h-11 flex gap-2">

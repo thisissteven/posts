@@ -8,6 +8,8 @@ import { useAuth } from '../Auth'
 export function ProfileInfo() {
   const pathname = usePathname()
 
+  const username = pathname?.split('/')[1]
+
   const { isAuthenticated, session } = useAuth()
 
   return isAuthenticated &&
@@ -15,6 +17,6 @@ export function ProfileInfo() {
     pathname === `/${session.user.username}` ? (
     <ProfileInformation />
   ) : (
-    <OthersProfileInformation />
+    <OthersProfileInformation username={username} />
   )
 }

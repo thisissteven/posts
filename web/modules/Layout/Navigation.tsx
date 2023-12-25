@@ -73,7 +73,7 @@ export function ProfileNavItem() {
         <NavItem href={`/${username}`} className="max-xs:h-[32px]">
           <div
             className={cn(
-              'w-6 h-6 flex items-center justify-center m-1 active:opacity-80 rounded-full',
+              'w-6 h-6 flex items-center justify-center m-1 active:opacity-80 rounded-full overflow-hidden',
               isProfilePage &&
                 'ring-2 ring-offset-2 ring-offset-background ring-primary duration-200'
             )}
@@ -81,9 +81,10 @@ export function ProfileNavItem() {
             {hasProfilePhoto ? (
               <Image
                 src={userAvatarUrl}
-                width={24}
-                height={24}
+                width={48}
+                height={48}
                 alt={username}
+                className="w-full h-full object-cover"
               />
             ) : (
               <div className="rounded-full bg-background overflow-hidden scale-150">

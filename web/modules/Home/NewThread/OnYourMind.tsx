@@ -22,6 +22,7 @@ const OnYourMind = React.memo(function OnYourMind() {
               height={48}
               src={session?.user.avatarUrl}
               alt="avatar"
+              className="w-full h-full object-cover"
             />
           ) : (
             <DefaultProfileLarge />

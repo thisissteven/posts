@@ -30,6 +30,7 @@ export const authOptions: AuthOptions = {
       if (trigger === 'update') {
         const username = session.user.username
         const displayName = session.user.displayName
+        const avatarUrl = session.user.avatarUrl
         await prisma.user.update({
           where: {
             id: token.user.id,
@@ -37,6 +38,7 @@ export const authOptions: AuthOptions = {
           data: {
             username,
             displayName,
+            avatarUrl,
           },
         })
 
@@ -45,6 +47,7 @@ export const authOptions: AuthOptions = {
             ...token.user,
             username,
             displayName,
+            avatarUrl,
           }
         }
       } else {

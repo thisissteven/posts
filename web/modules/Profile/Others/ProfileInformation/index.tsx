@@ -1,21 +1,41 @@
+import Image from 'next/image'
 import React from 'react'
+import useSWR from 'swr'
 
-import { ReadIcon, RepliesIconFilled } from '@/components/Icons'
+import {
+  DefaultProfileLarge,
+  ReadIcon,
+  RepliesIconFilled,
+} from '@/components/Icons'
 import { IconButton, RegularButton, Tooltip } from '@/components/UI'
 
-export function ProfileInformation() {
+import { ThreadOwner } from '@/types'
+
+export function ProfileInformation({ username }: { username: string }) {
+  const { data: user } = useSWR<ThreadOwner>(`/profile/${username}`)
+
+  const avatarUrl = user?.avatarUrl
+
   return (
     <>
       <div className="px-6 py-4 flex items-center gap-4">
-        <div className="w-[92px] h-[92px] rounded-full bg-background border border-divider flex items-center justify-center">
-          {/* {hasProfilePhoto ? (
-            <Image src={userAvatarUrl} width={24} height={24} alt={username} />
+        <div className="w-[92px] h-[92px] rounded-full bg-background border border-divider flex items-center justify-center overflow-hidden">
+          {avatarUrl ? (
+            <Image
+              src={avatarUrl}
+              width={92}
+              height={92}
+              alt={username}
+              className="w-full h-full object-cover"
+            />
           ) : (
-            <Camera />
-          )} */}
+            <div className="scale-[200%]">
+              <DefaultProfileLarge />
+            </div>
+          )}
         </div>
 
-        <p className="text-lg">user</p>
+        <p className="text-lg">{user?.displayName}</p>
       </div>
 
       <div className="mx-6 my-4 h-11 flex gap-2">

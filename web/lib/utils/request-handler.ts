@@ -61,6 +61,6 @@ export async function requestHandler(
   } catch (err) {
     const statusCode = err instanceof Error ? 400 : 500
     const message = err instanceof Error ? err.message : 'Something went wrong.'
-    res.status(statusCode).json({ statusCode, message })
+    return res.status(statusCode).json({ statusCode, message })
   }
 }

@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 import React from 'react'
 
 import { getRelativeTimeString } from '@/lib'
@@ -9,6 +10,11 @@ import { DefaultProfileLarge } from '@/components/Icons'
 import { ThreadItem, ThreadOwner } from '@/types'
 
 export function Avatar({ threadUser }: { threadUser: ThreadOwner }) {
+  const { data: session } = useSession()
+  const isOwner = threadUser.username === session?.user.username
+
+  const imageUrl = isOwner ? session?.user?.avatarUrl : threadUser.avatarUrl
+
   return (
     <Link
       scroll={false}
@@ -18,13 +24,14 @@ export function Avatar({ threadUser }: { threadUser: ThreadOwner }) {
       href={`/${threadUser.username}`}
       className="h-fit"
     >
-      <div className="w-12 h-12 rounded-full overflow-hidden">
-        {threadUser.avatarUrl ? (
+      <div className="w-12 h-12 relative rounded-full overflow-hidden">
+        {imageUrl ? (
           <Image
             width={48}
             height={48}
-            src={threadUser.avatarUrl}
+            src={imageUrl}
             alt="avatar"
+            className="w-full h-full object-cover"
           />
         ) : (
           <DefaultProfileLarge />
