@@ -65,7 +65,7 @@ export function getCursor(previousCursor?: string | null) {
 
 export function getWhereParams(session: Session | null, category: Category) {
   switch (category) {
-    case 'everyone':
+    case 'everyone' || undefined:
       return {
         where: undefined,
       }

@@ -3,14 +3,18 @@ import React from 'react'
 
 import { useLastOpenedTab } from '@/hooks'
 
-import { Header, HomeThreadListTemplate, OnYourMind } from '@/modules/Home'
+import {
+  Everyone,
+  Following,
+  Header,
+  Highlights,
+  OnYourMind,
+} from '@/modules/Home'
 
 export default function Home() {
   const { activeTab, setActiveTab } = useLastOpenedTab()
 
   const title = activeTab ? `Posts - ${activeTab}` : 'Posts'
-
-  const category = activeTab?.toLowerCase()
 
   return (
     <>
@@ -20,10 +24,9 @@ export default function Home() {
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <OnYourMind />
-      <HomeThreadListTemplate url={`/threads?category=${category}`} />
-      {/* {activeTab === 'Highlights' && <Highlights />}
+      {activeTab === 'Highlights' && <Highlights />}
       {activeTab === 'Everyone' && <Everyone />}
-      {activeTab === 'Following' && <Following />} */}
+      {activeTab === 'Following' && <Following />}
     </>
   )
 }

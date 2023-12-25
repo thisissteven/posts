@@ -29,7 +29,11 @@ export function useDelayedInfiniteSWR<Data = unknown, Error = unknown>(
         return key
       }
 
-      return `${key}&cursor=${cursor}`
+      if (key.includes('category')) {
+        return `${key}&cursor=${cursor}`
+      }
+
+      return `${key}?cursor=${cursor}`
     },
     async (url: string) => {
       const [data] = await Promise.all([
@@ -40,7 +44,7 @@ export function useDelayedInfiniteSWR<Data = unknown, Error = unknown>(
     }
   )
 
-  const isEmpty = data?.length === 0
+  const isEmpty = Boolean(data && data[0]?.data.length === 0)
 
   const loading = useFakeLoading(duration) || isLoading
 
