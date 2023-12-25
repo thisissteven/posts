@@ -102,7 +102,10 @@ export function Lightbox({
           e.stopPropagation()
         }}
       >
-        <div tabIndex={-1} className="mt-3 relative rounded-lg overflow-hidden">
+        <div
+          tabIndex={-1}
+          className="mt-3 relative bg-soft-background rounded-lg overflow-hidden"
+        >
           {mediaType === 'image' && (
             <Image
               className="w-full"

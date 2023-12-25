@@ -6,7 +6,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const username = req.query.username as string
   await requestHandler(req, res, {
     allowedRoles: {
       PUT: ['USER'],
@@ -14,11 +13,7 @@ export default async function handler(
 
     PUT: async (session) => {
       const avatarUrl = req.body.avatarUrl as string
-
-      if (session?.user.username !== username) {
-        res.status(401).json({ message: 'Unauthorized' })
-        return
-      }
+      const username = session?.user.username as string
 
       const user = await prisma.user.update({
         where: {

@@ -1,12 +1,11 @@
-import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import React from 'react'
 
 import { apiClient, uploadImage } from '@/lib'
 import { useMutation } from '@/hooks'
 
-import { Camera, PencilIcon, ReadIcon } from '@/components/Icons'
-import { IconButton, LoadingBar, Tooltip } from '@/components/UI'
+import { PencilIcon, ReadIcon } from '@/components/Icons'
+import { IconButton, LoadingBar, ProfileAvatar, Tooltip } from '@/components/UI'
 
 import Followers from './Followers'
 import { Following } from './Following'
@@ -14,11 +13,9 @@ import { Following } from './Following'
 function ProfilePhoto() {
   const { data: session, update } = useSession()
 
-  const username = session?.user?.username
-
   const { trigger, status } = useMutation<{
     file: File
-  }>(`/profile/${username}/change-avatar`, async (url, args) => {
+  }>('/profile/change-avatar', async (url, args) => {
     const formData = new FormData()
     formData.append('file', args.file)
     formData.append('type', 'image')
@@ -44,23 +41,9 @@ function ProfilePhoto() {
 
   const isLoading = status.state === 'loading'
 
-  const avatarUrl = session?.user?.avatarUrl
-
-  const useImage = !isLoading && avatarUrl
-  const useCamera = !isLoading && Boolean(!avatarUrl)
-
   return (
-    <div className="w-[92px] h-[92px] rounded-full bg-background border border-divider flex items-center justify-center relative overflow-hidden">
-      {useImage && (
-        <Image
-          src={avatarUrl}
-          width={92}
-          height={92}
-          alt={username ?? 'profile'}
-          className="object-cover w-full h-full"
-        />
-      )}
-      {useCamera && <Camera />}
+    <div className="w-[92px] h-[92px] rounded-full border border-divider flex items-center justify-center relative overflow-hidden">
+      <ProfileAvatar isLoading={isLoading} />
 
       <div className="absolute scale-125">
         <LoadingBar visible={isLoading} />

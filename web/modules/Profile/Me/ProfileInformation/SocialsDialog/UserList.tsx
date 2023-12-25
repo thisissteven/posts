@@ -1,68 +1,44 @@
-import { faker } from '@faker-js/faker'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 import React from 'react'
-import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
 
-import { RegularButton } from '@/components/UI'
+import { FollowList } from '@/lib'
+
+import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 import { useActiveTab } from './ActiveTabContext'
 import { CrossFade } from './CrossFade'
 import { EmptyPlaceholder } from './EmptyPlaceholder'
+import { FollowButton } from './FollowButton'
 
-faker.seed(123)
-
-const followingData = new Array(12).fill(null).map(() => {
-  const displayName = faker.person.fullName()
-  const username = `${displayName.split(' ')[0].toLowerCase()}${displayName
-    .split(' ')[1]
-    .toLowerCase()}`
-  return {
-    id: faker.string.uuid(),
-    username,
-    displayName,
-    avatar: faker.internet.avatar(),
-  }
-})
-
-faker.seed(321)
-
-const followersData = new Array(5).fill(null).map(() => {
-  const displayName = faker.person.fullName()
-  const username = `${displayName.split(' ')[0].toLowerCase()}`
-  return {
-    id: faker.string.uuid(),
-    username,
-    displayName,
-    avatar: faker.internet.avatar(),
-  }
-})
-
-function UserListContent({
-  data,
-}: {
-  data: {
-    id: string
-    username: string
-    displayName: string
-    avatar: string
-  }[]
-}) {
+function UserListContent({ data }: { data?: FollowList }) {
+  const { data: session } = useSession()
   return (
     <div className="space-y-2 py-4">
-      {data.map((data) => {
+      {data?.list.map((data) => {
+        const user = {
+          ...data,
+          followedBy: [
+            {
+              id: session?.user.id,
+            },
+          ],
+        } as FindUserResponse
         return (
           <div
             key={data.id}
             className="flex items-center justify-between gap-3"
           >
             <div className="flex items-center gap-3">
-              <div className="shrink-0 rounded-full overflow-hidden">
+              <div className="shrink-0 relative w-12 h-12 bg-black rounded-full overflow-hidden">
                 <Image
-                  src={data.avatar}
+                  src={data.avatarUrl}
                   width={48}
                   height={48}
                   alt={data.username}
+                  className="object-cover w-full h-full"
                 />
               </div>
               <div>
@@ -82,10 +58,7 @@ function UserListContent({
             </div>
 
             <div className="shrink-0">
-              <RegularButton variant="secondary" className="px-4">
-                Following
-              </RegularButton>
-              {/* <RegularButton className="px-4">Follow</RegularButton> */}
+              <FollowButton user={user} />
             </div>
           </div>
         )
@@ -96,13 +69,15 @@ function UserListContent({
 
 export function UserList() {
   const { activeTab } = useActiveTab()
-  const { data: _ } = useSWR(`/api/socials/${activeTab}`)
+  const { data: followers } = useSWRImmutable<FollowList>('/profile/followers')
+  const { data: following } = useSWRImmutable<FollowList>('/profile/following')
 
   const currentIndex = activeTab === 'Following' ? 0 : 1
 
-  const data = activeTab === 'Following' ? followingData : []
+  const data = activeTab === 'Following' ? following : followers
+
   const content =
-    data.length === 0 ? (
+    data?.list?.length === 0 ? (
       <EmptyPlaceholder type={activeTab} />
     ) : (
       <UserListContent data={data} />

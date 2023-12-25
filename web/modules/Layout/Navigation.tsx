@@ -1,12 +1,10 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
 import { cn } from '@/lib'
 import { useWindowSize } from '@/hooks'
 
-import { DefaultProfile } from '@/components/Icons'
-import { Tooltip } from '@/components/UI'
+import { SidebarAvatar, Tooltip } from '@/components/UI'
 
 import { useAuth } from '@/modules/Auth'
 
@@ -59,13 +57,7 @@ export function ProfileNavItem() {
 
   if (!isAuthenticated) return null
 
-  const hasImage = Boolean(session?.user?.avatarUrl)
-  const hasUsername = Boolean(session?.user?.username)
-
-  const userAvatarUrl = session?.user?.avatarUrl as string
   const username = session?.user?.username as string
-
-  const hasProfilePhoto = hasImage && hasUsername
 
   return (
     <Tooltip label="Profile" tabIndex={-1} side={side}>
@@ -73,24 +65,12 @@ export function ProfileNavItem() {
         <NavItem href={`/${username}`} className="max-xs:h-[32px]">
           <div
             className={cn(
-              'w-6 h-6 flex items-center justify-center m-1 active:opacity-80 rounded-full overflow-hidden',
+              'w-6 h-6 flex items-center justify-center m-1 active:opacity-80 rounded-full overflow-hidden bg-black',
               isProfilePage &&
                 'ring-2 ring-offset-2 ring-offset-background ring-primary duration-200'
             )}
           >
-            {hasProfilePhoto ? (
-              <Image
-                src={userAvatarUrl}
-                width={48}
-                height={48}
-                alt={username}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="rounded-full bg-background overflow-hidden scale-150">
-                <DefaultProfile />
-              </div>
-            )}
+            <SidebarAvatar />
           </div>
         </NavItem>
       </div>

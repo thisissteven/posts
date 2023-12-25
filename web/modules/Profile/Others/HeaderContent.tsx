@@ -5,12 +5,12 @@ import useSWR from 'swr'
 import { MoreIconWhite } from '@/components/Icons'
 import { Popover } from '@/components/UI'
 
-import { ThreadOwner } from '@/types'
+import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 export function HeaderContent() {
   const pathname = usePathname()
   const username = pathname?.split('/')[1]
-  const { data: user } = useSWR<ThreadOwner>(`/profile/${username}`)
+  const { data: user } = useSWR<FindUserResponse>(`/profile/${username}`)
 
   return (
     <>

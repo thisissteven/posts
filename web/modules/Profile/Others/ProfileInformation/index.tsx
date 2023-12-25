@@ -7,12 +7,14 @@ import {
   ReadIcon,
   RepliesIconFilled,
 } from '@/components/Icons'
-import { IconButton, RegularButton, Tooltip } from '@/components/UI'
+import { IconButton, Tooltip } from '@/components/UI'
 
-import { ThreadOwner } from '@/types'
+import { FindUserResponse } from '@/pages/api/profile/[username]'
+
+import { FollowButton } from './FollowButton'
 
 export function ProfileInformation({ username }: { username: string }) {
-  const { data: user } = useSWR<ThreadOwner>(`/profile/${username}`)
+  const { data: user } = useSWR<FindUserResponse>(`/profile/${username}`)
 
   const avatarUrl = user?.avatarUrl
 
@@ -39,9 +41,7 @@ export function ProfileInformation({ username }: { username: string }) {
       </div>
 
       <div className="mx-6 my-4 h-11 flex gap-2">
-        <RegularButton className="flex-1 rounded-full font-medium">
-          Follow
-        </RegularButton>
+        <FollowButton user={user} />
 
         <Tooltip label="Edit profile" side="top" asChild>
           <IconButton variant="filled">
