@@ -5,9 +5,9 @@ import { useGlobalDialogStore } from '@/store'
 import { PROFILE_DIALOG_TABS, ProfileDialogTab } from '@/types'
 
 export function ProfileDialogTabs({
-  currentTab,
+  currentTab = 'Edit profile',
 }: {
-  currentTab: ProfileDialogTab
+  currentTab?: ProfileDialogTab
 }) {
   const openDialog = useGlobalDialogStore((state) => state.openDialog)
 

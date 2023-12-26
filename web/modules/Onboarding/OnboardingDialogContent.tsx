@@ -42,7 +42,7 @@ export function OnboardingDialogContent() {
     },
   })
 
-  const { handleSubmit } = methods
+  const { handleSubmit, register } = methods
 
   return (
     <div className="bg-background overflow-x-hidden">
@@ -63,12 +63,13 @@ export function OnboardingDialogContent() {
                 <UsernameInput />
 
                 <FormInput
-                  id="displayName"
+                  {...register('displayName')}
                   label="Display Name"
                   placeholder="The name on your profile"
                   autoComplete="off"
                   maxLength={48}
                   watchLength
+                  withSuccessIndicator
                 />
 
                 <div className="flex justify-between">
@@ -96,7 +97,7 @@ export function OnboardingDialogContent() {
 }
 
 function UsernameInput() {
-  const { control, setError } = useFormContext<OnboardingFormValues>()
+  const { control, setError, register } = useFormContext<OnboardingFormValues>()
 
   const value = useWatch({
     control,
@@ -122,10 +123,11 @@ function UsernameInput() {
 
   return (
     <FormInput
-      id="username"
+      {...register('username')}
       label="Username"
       placeholder="your unique @username"
       autoComplete="off"
+      withSuccessIndicator
     />
   )
 }

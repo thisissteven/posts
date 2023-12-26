@@ -2,7 +2,7 @@ import React from 'react'
 
 import { useDialogState } from '@/hooks'
 
-import { RegularButton, SharedDialog } from '@/components/UI'
+import { SharedDialog } from '@/components/UI'
 
 import { useGlobalDialogStore } from '@/store'
 
@@ -11,6 +11,8 @@ import {
   EditProfileContent,
   ProfileDialogTabs,
 } from '.'
+
+import { ProfileDialogTab } from '@/types'
 
 export function ProfileDialog() {
   const dialogState = useDialogState()
@@ -26,8 +28,16 @@ export function ProfileDialog() {
     }
   }, [open, dialogState])
 
-  const currentTab =
-    open === 'ACCOUNT_SETTINGS' ? 'Account settings' : 'Edit profile'
+  const previousTab = React.useRef<ProfileDialogTab>()
+  let currentTab: ProfileDialogTab | undefined
+
+  if (open === 'EDIT_PROFILE') currentTab = 'Edit profile'
+  else if (open === 'ACCOUNT_SETTINGS') currentTab = 'Account settings'
+  else currentTab = previousTab.current
+
+  if (previousTab.current !== currentTab) {
+    previousTab.current = currentTab
+  }
 
   return (
     <SharedDialog
@@ -43,19 +53,11 @@ export function ProfileDialog() {
         <div className="bg-background h-full w-full pb-4 flex flex-col justify-between">
           <ProfileDialogTabs currentTab={currentTab} />
 
-          <div className="px-4 xs:px-8 flex-1 overflow-y-auto scrollbar-none">
-            {open === 'ACCOUNT_SETTINGS' ? (
-              <AccountSettingsContent />
-            ) : (
-              <EditProfileContent />
-            )}
-          </div>
-
-          <div className="pt-4 mx-4 xs:mx-8 border-t border-divider flex justify-end">
-            <SharedDialog.Close asChild>
-              <RegularButton variant="secondary">Done</RegularButton>
-            </SharedDialog.Close>
-          </div>
+          {currentTab === 'Account settings' ? (
+            <AccountSettingsContent />
+          ) : (
+            <EditProfileContent />
+          )}
         </div>
       </SharedDialog.Content>
     </SharedDialog>

@@ -45,7 +45,7 @@ export function EditProfileForm() {
     },
   })
 
-  const { handleSubmit } = methods
+  const { handleSubmit, register } = methods
 
   const onSubmit = async (values: EditProfileSchema) => {}
 
@@ -55,7 +55,7 @@ export function EditProfileForm() {
         <UsernameInput />
 
         <FormInput
-          id="displayName"
+          {...register('displayName')}
           label="Display Name"
           placeholder="How your name appears on your profile"
           autoComplete="off"
@@ -65,11 +65,38 @@ export function EditProfileForm() {
         />
 
         <FormInput
-          id="profession"
+          {...register('profession')}
           label="What do you do?"
           placeholder="Architect, painter, etc"
           autoComplete="off"
           maxLength={32}
+          watchLength
+        />
+
+        <FormInput
+          {...register('location')}
+          label="Location"
+          placeholder="Where you're based"
+          autoComplete="off"
+          maxLength={32}
+          watchLength
+        />
+
+        <FormInput
+          {...register('pronouns')}
+          label="Pronouns"
+          placeholder="He/him, etc"
+          autoComplete="off"
+          maxLength={12}
+          watchLength
+        />
+
+        <FormInput
+          {...register('website')}
+          label="Website"
+          placeholder="https://example.com"
+          autoComplete="off"
+          maxLength={96}
           watchLength
         />
       </form>
@@ -78,7 +105,7 @@ export function EditProfileForm() {
 }
 
 function UsernameInput() {
-  const { control, setError } = useFormContext<EditProfileSchema>()
+  const { control, setError, register } = useFormContext<EditProfileSchema>()
 
   const value = useWatch({
     control,
@@ -104,11 +131,12 @@ function UsernameInput() {
 
   return (
     <FormInput
-      id="username"
+      {...register('username')}
       label="Username"
       placeholder="your unique @handle"
       autoComplete="off"
       required
+      withSuccessIndicator
     />
   )
 }
