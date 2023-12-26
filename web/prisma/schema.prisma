@@ -52,14 +52,20 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  username      String?   @unique
-  displayName   String?
+  id          String  @id @default(cuid())
+  username    String? @unique
+  displayName String?
+
   email         String?   @unique
   emailVerified DateTime?
-  avatarUrl     String?
-  website       String?
-  isSupporter   Boolean   @default(false)
+
+  avatarUrl String?
+
+  profession  String?
+  location    String?
+  pronouns    String?
+  website     String?
+  isSupporter Boolean @default(false)
 
   // --- Unused ---
   name  String?

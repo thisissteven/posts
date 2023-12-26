@@ -33,6 +33,7 @@ export const FormInput = ({
   label,
   id,
   watchLength = false,
+  required,
   ...rest
 }: FormInputProps) => {
   const {
@@ -54,6 +55,7 @@ export const FormInput = ({
         {label && (
           <label htmlFor={id} className="text-xs text-soft-primary flex-1">
             {label}
+            {required && '*'}
           </label>
         )}
         {watchLength ? (
@@ -72,7 +74,7 @@ export const FormInput = ({
           id={id}
           {...register(id)}
           className={cn(
-            'w-full px-3 py-2 text-sm rounded-lg bg-soft-background placeholder:text-span focus:outline-none',
+            'w-full px-3 py-2 text-sm rounded-lg bg-soft-background placeholder:text-light-span focus:outline-none',
             errorMessage && value.length > 0 && 'ring-2 ring-danger',
             className
           )}

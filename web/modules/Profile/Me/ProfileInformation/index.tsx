@@ -1,75 +1,25 @@
 import { useSession } from 'next-auth/react'
 import React from 'react'
 
-import { apiClient, uploadImage } from '@/lib'
-import { useMutation } from '@/hooks'
-
 import { PencilIcon, ReadIcon } from '@/components/Icons'
-import { IconButton, ProfileAvatar, TabLoader, Tooltip } from '@/components/UI'
+import { IconButton, Tooltip } from '@/components/UI'
+
+import { useGlobalDialogStore } from '@/store'
+
+import { EditProfilePhoto } from '@/modules/Profile/Me'
 
 import Followers from './Followers'
 import { Following } from './Following'
 
-function ProfilePhoto() {
-  const { data: session, update } = useSession()
-
-  const { trigger, status } = useMutation<{
-    file: File
-  }>('/profile/change-avatar', async (url, args) => {
-    const formData = new FormData()
-    formData.append('file', args.file)
-    formData.append('type', 'image')
-    const { source } = await uploadImage({
-      formData,
-      userId: session?.user.id as string,
-    })
-
-    const avatarUrl = source.replace('w_430', 'h_92,w_92')
-    const { data } = await apiClient.put(url, {
-      avatarUrl,
-    })
-    const sessionObj = {
-      ...session,
-      user: {
-        ...session?.user,
-        avatarUrl,
-      },
-    }
-    await update(sessionObj)
-    return data
-  })
-
-  const isLoading = status.state === 'loading'
-
-  return (
-    <div className="w-[92px] h-[92px] rounded-full border border-divider flex items-center justify-center relative overflow-hidden">
-      <ProfileAvatar isLoading={isLoading} />
-
-      <div className="absolute scale-125">
-        <TabLoader offset={-8} visible={isLoading} />
-      </div>
-
-      <input
-        title="Change profile picture"
-        onChange={async (e) => {
-          if (e.target.files) {
-            const file = e.target.files[0]
-            await trigger({ file })
-          }
-        }}
-        className="peer cursor-pointer absolute inset-0 w-full h-full opacity-0"
-        type="file"
-        accept="image/jpeg, image/png, image/gif"
-      />
-    </div>
-  )
-}
 export function ProfileInformation() {
   const { data: session } = useSession()
+
+  const openDialog = useGlobalDialogStore((state) => state.openDialog)
+
   return (
     <>
       <div className="px-6 py-4 flex items-center gap-4">
-        <ProfilePhoto />
+        <EditProfilePhoto />
 
         <p className="text-lg">{session?.user.displayName}</p>
       </div>
@@ -87,7 +37,12 @@ export function ProfileInformation() {
         </Tooltip>
 
         <Tooltip label="Edit profile" side="top" asChild>
-          <IconButton variant="filled">
+          <IconButton
+            variant="filled"
+            onClick={() => {
+              openDialog('EDIT_PROFILE')
+            }}
+          >
             <PencilIcon />
           </IconButton>
         </Tooltip>

@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import React from 'react'
@@ -26,22 +27,23 @@ export function ProfileLoader({ children }: { children: React.ReactNode }) {
     isMe ? null : `/profile/${username}`
   )
 
-  const hasData = followersData && followingData && userData
+  const hasData = isMe
+    ? Boolean(followersData) && Boolean(followingData)
+    : Boolean(userData)
 
   const isLoading =
     isLoadingFollowers || isLoadingFollowing || isLoadingUser || !username
 
-  return children
+  if (hasData) return children
 
-  // return (
-  //   <div
-  //     className={clsx(
-  //       'transition-opacity ease-in-out',
-  //       isLoading ? 'opacity-0 pointer-events-none' : 'opacity-100',
-  //       !hasData && 'duration-300'
-  //     )}
-  //   >
-  //     {children}
-  //   </div>
-  // )
+  return (
+    <div
+      className={clsx(
+        'transition-opacity ease-in-out duration-300',
+        isLoading ? 'opacity-0 pointer-events-none' : 'opacity-100'
+      )}
+    >
+      {children}
+    </div>
+  )
 }

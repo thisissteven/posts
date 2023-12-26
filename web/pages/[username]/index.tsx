@@ -5,6 +5,7 @@ import useSWRImmutable from 'swr/immutable'
 
 import { Header, ProfileInfo, ProfileLoader } from '@/modules/Profile'
 import { Media, Posts, ProfileTabs, Replies } from '@/modules/Profile'
+import { ProfileDialog } from '@/modules/Profile/Me'
 
 import { ProfileTab } from '@/types'
 
@@ -24,6 +25,8 @@ export default function ProfilePage() {
       <Head>
         <title>Profile</title>
       </Head>
+      <ProfileDialog />
+
       <ProfileLoader>
         <Header />
 

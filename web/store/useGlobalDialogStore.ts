@@ -1,6 +1,11 @@
 import { create } from 'zustand'
 
-type DialogName = 'BOOKMARKS' | 'REPORT' | 'ALT'
+type DialogName =
+  | 'BOOKMARKS'
+  | 'REPORT'
+  | 'ALT'
+  | 'EDIT_PROFILE'
+  | 'ACCOUNT_SETTINGS'
 
 interface DialogState {
   currentOpen: DialogName | null

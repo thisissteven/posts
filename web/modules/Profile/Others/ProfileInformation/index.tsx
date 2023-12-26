@@ -9,12 +9,14 @@ import {
 } from '@/components/Icons'
 import { IconButton, Tooltip } from '@/components/UI'
 
+import { useAuth } from '@/modules/Auth'
 import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 import { FollowButton } from './FollowButton'
 
 export function ProfileInformation({ username }: { username: string }) {
   const { data: user } = useSWR<FindUserResponse>(`/profile/${username}`)
+  const { openAuthDialog } = useAuth()
 
   const avatarUrl = user?.avatarUrl
 
@@ -43,8 +45,8 @@ export function ProfileInformation({ username }: { username: string }) {
       <div className="mx-6 my-4 h-11 flex gap-2">
         <FollowButton user={user} />
 
-        <Tooltip label="Edit profile" side="top" asChild>
-          <IconButton variant="filled">
+        <Tooltip label="Message" side="top" asChild>
+          <IconButton variant="filled" onClick={openAuthDialog}>
             <div className="-translate-x-0.5">
               <RepliesIconFilled />
             </div>

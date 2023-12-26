@@ -7,10 +7,12 @@ import { useDebouncedCallback } from '@/hooks'
 
 import { RegularButton } from '@/components/UI'
 
+import { useAuth } from '@/modules/Auth'
 import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 function useFollow(user?: FindUserResponse) {
   const { data: session } = useSession()
+  const { openAuthDialog } = useAuth()
 
   const { data, mutate } = useSWRImmutable(
     `/profile/${user?.id}/follow`,
@@ -36,6 +38,10 @@ function useFollow(user?: FindUserResponse) {
   const debounce = useDebouncedCallback()
 
   const onClick = () => {
+    if (!session) {
+      openAuthDialog()
+      return
+    }
     const currentState = {
       status: state.status,
     }

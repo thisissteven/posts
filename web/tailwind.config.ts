@@ -22,6 +22,7 @@ const config: Config = {
         popover: '#484848',
         primary: '#eeeeee',
         span: '#888888',
+        'light-span': '#616161',
         success: '#32bd64',
         'black-shadow': '#191919',
         'soft-background': '#333333',
