@@ -60,10 +60,10 @@ export default async function handler(
       POST: ['USER'],
     },
 
-    POST: async (session) => {
+    POST: async (currentUser) => {
       const userToFollowId = req.query.username as string
-      const userId = session?.user.id as string
       const follow = req.query.follow as Follow
+      const userId = currentUser.id as string
 
       const user = await prisma.user.update({
         where: {

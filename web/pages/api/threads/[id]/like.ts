@@ -13,8 +13,8 @@ export default async function handler(
     allowedRoles: {
       PUT: ['USER'],
     },
-    PUT: async (session) => {
-      const userId = session?.user?.id as string
+    PUT: async (currentUser) => {
+      const userId = currentUser.id as string
 
       const alreadyLiked = await prisma.threadLike.findFirst({
         where: {

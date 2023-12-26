@@ -11,9 +11,9 @@ export default async function handler(
       PUT: ['USER'],
     },
 
-    PUT: async (session) => {
-      const avatarUrl = req.body.avatarUrl as string
-      const username = session?.user.username as string
+    PUT: async (currentUser) => {
+      const { avatarUrl } = req.body
+      const username = currentUser.username
 
       const user = await prisma.user.update({
         where: {

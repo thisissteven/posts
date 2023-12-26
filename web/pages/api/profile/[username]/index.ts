@@ -1,10 +1,9 @@
 import { Prisma } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Session } from 'next-auth'
 
-import { prisma, requestHandler } from '@/lib'
+import { CurrentUser, prisma, requestHandler } from '@/lib'
 
-const findUser = async (session: Session | null, username: string) => {
+const findUser = async (currentUser: CurrentUser, username: string) => {
   const user = await prisma.user.findUnique({
     where: {
       username,
@@ -15,11 +14,11 @@ const findUser = async (session: Session | null, username: string) => {
       displayName: true,
       username: true,
       website: true,
-      followedBy: !session
+      followedBy: !currentUser
         ? false
         : {
             where: {
-              id: session?.user.id,
+              id: currentUser.id,
             },
             select: {
               id: true,
@@ -42,8 +41,8 @@ export default async function handler(
     allowedRoles: {
       GET: ['PUBLIC', 'USER'],
     },
-    GET: async (session) => {
-      const user = await findUser(session, username)
+    GET: async (currentUser) => {
+      const user = await findUser(currentUser, username)
 
       res.status(200).json(user)
     },

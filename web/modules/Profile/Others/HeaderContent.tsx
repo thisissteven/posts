@@ -3,17 +3,20 @@ import React from 'react'
 import useSWR from 'swr'
 
 import { MoreIconWhite } from '@/components/Icons'
-import { Popover } from '@/components/UI'
+import { Overlay, Popover } from '@/components/UI'
 
 import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 export function HeaderContent() {
   const pathname = usePathname()
   const username = pathname?.split('/')[1]
-  const { data: user } = useSWR<FindUserResponse>(`/profile/${username}`)
+  const { data: user, isLoading } = useSWR<FindUserResponse>(
+    `/profile/${username}`
+  )
 
   return (
     <>
+      <Overlay visible={isLoading} className="top-0 left-0 h-screen" />
       <h1 className="text-sm font-light">@{user?.username}</h1>
 
       <Popover>

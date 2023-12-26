@@ -30,7 +30,7 @@ export function Media() {
     isEmpty,
     isEnd,
     loadMore,
-  } = useDelayedInfiniteSWR<Media[]>(`/threads/${username}/media`, {
+  } = useDelayedInfiniteSWR<Media[]>(`/profile/${username}/threads/media`, {
     duration: 300,
   })
 

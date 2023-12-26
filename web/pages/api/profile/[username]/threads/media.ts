@@ -11,13 +11,13 @@ export default async function handler(
     allowedRoles: {
       GET: ['PUBLIC', 'USER'],
     },
-    GET: async (session) => {
+    GET: async (currentUser) => {
       const previousCursor = req.query.cursor as string
 
-      const username = req.query.id as string
+      const username = req.query.username as string
 
       const threads = await getPaginatedThreads({
-        session,
+        currentUser,
         category: 'media',
         previousCursor,
         params: {

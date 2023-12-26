@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { MoreIconWhite } from '@/components/Icons'
-import { Popover } from '@/components/UI'
+import { Overlay, Popover } from '@/components/UI'
 
 import { useAuth } from '@/modules/Auth'
 
@@ -12,6 +12,7 @@ export function HeaderContent() {
 
   return (
     <>
+      <Overlay visible={!username} className="top-0 left-0 h-screen" />
       <h1 className="text-sm font-light">@{username}</h1>
 
       <Popover>

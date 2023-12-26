@@ -7,5 +7,5 @@ export function Posts() {
 
   const username = pathname?.split('/')[1]
 
-  return <ThreadListTemplate url={`/threads/${username}`} />
+  return <ThreadListTemplate url={`/profile/${username}/threads`} />
 }

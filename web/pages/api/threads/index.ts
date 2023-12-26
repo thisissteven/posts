@@ -1,69 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Session } from 'next-auth'
 
-import { prisma, requestHandler } from '@/lib'
+import { CurrentUser, getPaginatedThreads, prisma, requestHandler } from '@/lib'
 
 type Category = 'everyone' | 'highlights' | 'following'
 
-export function getIncludeParams(session: Session | null) {
-  return {
-    include: {
-      owner: {
-        select: {
-          id: true,
-          avatarUrl: true,
-          isSupporter: true,
-          username: true,
-          displayName: true,
-        },
-      },
-      likes: !session
-        ? false
-        : {
-            where: {
-              user: {
-                id: session?.user?.id,
-              },
-            },
-            select: {
-              user: {
-                select: {
-                  username: true,
-                },
-              },
-            },
-          },
-      reposts: !session
-        ? false
-        : {
-            where: {
-              user: {
-                id: session?.user?.id,
-              },
-            },
-            select: {
-              user: {
-                select: {
-                  username: true,
-                },
-              },
-            },
-          },
-    },
-  }
-}
-
-export function getCursor(previousCursor?: string | null) {
-  const cursor = previousCursor
-    ? {
-        id: previousCursor,
-      }
-    : undefined
-
-  return cursor
-}
-
-export function getWhereParams(session: Session | null, category: Category) {
+export function getWhereParams(currentUser: CurrentUser, category: Category) {
   switch (category) {
     case 'everyone' || undefined:
       return {
@@ -94,12 +35,12 @@ export function getWhereParams(session: Session | null, category: Category) {
               {
                 followedBy: {
                   some: {
-                    id: session?.user.id,
+                    id: currentUser.id,
                   },
                 },
               },
               {
-                id: session?.user.id,
+                id: currentUser.id,
               },
             ],
           },
@@ -119,37 +60,26 @@ export default async function handler(
       GET: ['PUBLIC', 'USER'],
       POST: ['USER'],
     },
-    GET: async (session) => {
+    GET: async (currentUser) => {
       const previousCursor = req.query.cursor as string
       const category = req.query.category as Category
 
-      const skip = previousCursor ? 1 : 0
-      const cursor = getCursor(previousCursor)
-
-      const threads = await prisma.thread.findMany({
-        ...getWhereParams(session, category),
-        ...getIncludeParams(session),
-        orderBy: {
-          createdAt: 'desc',
+      const threads = await getPaginatedThreads({
+        currentUser,
+        category,
+        previousCursor,
+        params: {
+          ...getWhereParams(currentUser, category),
         },
-        skip,
-        cursor,
-        take: 10,
       })
 
-      const lastThread = threads.length === 10 ? threads[9] : null
-      const lastCursor = lastThread ? lastThread.id : null
-
-      res.status(200).json({
-        data: threads,
-        cursor: lastCursor,
-      })
+      res.status(200).json(threads)
     },
-    POST: async (session) => {
+    POST: async (currentUser) => {
       const user = await prisma.thread.create({
         data: {
           ...req.body,
-          ownerId: session?.user.id,
+          ownerId: currentUser.id,
         },
       })
 

@@ -14,15 +14,14 @@ export default async function handler(
     allowedRoles: {
       POST: ['PUBLIC', 'USER'],
     },
-    POST: async (session) => {
+    POST: async (currentUser) => {
       const user = await prisma.threadReport.create({
         data: {
           threadId: id,
           reason,
-          reporterId: session?.user.id,
+          reporterId: currentUser.id,
         },
       })
-      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       res.status(200).json(user)
     },

@@ -12,7 +12,7 @@ export default function ProfilePage() {
   const pathname = usePathname()
   const username = pathname?.split('/')[1]
 
-  const { data, mutate } = useSWRImmutable<ProfileTab>(
+  const { data, isLoading, mutate } = useSWRImmutable<ProfileTab>(
     `/profile/tabs/${username}`,
     () => 'Posts' as const
   )

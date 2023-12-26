@@ -11,8 +11,8 @@ export default async function handler(
       GET: ['USER'],
     },
 
-    GET: async (session) => {
-      const userId = session?.user.id as string
+    GET: async (currentUser) => {
+      const userId = currentUser.id as string
 
       const followers = await getFollowers(userId)
 

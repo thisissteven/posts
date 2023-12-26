@@ -5,7 +5,7 @@ import { apiClient, uploadImage } from '@/lib'
 import { useMutation } from '@/hooks'
 
 import { PencilIcon, ReadIcon } from '@/components/Icons'
-import { IconButton, LoadingBar, ProfileAvatar, Tooltip } from '@/components/UI'
+import { IconButton, ProfileAvatar, TabLoader, Tooltip } from '@/components/UI'
 
 import Followers from './Followers'
 import { Following } from './Following'
@@ -46,7 +46,7 @@ function ProfilePhoto() {
       <ProfileAvatar isLoading={isLoading} />
 
       <div className="absolute scale-125">
-        <LoadingBar visible={isLoading} />
+        <TabLoader offset={-8} visible={isLoading} />
       </div>
 
       <input

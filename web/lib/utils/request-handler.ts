@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getServerSession, Session } from 'next-auth'
+import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 
@@ -10,10 +10,18 @@ type AllowedRoles = {
   [method in HttpMethods]?: Role[]
 }
 
+export type CurrentUser = {
+  id: string
+  username: string
+  avatarUrl: string
+  displayName: string
+  role: 'USER' | 'ADMIN'
+}
+
 type HandlerType = {
   allowedRoles?: AllowedRoles
 } & {
-  [method in HttpMethods]?: (session: Session | null) => Promise<void>
+  [method in HttpMethods]?: (currentUser: CurrentUser) => Promise<void>
 }
 
 async function isRequestValid(
@@ -57,7 +65,17 @@ export async function requestHandler(
       return res.status(401).json({ message: 'Unauthorized' })
     }
 
-    await handler[method]?.(session)
+    const currentUser = !session
+      ? undefined
+      : {
+          avatarUrl: session?.user?.avatarUrl as string,
+          displayName: session?.user?.displayName as string,
+          id: session?.user?.id as string,
+          role: session?.user?.role as 'USER' | 'ADMIN',
+          username: session?.user?.username as string,
+        }
+
+    await handler[method]?.(currentUser as CurrentUser)
   } catch (err) {
     const statusCode = err instanceof Error ? 400 : 500
     const message = err instanceof Error ? err.message : 'Something went wrong.'

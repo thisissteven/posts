@@ -7,5 +7,5 @@ export function Replies() {
 
   const username = pathname?.split('/')[1]
 
-  return <ThreadListTemplate url={`/threads/${username}/replies`} />
+  return <ThreadListTemplate url={`/profile/${username}/threads/replies`} />
 }
