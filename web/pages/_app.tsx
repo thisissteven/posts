@@ -11,6 +11,7 @@ import { useScrollRestoration } from '@/hooks'
 
 import { AuthProvider } from '@/modules/Auth'
 import { BookmarksDialog } from '@/modules/Bookmarks'
+import { AltDialog } from '@/modules/ImageAlt'
 import { AppLayout } from '@/modules/Layout/AppLayout'
 import { OnboardingProvider } from '@/modules/Onboarding'
 import { ReportDialog } from '@/modules/Report'
@@ -33,6 +34,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
         }}
       >
         <SessionProvider session={pageProps.session}>
+          <AltDialog />
           <BookmarksDialog />
           <ReportDialog />
           <AuthProvider>

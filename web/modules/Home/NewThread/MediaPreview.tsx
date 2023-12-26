@@ -5,10 +5,13 @@ import { useFormContext, useWatch } from 'react-hook-form'
 import { useHasAudio } from '@/hooks/useHasAudio'
 
 import { Close, Muted, Unmuted } from '@/components/Icons'
-import { Popover, RegularButton, Textarea } from '@/components/UI'
+import { Popover } from '@/components/UI'
+
+import { DescriptiveText } from './DescriptiveText'
+import { NewThreadFormValues } from './Form'
 
 export const MediaPreview = () => {
-  const { control, setValue } = useFormContext()
+  const { control, setValue } = useFormContext<NewThreadFormValues>()
 
   const input = useWatch({
     control,
@@ -56,18 +59,7 @@ export const MediaPreview = () => {
             customContent
             className="w-[calc(100vw-1rem)] xs:w-[320px]"
           >
-            <div className="flex flex-col gap-2 px-4 py-2">
-              <Textarea
-                className="text-sm text-primary"
-                placeholder="Add descriptive text for screen readers"
-              />
-            </div>
-            <div className="flex justify-end gap-2 px-2">
-              <Popover.Close asChild>
-                <RegularButton variant="underline">Cancel</RegularButton>
-              </Popover.Close>
-              <RegularButton variant="secondary">Save</RegularButton>
-            </div>
+            <DescriptiveText />
           </Popover.Content>
         </Popover>
       )}

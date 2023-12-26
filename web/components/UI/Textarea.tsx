@@ -59,6 +59,7 @@ export function Textarea({
 // use this when working with react-hook-form
 export function FormTextarea({
   className,
+  placeholder,
   placeholderClassName,
   minHeight = '48px',
   onEscape = (_) => {},
@@ -111,11 +112,11 @@ export function FormTextarea({
         aria-hidden
         className={cn(
           'text-span absolute whitespace-nowrap pointer-events-none font-light left-0',
-          value.length > 0 && 'hidden',
+          value?.length > 0 && 'hidden',
           placeholderClassName
         )}
       >
-        What&apos;s on your mind...
+        {placeholder}
       </span>
     </div>
   )

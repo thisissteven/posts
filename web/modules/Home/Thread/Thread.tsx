@@ -78,6 +78,7 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
               highResSource={thread.highResSource}
               height={thread.height}
               width={thread.width}
+              alt={thread.alt}
             />
           )}
 
