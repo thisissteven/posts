@@ -1,4 +1,5 @@
 export * from './Header'
 export * from './ProfileInfo'
+export * from './ProfileLoader'
 export * from './ProfileTabs'
 export * from './TabContents'

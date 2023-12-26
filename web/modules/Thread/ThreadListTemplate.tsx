@@ -42,7 +42,7 @@ export function ThreadListTemplate({ url }: { url: string }) {
       <EmptyPlaceholder visible={isEmpty} />
 
       <div className={clsx(isLoading ? 'opacity-0' : 'opacity-100')}>
-        <VirtualizedList data={threadItems}>
+        <VirtualizedList data={threadItems} estimateSize={() => 600}>
           {(items, virtualizer) => {
             if (!threadItems) return null
 

@@ -18,6 +18,7 @@ import {
   UploadImageInput,
 } from '@/components/UI'
 
+import { CharacterCount } from './CharacterCount'
 import {
   createNewThread,
   NewThreadFormValues,
@@ -110,7 +111,10 @@ export function NewThreadTemplate({
 
           {open && (
             <div className="flex justify-between mt-2">
-              <UploadImageInput {...register('source')} />
+              <div className="flex gap-4 items-center">
+                <UploadImageInput {...register('source')} />
+                <CharacterCount control={control} />
+              </div>
               <div className="space-x-2">
                 {canEscape ? (
                   <RegularButton

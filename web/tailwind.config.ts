@@ -30,6 +30,7 @@ const config: Config = {
         'soft-primary': '#bbbbbb',
         'autumn-brown': '#654e18',
         'autumn-yellow': '#f5b207',
+        orange: '#ffa500',
       },
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],

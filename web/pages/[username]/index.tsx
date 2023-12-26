@@ -3,7 +3,7 @@ import { usePathname } from 'next/navigation'
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
-import { Header, ProfileInfo } from '@/modules/Profile'
+import { Header, ProfileInfo, ProfileLoader } from '@/modules/Profile'
 import { Media, Posts, ProfileTabs, Replies } from '@/modules/Profile'
 
 import { ProfileTab } from '@/types'
@@ -12,7 +12,7 @@ export default function ProfilePage() {
   const pathname = usePathname()
   const username = pathname?.split('/')[1]
 
-  const { data, isLoading, mutate } = useSWRImmutable<ProfileTab>(
+  const { data, mutate } = useSWRImmutable<ProfileTab>(
     `/profile/tabs/${username}`,
     () => 'Posts' as const
   )
@@ -24,23 +24,25 @@ export default function ProfilePage() {
       <Head>
         <title>Profile</title>
       </Head>
-      <Header />
+      <ProfileLoader>
+        <Header />
 
-      <ProfileInfo />
-      <ProfileTabs
-        activeTab={activeTab}
-        setActiveTab={(activeTab) => {
-          mutate(activeTab, {
-            revalidate: false,
-          })
-        }}
-      />
+        <ProfileInfo />
+        <ProfileTabs
+          activeTab={activeTab}
+          setActiveTab={(activeTab) => {
+            mutate(activeTab, {
+              revalidate: false,
+            })
+          }}
+        />
 
-      <div className="mt-0.5">
-        {activeTab === 'Media' && <Media />}
-        {activeTab === 'Posts' && <Posts />}
-        {activeTab === 'Replies' && <Replies />}
-      </div>
+        <div className="mt-0.5">
+          {activeTab === 'Media' && <Media />}
+          {activeTab === 'Posts' && <Posts />}
+          {activeTab === 'Replies' && <Replies />}
+        </div>
+      </ProfileLoader>
     </>
   )
 }

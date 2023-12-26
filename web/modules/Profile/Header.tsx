@@ -13,9 +13,12 @@ export function Header() {
 
   const { isAuthenticated, session } = useAuth()
 
+  const isMe =
+    isAuthenticated && session && pathname === `/${session.user.username}`
+
   return (
     <header className="bg-background sticky top-0 h-[61px]">
-      <div className="relative flex items-center gap-9 h-full px-6">
+      <div className="relative w-full flex items-center gap-9 h-full px-6">
         <button
           onClick={() => router.back()}
           className="active:opacity-80 duration-200"
@@ -23,13 +26,7 @@ export function Header() {
           <BackIcon />
         </button>
 
-        {isAuthenticated &&
-        session &&
-        pathname === `/${session.user.username}` ? (
-          <HeaderContent />
-        ) : (
-          <OthersHeaderContent />
-        )}
+        {isMe ? <HeaderContent /> : <OthersHeaderContent />}
       </div>
     </header>
   )

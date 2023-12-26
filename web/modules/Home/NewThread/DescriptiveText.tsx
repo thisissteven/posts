@@ -1,24 +1,13 @@
 import clsx from 'clsx'
 import React from 'react'
-import { Control, useFormContext, useWatch } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 
 import { Popover, RegularButton, Textarea, usePopover } from '@/components/UI'
 
 import { NewThreadFormValues } from './Form'
 
-function CharacterCount({
-  control,
-}: {
-  control: Control<NewThreadFormValues>
-}) {
-  const value = useWatch({
-    control,
-    name: 'alt',
-  })
-
-  const length = value?.length ?? 0
-
-  const digits = length.toString().length
+function CharacterCount({ count = 0 }: { count?: number }) {
+  const digits = count.toString().length
 
   return (
     <div className="text-span text-xs flex">
@@ -29,7 +18,7 @@ function CharacterCount({
           digits === 3 && 'w-6'
         )}
       >
-        {length}
+        {count}
       </div>{' '}
       / 100
     </div>
@@ -37,7 +26,7 @@ function CharacterCount({
 }
 
 export const DescriptiveText = React.memo(() => {
-  const { control, getValues, setValue } = useFormContext<NewThreadFormValues>()
+  const { getValues, setValue } = useFormContext<NewThreadFormValues>()
   const [alt, setAlt] = React.useState(getValues('alt'))
 
   const { closePopover } = usePopover()
@@ -60,7 +49,7 @@ export const DescriptiveText = React.memo(() => {
         />
       </div>
       <div className="flex items-center justify-between px-4">
-        <CharacterCount control={control} />
+        <CharacterCount count={alt?.length} />
         <div className="flex justify-end gap-2">
           <Popover.Close asChild>
             <RegularButton variant="underline">Cancel</RegularButton>

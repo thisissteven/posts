@@ -12,9 +12,10 @@ export function ProfileInfo() {
 
   const { isAuthenticated, session } = useAuth()
 
-  return isAuthenticated &&
-    session &&
-    pathname === `/${session.user.username}` ? (
+  const isMe =
+    isAuthenticated && session && pathname === `/${session.user.username}`
+
+  return isMe ? (
     <ProfileInformation />
   ) : (
     <OthersProfileInformation username={username} />

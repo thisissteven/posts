@@ -5,9 +5,11 @@ import { cn } from '@/lib'
 export function Overlay({
   visible,
   className,
+  noRemove,
 }: {
   visible: boolean
   className?: string
+  noRemove?: boolean
 }) {
   const overlayRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
@@ -20,6 +22,7 @@ export function Overlay({
         className
       )}
       onTransitionEnd={(_) => {
+        if (noRemove) return
         setTimeout(() => {
           if (overlayRef.current) {
             overlayRef.current.remove()

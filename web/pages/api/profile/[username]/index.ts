@@ -44,6 +44,8 @@ export default async function handler(
     GET: async (currentUser) => {
       const user = await findUser(currentUser, username)
 
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
       res.status(200).json(user)
     },
   })
