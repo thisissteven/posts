@@ -1,12 +1,16 @@
 import React from 'react'
 
+import { useDelayedIsAuthenticated } from '@/hooks'
+
 import { LikeYellow } from '@/components/Icons'
 import { LinkButton, RegularButton } from '@/components/UI'
 
 import { useAuth } from '@/modules/Auth'
 
 export function FooterButton() {
-  const { isAuthenticated, openAuthDialog } = useAuth()
+  const { openAuthDialog } = useAuth()
+
+  const isAuthenticated = useDelayedIsAuthenticated()
 
   if (!isAuthenticated) {
     return (

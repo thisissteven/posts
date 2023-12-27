@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
 import { cn } from '@/lib'
-import { useUser, useWindowSize } from '@/hooks'
+import { useDelayedIsAuthenticated, useUser, useWindowSize } from '@/hooks'
 
 import { SidebarAvatar, Tooltip } from '@/components/UI'
 
@@ -50,9 +50,10 @@ export function ProfileNavItem() {
   const params = useParams()
 
   const {
-    isAuthenticated,
     user: { username },
   } = useUser()
+
+  const isAuthenticated = useDelayedIsAuthenticated()
   const isProfilePage =
     params &&
     params['username'] &&

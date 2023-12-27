@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import Link from 'next/link'
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
@@ -42,18 +41,20 @@ function UserListContent({ data }: { data?: FollowList }) {
                 />
               </div>
               <div>
-                <Link
+                <a
                   href={`/${data.username}`}
+                  target="_blank"
                   className="text-sm font-light tracking-wide hover:underline underline-offset-[3px] line-clamp-1"
                 >
                   {data.displayName}
-                </Link>
-                <Link
+                </a>
+                <a
                   href={`/${data.username}`}
+                  target="_blank"
                   className="text-xs font-light tracking-wide text-span hover:underline underline-offset-[3px] line-clamp-1"
                 >
                   @{data.username}
-                </Link>
+                </a>
               </div>
             </div>
 

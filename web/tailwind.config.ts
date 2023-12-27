@@ -33,6 +33,8 @@ const config: Config = {
         'autumn-yellow': '#f5b207',
         orange: '#ffa500',
         blue: '#0788f5',
+        website: '#383838',
+        'website-active': '#4e4e4e',
       },
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],

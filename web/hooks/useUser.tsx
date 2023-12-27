@@ -2,9 +2,32 @@ import { useSession } from 'next-auth/react'
 import * as React from 'react'
 
 type UpdateUserArgs = {
-  avatarUrl?: string
+  avatarUrl?: string | null
   displayName?: string
   username?: string
+}
+
+export function useDelayedIsAuthenticated() {
+  const { status } = useSession()
+
+  const [isAuthenticated, setIsAuthenticated] = React.useState(
+    status === 'authenticated'
+  )
+
+  React.useEffect(() => {
+    let timeout: NodeJS.Timeout
+    if (status === 'loading' || status === 'unauthenticated') {
+      timeout = setTimeout(() => {
+        setIsAuthenticated(false)
+      }, 300)
+    } else {
+      setIsAuthenticated(true)
+    }
+
+    return () => clearTimeout(timeout)
+  }, [status])
+
+  return isAuthenticated
 }
 
 export function useUser() {

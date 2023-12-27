@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
 import * as React from 'react'
 import {
   FormProvider,
@@ -49,6 +50,8 @@ export function EditProfileContent() {
 
   const { handleSubmit, reset } = methods
 
+  const router = useRouter()
+
   const onSubmit = async (values: EditProfileSchema) => {
     await trigger(values)
     await updateUser(values)
@@ -58,7 +61,7 @@ export function EditProfileContent() {
       revalidate: false,
     })
     if (values.username !== userData?.username) {
-      window.location.replace(`/${values.username}`)
+      router.replace(`/${values.username}`)
     }
   }
 

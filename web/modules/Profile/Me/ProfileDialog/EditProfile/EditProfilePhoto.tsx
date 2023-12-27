@@ -60,6 +60,7 @@ function _EditProfilePhoto({
       </div>
       {withRemoveImage && (
         <RegularButton
+          type="button"
           disabled={!user.avatarUrl}
           className="disabled:bg-soft-background disabled:opacity-60"
           onClick={async () => {
@@ -67,9 +68,7 @@ function _EditProfilePhoto({
               avatarUrl: null,
             })
 
-            await updateUser({
-              avatarUrl: undefined,
-            })
+            await updateUser({ avatarUrl: null })
           }}
           variant="secondary"
         >
