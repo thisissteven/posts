@@ -2,7 +2,14 @@ import * as React from 'react'
 
 import { useUser } from '@/hooks'
 
-import { RegularButton, Select, SharedDialog } from '@/components/UI'
+import { Information } from '@/components/Icons'
+import {
+  RegularButton,
+  Select,
+  SharedDialog,
+  Switch,
+  Tooltip,
+} from '@/components/UI'
 
 function SettingGroup({
   title,
@@ -14,7 +21,7 @@ function SettingGroup({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex justify-between items-center mt-4">
+    <div className="flex justify-between items-center mt-5">
       <div className="space-y-1">
         <div className="text-sm">{title}</div>
         <div className="text-span text-sm">{subtitle}</div>
@@ -54,27 +61,43 @@ function EmailNotifications() {
     <div>
       <h2 className="text-lg">Email notifications</h2>
 
-      <SettingGroup title="New followers">
-        <Select style={{ width: '104px' }}>
-          <option value="Everyone">Everyone</option>
-          <option value="Following">Following</option>
-          <option value="Nobody">Nobody</option>
-        </Select>
-      </SettingGroup>
-      <SettingGroup title="New replies">
-        <Select style={{ width: '104px' }}>
-          <option value="Everyone">Everyone</option>
-          <option value="Following">Following</option>
-          <option value="Nobody">Nobody</option>
-        </Select>
-      </SettingGroup>
-      <SettingGroup title="Tagged in a profile">
-        <Select style={{ width: '104px' }}>
-          <option value="Everyone">Everyone</option>
-          <option value="Following">Following</option>
-          <option value="Nobody">Nobody</option>
-        </Select>
-      </SettingGroup>
+      <fieldset disabled>
+        <form>
+          <SettingGroup title="New followers">
+            <div className="flex items-center gap-3">
+              <Tooltip
+                label="Receive an email notification when someone new follows you."
+                side="left"
+              >
+                <Information />
+              </Tooltip>
+              <Switch />
+            </div>
+          </SettingGroup>
+          <SettingGroup title="New replies">
+            <div className="flex items-center gap-3">
+              <Tooltip
+                label="Receive an email notification when you receive a new reply."
+                side="left"
+              >
+                <Information />
+              </Tooltip>
+              <Switch />
+            </div>
+          </SettingGroup>
+          <SettingGroup title="Tagged in a profile">
+            <div className="flex items-center gap-3">
+              <Tooltip
+                label="Receive an email notification when you are tagged in a profile."
+                side="left"
+              >
+                <Information />
+              </Tooltip>
+              <Switch />
+            </div>
+          </SettingGroup>
+        </form>
+      </fieldset>
     </div>
   )
 }
@@ -88,25 +111,28 @@ function Account() {
     <div>
       <h2 className="text-lg">Account</h2>
       <SettingGroup title="Email address" subtitle={email}>
-        <Select style={{ width: '104px' }}>
-          <option value="Everyone">Everyone</option>
-          <option value="Following">Following</option>
-          <option value="Nobody">Nobody</option>
-        </Select>
+        <RegularButton variant="secondary" style={{ width: '104px' }}>
+          Change
+        </RegularButton>
       </SettingGroup>
       <SettingGroup title="Blocked accounts" subtitle="1 blocked accounts">
-        <Select style={{ width: '104px' }}>
-          <option value="Everyone">Everyone</option>
-          <option value="Following">Following</option>
-          <option value="Nobody">Nobody</option>
-        </Select>
+        <RegularButton
+          disabled
+          className="disabled:bg-soft-background disabled:opacity-60"
+          variant="secondary"
+          style={{ width: '104px' }}
+        >
+          See all
+        </RegularButton>
       </SettingGroup>
       <SettingGroup title="Account" subtitle="Joined 11 days ago">
-        <Select style={{ width: '104px' }}>
-          <option value="Everyone">Everyone</option>
-          <option value="Following">Following</option>
-          <option value="Nobody">Nobody</option>
-        </Select>
+        <RegularButton
+          className="text-danger"
+          variant="secondary"
+          style={{ width: '104px' }}
+        >
+          Delete
+        </RegularButton>
       </SettingGroup>
     </div>
   )
@@ -116,7 +142,7 @@ export function AccountSettingsContent() {
   return (
     <>
       <div className="px-4 xs:px-8 flex-1 overflow-y-auto scrollbar-none">
-        <div className="py-8 space-y-12">
+        <div className="py-8 space-y-14">
           <GeneralSettings />
           <EmailNotifications />
           <Account />

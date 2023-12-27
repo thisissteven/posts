@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { CurrentUser, prisma, requestHandler } from '@/lib'
 
-const findUser = async (currentUser: CurrentUser, username: string) => {
+export const findUser = async (currentUser: CurrentUser, username: string) => {
   const user = await prisma.user.findUnique({
     where: {
       username,
@@ -14,6 +14,8 @@ const findUser = async (currentUser: CurrentUser, username: string) => {
       displayName: true,
       username: true,
       website: true,
+      profession: true,
+      pronouns: true,
       followedBy: !currentUser
         ? false
         : {
@@ -40,9 +42,35 @@ export default async function handler(
   await requestHandler(req, res, {
     allowedRoles: {
       GET: ['PUBLIC', 'USER'],
+      PUT: ['USER'],
     },
     GET: async (currentUser) => {
       const user = await findUser(currentUser, username)
+
+      res.status(200).json(user)
+    },
+    PUT: async (currentUser) => {
+      const userId = currentUser.id
+
+      if (username !== currentUser.username) {
+        res.status(400).json("Cannot update another user's profile")
+      }
+
+      const { displayName, profession, location, pronouns, website } = req.body
+
+      const user = await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          username: req.body.username as string,
+          displayName,
+          profession,
+          location,
+          pronouns,
+          website,
+        },
+      })
 
       res.status(200).json(user)
     },

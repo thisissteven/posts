@@ -25,6 +25,7 @@ type FormInputProps = {
   label?: string
   watchLength?: boolean
   withSuccessIndicator?: boolean
+  customError?: string
 } & React.ComponentPropsWithoutRef<'input'>
 
 // Use this when working with react-hook-form
@@ -35,6 +36,7 @@ export const FormInput = React.forwardRef(function FormInput(
     watchLength = false,
     required,
     withSuccessIndicator = false,
+    customError,
     ...rest
   }: FormInputProps,
   ref: React.ForwardedRef<HTMLInputElement>
@@ -70,6 +72,8 @@ export const FormInput = React.forwardRef(function FormInput(
           <span className="text-xs font-light text-span">
             {value.length} of {rest.maxLength}
           </span>
+        ) : customError ? (
+          <span className="text-xs text-danger-soft">{customError}</span>
         ) : (
           value.length > 0 && (
             <span className="text-xs text-danger-soft">{errorMessage}</span>
@@ -83,7 +87,9 @@ export const FormInput = React.forwardRef(function FormInput(
           ref={ref}
           className={cn(
             'w-full px-3 py-2 text-sm rounded-lg bg-soft-background placeholder:text-light-span focus:outline-none',
-            errorMessage && value.length > 0 && 'ring-2 ring-danger',
+            (errorMessage || customError) &&
+              value.length > 0 &&
+              'ring-2 ring-danger',
             className
           )}
         />
@@ -91,7 +97,7 @@ export const FormInput = React.forwardRef(function FormInput(
           <div
             className={cn(
               'absolute origin-center right-3 top-1/2 -translate-y-1/2 transition',
-              !errorMessage && dirtyFields[name]
+              !errorMessage && !customError && dirtyFields[name]
                 ? 'opacity-100 scale-125'
                 : 'opacity-0 scale-0'
             )}

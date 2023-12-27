@@ -1,11 +1,14 @@
 import Head from 'next/head'
 import { usePathname } from 'next/navigation'
 import React from 'react'
+import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
 
 import { Header, ProfileInfo, ProfileLoader } from '@/modules/Profile'
 import { Media, Posts, ProfileTabs, Replies } from '@/modules/Profile'
 import { ProfileDialog } from '@/modules/Profile/Me'
+
+import { FindUserResponse } from '../api/profile/[username]'
 
 import { ProfileTab } from '@/types'
 
@@ -20,10 +23,12 @@ export default function ProfilePage() {
 
   const activeTab = data ?? 'Posts'
 
+  const { data: user } = useSWR<FindUserResponse>(`/profile/${username}`)
+
   return (
     <>
       <Head>
-        <title>Profile</title>
+        <title>{user?.displayName}</title>
       </Head>
       <ProfileDialog />
 

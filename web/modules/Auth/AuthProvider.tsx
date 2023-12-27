@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             newWindow('/google-signin', 'Sign In with Google')
           }
         },
-        signOut: () => {
+        signOut: async () => {
           // clear cache for like and repost on sign out
           mutate(
             (key) =>
@@ -86,7 +86,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             undefined,
             { revalidate: false }
           )
-          signOut({ redirect: false }).then(() => router.replace('/'))
+          await signOut({ redirect: false })
+          router.replace('/')
         },
       }}
     >

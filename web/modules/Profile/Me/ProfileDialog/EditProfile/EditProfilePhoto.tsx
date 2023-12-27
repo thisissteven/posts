@@ -1,9 +1,13 @@
+import React from 'react'
+
 import { apiClient, uploadImage } from '@/lib'
 import { useMutation, useUser } from '@/hooks'
 
 import { ProfileAvatar, RegularButton, TabLoader } from '@/components/UI'
 
-export function EditProfilePhoto({
+export const EditProfilePhoto = React.memo(_EditProfilePhoto)
+
+function _EditProfilePhoto({
   withRemoveImage = false,
 }: {
   withRemoveImage?: boolean

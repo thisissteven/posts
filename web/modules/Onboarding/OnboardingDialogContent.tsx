@@ -112,15 +112,6 @@ function UsernameInput() {
 
   const usernameTaken = Boolean(user?.id)
 
-  React.useEffect(() => {
-    if (usernameTaken) {
-      setError('username', {
-        type: 'manual',
-        message: 'This username is taken',
-      })
-    }
-  }, [usernameTaken, setError])
-
   return (
     <FormInput
       {...register('username')}
@@ -128,6 +119,7 @@ function UsernameInput() {
       placeholder="your unique @username"
       autoComplete="off"
       withSuccessIndicator
+      customError={usernameTaken ? 'Username is taken' : undefined}
     />
   )
 }

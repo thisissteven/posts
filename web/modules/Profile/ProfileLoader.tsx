@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { usePathname } from 'next/navigation'
 import React from 'react'
-import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
 
 import { FollowList } from '@/lib'
 import { useUser } from '@/hooks'
@@ -17,13 +17,12 @@ export function ProfileLoader({ children }: { children: React.ReactNode }) {
   const isMe = isAuthenticated && pathname === `/${user.username}`
 
   const { isLoading: isLoadingFollowers, data: followersData } =
-    useSWR<FollowList>(!isMe ? null : '/profile/followers')
+    useSWRImmutable<FollowList>(!isMe ? null : '/profile/followers')
   const { isLoading: isLoadingFollowing, data: followingData } =
-    useSWR<FollowList>(!isMe ? null : '/profile/following')
+    useSWRImmutable<FollowList>(!isMe ? null : '/profile/following')
 
-  const { isLoading: isLoadingUser, data: userData } = useSWR<FindUserResponse>(
-    isMe ? null : `/profile/${username}`
-  )
+  const { isLoading: isLoadingUser, data: userData } =
+    useSWRImmutable<FindUserResponse>(isMe ? null : `/profile/${username}`)
 
   const hasData = isMe
     ? Boolean(followersData) && Boolean(followingData)
