@@ -1,22 +1,20 @@
 import clsx from 'clsx'
 import { usePathname } from 'next/navigation'
-import { useSession } from 'next-auth/react'
 import React from 'react'
 import useSWR from 'swr'
 
 import { FollowList } from '@/lib'
+import { useUser } from '@/hooks'
 
 import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 export function ProfileLoader({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession()
-  const isAuthenticated = status === 'authenticated'
+  const { user, isAuthenticated } = useUser()
 
   const pathname = usePathname()
   const username = pathname?.split('/')[1]
 
-  const isMe =
-    isAuthenticated && session && pathname === `/${session.user.username}`
+  const isMe = isAuthenticated && pathname === `/${user.username}`
 
   const { isLoading: isLoadingFollowers, data: followersData } =
     useSWR<FollowList>(!isMe ? null : '/profile/followers')

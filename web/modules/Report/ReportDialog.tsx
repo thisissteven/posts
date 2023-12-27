@@ -4,15 +4,15 @@ import { useDialogState } from '@/hooks'
 
 import { SharedDialog } from '@/components/UI'
 
-import { useGlobalDialogStore } from '@/store'
+import { useCurrentOpenDialog, useDialogActions } from '@/store'
 
 import { ReportDialogContent } from './ReportDialogContent'
 
 export function ReportDialog() {
   const dialogState = useDialogState()
 
-  const open = useGlobalDialogStore((state) => state.currentOpen)
-  const closeDialog = useGlobalDialogStore((state) => state.closeDialog)
+  const open = useCurrentOpenDialog()
+  const { closeDialog } = useDialogActions()
 
   React.useEffect(() => {
     if (open === 'REPORT') {

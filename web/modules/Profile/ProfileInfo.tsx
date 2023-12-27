@@ -1,19 +1,19 @@
 import { usePathname } from 'next/navigation'
 import React from 'react'
 
+import { useUser } from '@/hooks'
+
 import { ProfileInformation } from './Me'
 import { ProfileInformation as OthersProfileInformation } from './Others'
-import { useAuth } from '../Auth'
 
 export function ProfileInfo() {
   const pathname = usePathname()
 
   const username = pathname?.split('/')[1]
 
-  const { isAuthenticated, session } = useAuth()
+  const { isAuthenticated, user } = useUser()
 
-  const isMe =
-    isAuthenticated && session && pathname === `/${session.user.username}`
+  const isMe = isAuthenticated && pathname === `/${user.username}`
 
   return isMe ? (
     <ProfileInformation />

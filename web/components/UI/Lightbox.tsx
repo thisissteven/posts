@@ -3,7 +3,7 @@ import * as React from 'react'
 
 import { useHasAudio } from '@/hooks'
 
-import { useGlobalDialogStore } from '@/store'
+import { useDialogActions } from '@/store'
 
 import { Dialog, useDialog } from './LightboxDialog'
 import { Muted, Unmuted } from '../Icons'
@@ -98,7 +98,7 @@ export function Lightbox({
   height?: number
   alt?: string
 }) {
-  const openDialog = useGlobalDialogStore((state) => state.openDialog)
+  const { openDialog } = useDialogActions()
 
   return (
     <Dialog>

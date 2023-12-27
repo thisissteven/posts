@@ -1,24 +1,21 @@
-import { useSession } from 'next-auth/react'
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
 import { apiClient } from '@/lib'
-import { useDebouncedCallback } from '@/hooks'
+import { useDebouncedCallback, useUser } from '@/hooks'
 
 import { RegularButton } from '@/components/UI'
 
 import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 function useFollow(user?: FindUserResponse) {
-  const { data: session } = useSession()
+  const { user: currentUser } = useUser()
 
   const { data, mutate } = useSWRImmutable(
     `/profile/${user?.id}/follow`,
     () => {
       return {
-        status: user?.followedBy?.some(
-          (value) => value?.id === session?.user.id
-        ),
+        status: user?.followedBy?.some((value) => value?.id === currentUser.id),
       }
     }
   )

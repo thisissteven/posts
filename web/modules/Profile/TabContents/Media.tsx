@@ -38,8 +38,6 @@ export function Media() {
 
   return (
     <div className="relative">
-      <TabLoader visible={isLoading} overlayOnly={hasData} />
-
       <EmptyPlaceholder visible={isEmpty} />
 
       <ul className="p-2 columns-2 gap-2 space-y-2">
@@ -75,6 +73,8 @@ export function Media() {
       </ul>
 
       <LoadMore isEnd={isEnd} whenInView={loadMore} />
+
+      <TabLoader visible={isLoading} overlayOnly={hasData} />
     </div>
   )
 }

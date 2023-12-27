@@ -1,7 +1,5 @@
-import { useSession } from 'next-auth/react'
-
 import { apiClient, uploadImage } from '@/lib'
-import { useMutation } from '@/hooks'
+import { useMutation, useUser } from '@/hooks'
 
 import { ProfileAvatar, RegularButton, TabLoader } from '@/components/UI'
 
@@ -10,7 +8,7 @@ export function EditProfilePhoto({
 }: {
   withRemoveImage?: boolean
 }) {
-  const { data: session, update } = useSession()
+  const { user, updateUser } = useUser()
 
   const { trigger, status } = useMutation<{
     file: File
@@ -20,21 +18,15 @@ export function EditProfilePhoto({
     formData.append('type', 'image')
     const { source } = await uploadImage({
       formData,
-      userId: session?.user.id as string,
+      userId: user.id,
     })
 
     const avatarUrl = source.replace('w_430', 'h_92,w_92')
     const { data } = await apiClient.put(url, {
       avatarUrl,
     })
-    const sessionObj = {
-      ...session,
-      user: {
-        ...session?.user,
-        avatarUrl,
-      },
-    }
-    await update(sessionObj)
+
+    await updateUser({ avatarUrl })
     return data
   })
 
@@ -64,20 +56,16 @@ export function EditProfilePhoto({
       </div>
       {withRemoveImage && (
         <RegularButton
-          disabled={!session?.user?.avatarUrl}
+          disabled={!user.avatarUrl}
           className="disabled:bg-soft-background disabled:opacity-60"
           onClick={async () => {
             await apiClient.put('/profile/change-avatar', {
               avatarUrl: null,
             })
-            const sessionObj = {
-              ...session,
-              user: {
-                ...session?.user,
-                avatarUrl: null,
-              },
-            }
-            await update(sessionObj)
+
+            await updateUser({
+              avatarUrl: undefined,
+            })
           }}
           variant="secondary"
         >

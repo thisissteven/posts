@@ -2,19 +2,19 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
 
+import { useUser } from '@/hooks'
+
 import { BackIcon } from '@/components/Icons'
 
 import { HeaderContent } from './Me'
 import { HeaderContent as OthersHeaderContent } from './Others'
-import { useAuth } from '../Auth'
 
 export function Header() {
   const pathname = usePathname()
 
-  const { isAuthenticated, session } = useAuth()
+  const { isAuthenticated, user } = useUser()
 
-  const isMe =
-    isAuthenticated && session && pathname === `/${session.user.username}`
+  const isMe = isAuthenticated && pathname === `/${user.username}`
 
   return (
     <header className="bg-background sticky top-0 h-[61px]">

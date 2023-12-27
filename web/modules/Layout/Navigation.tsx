@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
 import { cn } from '@/lib'
-import { useWindowSize } from '@/hooks'
+import { useUser, useWindowSize } from '@/hooks'
 
 import { SidebarAvatar, Tooltip } from '@/components/UI'
 
@@ -27,6 +27,7 @@ export function NavItem({
   return (
     <li className={cn('h-[28px] shrink-0', className)}>
       <Link
+        scroll={false}
         onClick={(e) => {
           if (needAuth && !isAuthenticated) {
             e.preventDefault()
@@ -48,16 +49,17 @@ export function ProfileNavItem() {
 
   const params = useParams()
 
-  const { isAuthenticated, session } = useAuth()
+  const {
+    isAuthenticated,
+    user: { username },
+  } = useUser()
   const isProfilePage =
     params &&
     params['username'] &&
-    params['username'] === session?.user.username &&
+    params['username'] === username &&
     !params['thread-id']
 
   if (!isAuthenticated) return null
-
-  const username = session?.user?.username as string
 
   return (
     <Tooltip label="Profile" tabIndex={-1} side={side}>

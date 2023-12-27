@@ -1,16 +1,17 @@
 import NextImage from 'next/image'
-import { useSession } from 'next-auth/react'
 import React from 'react'
+
+import { useUser } from '@/hooks'
 
 import { Camera, DefaultProfile, DefaultProfileLarge } from '@/components/Icons'
 
 import { ThreadOwner } from '@/types'
 
 export function ThreadUserAvatar({ threadUser }: { threadUser: ThreadOwner }) {
-  const { data: session } = useSession()
+  const { user } = useUser()
 
-  const isOwner = threadUser.username === session?.user.username
-  const imageUrl = isOwner ? session?.user?.avatarUrl : threadUser.avatarUrl
+  const isOwner = threadUser.username === user.username
+  const imageUrl = isOwner ? user.avatarUrl : threadUser.avatarUrl
 
   if (!imageUrl)
     return (
@@ -33,10 +34,9 @@ export function ThreadUserAvatar({ threadUser }: { threadUser: ThreadOwner }) {
 }
 
 export function ProfileAvatar({ isLoading }: { isLoading: boolean }) {
-  const { data: session } = useSession()
+  const { user } = useUser()
 
-  const avatarUrl = session?.user?.avatarUrl
-  const username = session?.user?.username
+  const { avatarUrl, username } = user
 
   if (isLoading) return null
 
@@ -54,7 +54,7 @@ export function ProfileAvatar({ isLoading }: { isLoading: boolean }) {
         src={avatarUrl}
         width={92}
         height={92}
-        alt={username ?? 'profile'}
+        alt={username}
         className="object-cover w-full h-full"
       />
     </div>
@@ -62,10 +62,9 @@ export function ProfileAvatar({ isLoading }: { isLoading: boolean }) {
 }
 
 export function SidebarAvatar() {
-  const { data: session } = useSession()
+  const { user } = useUser()
 
-  const avatarUrl = session?.user?.avatarUrl
-  const username = session?.user?.username
+  const { avatarUrl, username } = user
 
   if (!avatarUrl || !username) {
     return (

@@ -1,10 +1,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { useSession } from 'next-auth/react'
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
 import { FollowList } from '@/lib'
+import { useUser } from '@/hooks'
 
 import { FindUserResponse } from '@/pages/api/profile/[username]'
 
@@ -14,7 +14,7 @@ import { EmptyPlaceholder } from './EmptyPlaceholder'
 import { FollowButton } from './FollowButton'
 
 function UserListContent({ data }: { data?: FollowList }) {
-  const { data: session } = useSession()
+  const { user: currentUser } = useUser()
   return (
     <div className="space-y-3 py-4">
       {data?.list.map((data) => {
@@ -22,7 +22,7 @@ function UserListContent({ data }: { data?: FollowList }) {
           ...data,
           followedBy: [
             {
-              id: session?.user.id,
+              id: currentUser.id,
             },
           ],
         } as FindUserResponse

@@ -1,9 +1,8 @@
-import { useSession } from 'next-auth/react'
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
 import { cn } from '@/lib'
-import { useWindowSize } from '@/hooks'
+import { useUser, useWindowSize } from '@/hooks'
 
 import { MoreIcon } from '@/components/Icons'
 import { Lightbox, Popover } from '@/components/UI'
@@ -22,9 +21,9 @@ type ThreadProps = {
 
 export function Thread({ thread, className, onClick }: ThreadProps) {
   const { width } = useWindowSize()
-  const { data: session } = useSession()
+  const { user } = useUser()
 
-  const userId = session?.user?.id
+  const userId = user.id
   const ownerId = thread.owner.id
 
   const isOwner = userId === ownerId

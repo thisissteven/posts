@@ -1,5 +1,6 @@
-import { useSession } from 'next-auth/react'
 import * as React from 'react'
+
+import { useUser } from '@/hooks'
 
 import { RegularButton, Select, SharedDialog } from '@/components/UI'
 
@@ -79,9 +80,10 @@ function EmailNotifications() {
 }
 
 function Account() {
-  const { data: session } = useSession()
+  const {
+    user: { email },
+  } = useUser()
 
-  const email = session?.user?.email as string
   return (
     <div>
       <h2 className="text-lg">Account</h2>

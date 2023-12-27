@@ -1,17 +1,20 @@
 import React from 'react'
 
+import { useUser } from '@/hooks'
+
 import { MoreIconWhite } from '@/components/Icons'
 import { Popover } from '@/components/UI'
 
-import { useGlobalDialogStore } from '@/store'
+import { useDialogActions } from '@/store'
 
 import { useAuth } from '@/modules/Auth'
 
 export function HeaderContent() {
-  const { signOut, session } = useAuth()
-  const openDialog = useGlobalDialogStore((state) => state.openDialog)
-
-  const username = session?.user?.username as string
+  const { signOut } = useAuth()
+  const {
+    user: { username },
+  } = useUser()
+  const { openDialog } = useDialogActions()
 
   return (
     <>

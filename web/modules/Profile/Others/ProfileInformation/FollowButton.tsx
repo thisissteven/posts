@@ -1,9 +1,8 @@
-import { useSession } from 'next-auth/react'
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
 import { apiClient } from '@/lib'
-import { useDebouncedCallback } from '@/hooks'
+import { useDebouncedCallback, useUser } from '@/hooks'
 
 import { RegularButton } from '@/components/UI'
 
@@ -11,25 +10,23 @@ import { useAuth } from '@/modules/Auth'
 import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 function useFollow(user?: FindUserResponse) {
-  const { data: session } = useSession()
+  const { user: currentUser, isAuthenticated } = useUser()
   const { openAuthDialog } = useAuth()
 
   const { data, mutate } = useSWRImmutable(
     `/profile/${user?.id}/follow`,
     () => {
       return {
-        status: user?.followedBy?.some(
-          (value) => value?.id === session?.user.id
-        ),
+        status: user?.followedBy?.some((value) => value?.id === currentUser.id),
       }
     }
   )
 
   React.useEffect(() => {
     mutate({
-      status: user?.followedBy?.some((value) => value?.id === session?.user.id),
+      status: user?.followedBy?.some((value) => value?.id === currentUser.id),
     })
-  }, [mutate, session?.user.id, user])
+  }, [currentUser.id, mutate, user])
 
   const state = data ?? {
     status: false,
@@ -38,7 +35,7 @@ function useFollow(user?: FindUserResponse) {
   const debounce = useDebouncedCallback()
 
   const onClick = () => {
-    if (!session) {
+    if (!isAuthenticated) {
       openAuthDialog()
       return
     }

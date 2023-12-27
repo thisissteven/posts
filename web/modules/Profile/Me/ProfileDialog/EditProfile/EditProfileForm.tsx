@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useSession } from 'next-auth/react'
 import * as React from 'react'
 import {
   FormProvider,
@@ -30,8 +29,6 @@ const editProfileSchema = z.object({
 export type EditProfileSchema = z.infer<typeof editProfileSchema>
 
 export function EditProfileForm() {
-  const { data: session } = useSession()
-
   const methods = useForm<EditProfileSchema>({
     resolver: zodResolver(editProfileSchema),
     mode: 'onChange',
