@@ -49,7 +49,7 @@ export const FormInput = React.forwardRef(function FormInput(
 
   const {
     control,
-    formState: { errors, dirtyFields, isDirty },
+    formState: { errors, dirtyFields },
   } = useFormContext()
 
   const value = useWatch({
@@ -68,16 +68,18 @@ export const FormInput = React.forwardRef(function FormInput(
             {required && '*'}
           </label>
         )}
-        {watchLength ? (
+        {watchLength && !customError && !errorMessage && (
           <span className="text-xs font-light text-span">
             {value.length} of {rest.maxLength}
           </span>
-        ) : customError ? (
+        )}
+
+        {customError && (
           <span className="text-xs text-danger-soft">{customError}</span>
-        ) : (
-          value.length > 0 && (
-            <span className="text-xs text-danger-soft">{errorMessage}</span>
-          )
+        )}
+
+        {value.length > 0 && errorMessage && !customError && (
+          <span className="text-xs text-danger-soft">{errorMessage}</span>
         )}
       </div>
       <div className="relative">

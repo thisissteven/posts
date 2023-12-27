@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
-import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
 import { z } from 'zod'
 
 import { useDebounce } from '@/hooks'
@@ -17,7 +17,38 @@ export const editProfileSchema = z.object({
   profession: z.string().max(32).optional(),
   location: z.string().max(32).optional(),
   pronouns: z.string().max(12).optional(),
-  website: z.string().url().max(96).optional().or(z.literal('')),
+  website: z
+    .string()
+    .max(96)
+    .refine((arg) => {
+      if (arg === undefined || arg === null || arg === '') {
+        return true
+      }
+
+      const domainRegex = /^[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]{2,}$/
+
+      if (!arg.startsWith('http://') && !arg.startsWith('https://')) {
+        return domainRegex.test(arg)
+      }
+
+      try {
+        const url = new URL(arg)
+
+        const hostnameParts = url.hostname.split('.')
+        if (hostnameParts.length < 2) {
+          return false
+        }
+
+        const tld = hostnameParts[hostnameParts.length - 1]
+        if (tld.length < 2) {
+          return false
+        }
+        return true
+      } catch {
+        return false
+      }
+    }, 'Invalid url')
+    .optional(),
 })
 
 export type EditProfileSchema = z.infer<typeof editProfileSchema>
@@ -79,9 +110,11 @@ export function EditProfileForm() {
 }
 
 function UsernameInput() {
-  const { register } = useFormContext<EditProfileSchema>()
-
-  const { control } = useFormContext<EditProfileSchema>()
+  const {
+    register,
+    control,
+    formState: { dirtyFields },
+  } = useFormContext<EditProfileSchema>()
 
   const value = useWatch({
     control,
@@ -90,11 +123,11 @@ function UsernameInput() {
 
   const debouncedValue = useDebounce(value, 300)
 
-  const { data } = useSWR<{
+  const { data } = useSWRImmutable<{
     id: string
   }>(`/user/${debouncedValue}`)
 
-  const isTaken = Boolean(data?.id)
+  const isTaken = Boolean(data?.id) && Boolean(dirtyFields.username)
 
   return (
     <FormInput

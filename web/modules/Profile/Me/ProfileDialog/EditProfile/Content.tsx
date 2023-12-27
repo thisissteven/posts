@@ -8,6 +8,7 @@ import {
 } from 'react-hook-form'
 import useSWR from 'swr'
 
+import { apiClient } from '@/lib'
 import { useDebounce, useMutation, useUser } from '@/hooks'
 
 import { RegularButton, SharedDialog } from '@/components/UI'
@@ -22,9 +23,16 @@ import {
 export function EditProfileContent() {
   const {
     user: { username },
+    updateUser,
   } = useUser()
-  const { data: userData } = useSWR(`/profile/${username}`)
-  const { trigger } = useMutation<EditProfileSchema>(`/profile/${username}`)
+  const { data: userData, mutate } = useSWR(`/profile/${username}`)
+  const { trigger, reset: resetStatus } = useMutation<EditProfileSchema>(
+    `/profile/${username}`,
+    async (url, args) => {
+      const response = await apiClient.put(url, args)
+      return response.data
+    }
+  )
 
   const methods = useForm<EditProfileSchema>({
     resolver: zodResolver(editProfileSchema),
@@ -39,13 +47,29 @@ export function EditProfileContent() {
     },
   })
 
-  const { handleSubmit } = methods
+  const { handleSubmit, reset } = methods
 
-  const onSubmit = async (values: EditProfileSchema) => {}
+  const onSubmit = async (values: EditProfileSchema) => {
+    await trigger(values)
+    await updateUser(values)
+    reset(values)
+    resetStatus()
+    mutate(values, {
+      revalidate: false,
+    })
+    if (values.username !== userData?.username) {
+      window.location.replace(`/${values.username}`)
+    }
+  }
 
   return (
     <FormProvider {...methods}>
       <form
+        onKeyDown={(e) => {
+          const target = e.target as HTMLElement
+          if (e.key === 'Enter' && target.tagName.toLowerCase() === 'input')
+            e.preventDefault()
+        }}
         onSubmit={handleSubmit(onSubmit)}
         className="bg-background h-[calc(100%-61px)] w-full flex flex-col justify-between"
       >
@@ -80,8 +104,15 @@ export function EditProfileContent() {
 function FormButton() {
   const {
     control,
-    formState: { isDirty, errors },
+    reset,
+    formState: { errors, dirtyFields },
   } = useFormContext<EditProfileSchema>()
+
+  const {
+    user: { username },
+  } = useUser()
+
+  const { status } = useMutation<EditProfileSchema>(`/profile/${username}`)
 
   const value = useWatch({
     control,
@@ -94,20 +125,31 @@ function FormButton() {
     id: string
   }>(`/user/${debouncedValue}`)
 
-  const usernameTaken = Boolean(data?.id)
+  const usernameTaken = Boolean(data?.id) && Boolean(dirtyFields.username)
 
   const hasError = Object.keys(errors).length > 0 || usernameTaken
 
-  if (isDirty) {
+  const isDirty = Object.keys(dirtyFields).length > 0
+
+  if (isDirty && status.state !== 'success') {
     return (
       <div className="pt-4 mx-4 xs:mx-8 border-t border-divider flex justify-end gap-4">
-        <RegularButton type="button" variant="underline">
+        <RegularButton
+          type="button"
+          variant="underline"
+          onClick={() =>
+            reset(undefined, {
+              keepDefaultValues: true,
+            })
+          }
+        >
           Cancel
         </RegularButton>
         <RegularButton
           variant="secondary"
           className="disabled:opacity-60 disabled:bg-soft-background"
           disabled={hasError}
+          isLoading={status.state === 'loading'}
         >
           Save
         </RegularButton>
@@ -117,7 +159,7 @@ function FormButton() {
 
   return (
     <div className="pt-4 mx-4 xs:mx-8 border-t border-divider flex justify-end">
-      <SharedDialog.Close asChild>
+      <SharedDialog.Close type="button" asChild>
         <RegularButton type="button" variant="secondary">
           Done
         </RegularButton>

@@ -8,6 +8,7 @@ import {
   useWatch,
 } from 'react-hook-form'
 import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
 import { z } from 'zod'
 
 import { useDebounce } from '@/hooks'
@@ -127,7 +128,7 @@ function UsernameInput() {
 function SubmitButton() {
   const {
     control,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useFormContext<OnboardingFormValues>()
 
   const value = useWatch({
@@ -137,13 +138,13 @@ function SubmitButton() {
 
   const debouncedValue = useDebounce(value, 300)
 
-  const { data: user, isLoading } = useSWR<{
+  const { data: user, isLoading } = useSWRImmutable<{
     id: string
   }>(`/user/${debouncedValue}`)
 
   const { isUpdating } = useOnboarding()
 
-  const usernameTaken = Boolean(user?.id)
+  const usernameTaken = Boolean(user?.id) && Boolean(dirtyFields.username)
 
   return (
     <RegularButton

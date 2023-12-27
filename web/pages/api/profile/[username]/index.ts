@@ -15,6 +15,7 @@ export const findUser = async (currentUser: CurrentUser, username: string) => {
       username: true,
       website: true,
       profession: true,
+      location: true,
       pronouns: true,
       followedBy: !currentUser
         ? false
@@ -71,6 +72,8 @@ export default async function handler(
           website,
         },
       })
+
+      await new Promise((resolve) => setTimeout(resolve, 500))
 
       res.status(200).json(user)
     },
