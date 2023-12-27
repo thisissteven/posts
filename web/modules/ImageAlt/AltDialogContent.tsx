@@ -2,10 +2,10 @@ import React from 'react'
 
 import { RegularButton, SharedDialog } from '@/components/UI'
 
-import { useGlobalDialogStore } from '@/store'
+import { useDialogArgs } from '@/store'
 
 export function AltDialogContent() {
-  const altText = useGlobalDialogStore((state) => state.dialogArgs)
+  const altText = useDialogArgs()
 
   return (
     <div className="bg-background p-6 space-y-2">

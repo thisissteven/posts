@@ -4,7 +4,7 @@ import React from 'react'
 
 import { useDelayedInfiniteSWR, useMutation } from '@/hooks'
 
-import { LoadMore, TabLoader, VirtualizedList } from '@/components/UI'
+import { LoadMore, VirtualizedList } from '@/components/UI'
 
 import { Thread } from '@/modules/Home'
 
@@ -37,11 +37,14 @@ export function ThreadListTemplate({ url }: { url: string }) {
 
   return (
     <div className="relative">
-      <TabLoader visible={isLoading} overlayOnly={hasData} />
-
       <EmptyPlaceholder visible={isEmpty} />
 
-      <div className={clsx(isLoading ? 'opacity-0' : 'opacity-100')}>
+      <div
+        className={clsx(
+          'duration-300',
+          isLoading ? 'opacity-0' : 'opacity-100'
+        )}
+      >
         <VirtualizedList data={threadItems} estimateSize={() => 600}>
           {(items, virtualizer) => {
             if (!threadItems) return null
