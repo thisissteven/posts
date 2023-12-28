@@ -39,7 +39,7 @@ export const findUser = async (currentUser: CurrentUser, username: string) => {
             },
           },
       blocking:
-        username === currentUser.username
+        username !== currentUser.username
           ? false
           : {
               select: {

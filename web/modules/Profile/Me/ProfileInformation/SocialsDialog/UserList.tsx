@@ -5,6 +5,8 @@ import useSWRImmutable from 'swr/immutable'
 import { FollowList } from '@/lib'
 import { useUser } from '@/hooks'
 
+import { DefaultProfileLarge } from '@/components/Icons'
+
 import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 import { useActiveTab } from './ActiveTabContext'
@@ -32,13 +34,19 @@ function UserListContent({ data }: { data?: FollowList }) {
           >
             <div className="flex items-center gap-3">
               <div className="shrink-0 relative w-12 h-12 bg-black rounded-full overflow-hidden">
-                <Image
-                  src={data.avatarUrl}
-                  width={48}
-                  height={48}
-                  alt={data.username}
-                  className="object-cover w-full h-full"
-                />
+                {data.avatarUrl ? (
+                  <Image
+                    src={data.avatarUrl}
+                    width={48}
+                    height={48}
+                    alt={data.username}
+                    className="object-cover w-full h-full"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-background">
+                    <DefaultProfileLarge />
+                  </div>
+                )}
               </div>
               <div>
                 <a
@@ -85,12 +93,10 @@ export function UserList() {
     )
 
   return (
-    <>
-      <CrossFade
-        contentA={content}
-        contentB={content}
-        currentIndex={currentIndex}
-      />
-    </>
+    <CrossFade
+      contentA={content}
+      contentB={content}
+      currentIndex={currentIndex}
+    />
   )
 }
