@@ -4,6 +4,9 @@ export type ThreadOwner = {
   displayName: string
   isSupporter: boolean
   avatarUrl?: string
+  blockedBy?: {
+    id: string
+  }[]
 }
 
 export type ThreadItem = {

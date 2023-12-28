@@ -5,7 +5,7 @@ import { cn } from '@/lib'
 import { useUser, useWindowSize } from '@/hooks'
 
 import { MoreIcon } from '@/components/Icons'
-import { Lightbox, Popover } from '@/components/UI'
+import { Lightbox, Popover, RegularButton } from '@/components/UI'
 
 import { ChatButton, LikeButton, RepostButton } from './Buttons'
 import { AddBookmark, CopyLinkToPost, DeletePost, ReportPost } from './Popover'
@@ -34,6 +34,42 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
     `/threads/${thread.id}/temp`,
     () => thread
   )
+
+  const { data: viewAnyway, mutate: mutateViewAnyway } =
+    useSWRImmutable<Record<string, boolean>>('/blocked-threads')
+
+  const hasBlock =
+    thread.owner.blockedBy?.some((value) => value?.id === userId) &&
+    !viewAnyway?.[thread.owner.username]
+
+  if (hasBlock) {
+    return (
+      <div className="flex gap-3 px-6 py-5 border-b border-b-divider">
+        <div className="pointer-events-none">
+          <div className="w-12 h-12 bg-background rounded-full border border-divider"></div>
+        </div>
+        <div className="w-full p-3.5 rounded-2xl border border-divider">
+          <div className="text-sm text-center text-span font-light">
+            Blocked User ·{' '}
+            <RegularButton
+              onClick={() => {
+                mutateViewAnyway(
+                  {
+                    [thread.owner.username]: true,
+                  },
+                  false
+                )
+              }}
+              variant="underline"
+              className="text-sm"
+            >
+              View anyway
+            </RegularButton>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (!data) {
     return (

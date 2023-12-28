@@ -11,7 +11,10 @@ export type Category =
   | 'following'
   | 'everyone'
 
-export function getThreadIncludeParams(user: CurrentUser, category: Category) {
+export function getThreadIncludeParams(
+  user: CurrentUser,
+  category: Category
+): Prisma.ThreadFindManyArgs | undefined {
   switch (category) {
     case 'posts':
     case 'replies':
@@ -28,6 +31,16 @@ export function getThreadIncludeParams(user: CurrentUser, category: Category) {
               isSupporter: true,
               username: true,
               displayName: true,
+              blockedBy: !user
+                ? false
+                : {
+                    where: {
+                      id: user.id,
+                    },
+                    select: {
+                      id: true,
+                    },
+                  },
             },
           },
           likes: !user

@@ -25,9 +25,8 @@ export function useHasBlock(
     (value) => value?.id === currentUser?.id
   )
 
-  const { data: viewAnyway, mutate } = useSWRImmutable<Record<string, boolean>>(
-    `/blocked-users/${username}`
-  )
+  const { data: viewAnyway, mutate } =
+    useSWRImmutable<Record<string, boolean>>('/blocked-users')
 
   const showBlockedInfo = hasBlock && !viewAnyway?.[username]
 
