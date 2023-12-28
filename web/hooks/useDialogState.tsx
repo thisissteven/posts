@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { useCurrentOpenDialog } from '@/store'
+
 type DialogState = 'initial' | 'animate' | 'exit'
 
 export type DialogStateReturnType = {
@@ -25,6 +27,8 @@ export function useDialogState() {
 
   const hasEverOpen = React.useRef(false)
 
+  const currentOpen = useCurrentOpenDialog()
+
   // Prevent layout shift caused by scrollbar
   React.useEffect(() => {
     if (open) {
@@ -34,11 +38,11 @@ export function useDialogState() {
       // Only set scrollbarGutter to 'stable' if the dialog has ever been open,
       // not on first mount
       // Otherwise, it will cause a layout shift when another dialog is still open
-      if (hasEverOpen.current) {
+      if (hasEverOpen.current && !currentOpen) {
         document.documentElement.style.scrollbarGutter = 'stable'
       }
     }
-  }, [open])
+  }, [currentOpen, open])
 
   const onOpenChange = React.useCallback((open: boolean) => {
     clearTimeout(timeoutRef.current!)

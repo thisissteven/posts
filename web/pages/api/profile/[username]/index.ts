@@ -17,6 +17,7 @@ export const findUser = async (currentUser: CurrentUser, username: string) => {
       profession: true,
       location: true,
       pronouns: true,
+      createdAt: true,
       followedBy: !currentUser
         ? false
         : {
@@ -37,6 +38,17 @@ export const findUser = async (currentUser: CurrentUser, username: string) => {
               id: true,
             },
           },
+      blocking:
+        username !== currentUser.username
+          ? false
+          : {
+              select: {
+                id: true,
+                displayName: true,
+                username: true,
+                avatarUrl: true,
+              },
+            },
     },
   })
 

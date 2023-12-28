@@ -49,7 +49,7 @@ export function ProfileDialog() {
         },
       }}
     >
-      <SharedDialog.Content className="max-h-[1181px] max-w-[540px] h-[87vh] rounded-xl overflow-hidden">
+      <SharedDialog.Content className="max-h-[1181px] max-w-[540px] h-[87vh] rounded-2xl overflow-hidden">
         <div className="bg-background h-full w-full pb-4 flex flex-col justify-between">
           <ProfileDialogTabs currentTab={currentTab} />
 

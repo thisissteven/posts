@@ -63,6 +63,7 @@ export function ReportDialogContent() {
           disabled={reason.length === 0}
           isLoading={status.state === 'loading'}
           variant="secondary"
+          loaderVariant="danger"
           className="text-danger disabled:bg-soft-background disabled:text-span"
         >
           Report

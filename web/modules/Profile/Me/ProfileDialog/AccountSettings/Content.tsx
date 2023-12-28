@@ -11,25 +11,9 @@ import {
   Tooltip,
 } from '@/components/UI'
 
-function SettingGroup({
-  title,
-  subtitle,
-  children,
-}: {
-  title: string
-  subtitle?: string
-  children: React.ReactNode
-}) {
-  return (
-    <div className="flex justify-between items-center mt-5">
-      <div className="space-y-1">
-        <div className="text-sm">{title}</div>
-        <div className="text-span text-sm">{subtitle}</div>
-      </div>
-      {children}
-    </div>
-  )
-}
+import { BlockedAccounts } from './BlockedAccounts'
+import { DeleteAccount } from './DeleteAccount'
+import { SettingGroup } from './SettingGroup'
 
 function GeneralSettings() {
   return (
@@ -115,25 +99,8 @@ function Account() {
           Change
         </RegularButton>
       </SettingGroup>
-      <SettingGroup title="Blocked accounts" subtitle="1 blocked accounts">
-        <RegularButton
-          disabled
-          className="disabled:bg-soft-background disabled:opacity-60"
-          variant="secondary"
-          style={{ width: '104px' }}
-        >
-          See all
-        </RegularButton>
-      </SettingGroup>
-      <SettingGroup title="Account" subtitle="Joined 11 days ago">
-        <RegularButton
-          className="text-danger"
-          variant="secondary"
-          style={{ width: '104px' }}
-        >
-          Delete
-        </RegularButton>
-      </SettingGroup>
+      <BlockedAccounts />
+      <DeleteAccount />
     </div>
   )
 }

@@ -169,6 +169,7 @@ function PostButton({ mutatedBy }: { mutatedBy: string }) {
   return (
     <RegularButton
       isLoading={status.state === 'loading' && status.mutatedBy === mutatedBy}
+      loaderVariant="secondary"
       disabled={
         (!media && input.length === 0) || Boolean(errors['textContent'])
       }
