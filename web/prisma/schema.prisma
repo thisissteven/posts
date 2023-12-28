@@ -87,6 +87,9 @@ model User {
   followedBy User[] @relation("UserFollows")
   following  User[] @relation("UserFollows")
 
+  blockedBy User[] @relation("UserBlocks")
+  blocking  User[] @relation("UserBlocks")
+
   sentMessages     Message[] @relation("sentMessages")
   receivedMessages Message[] @relation("receivedMessages")
 

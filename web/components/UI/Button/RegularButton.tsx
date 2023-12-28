@@ -54,10 +54,7 @@ export const RegularButton = React.forwardRef(function RegularButton(
       <>
         {isLoading && (
           <div className="absolute inset-0 w-full h-full grid place-items-center bg-inherit">
-            <LoadingBar
-              color={variant === 'primary' ? '#121212' : '#eeeeee'}
-              visible={isLoading}
-            />
+            <LoadingBar color={getLoaderColor(variant)} visible={isLoading} />
           </div>
         )}
         {children}
@@ -65,3 +62,15 @@ export const RegularButton = React.forwardRef(function RegularButton(
     </Comp>
   )
 })
+
+function getLoaderColor(variant: RegularButtonProps['variant']) {
+  if (variant === 'primary') return LoaderColor.primary
+  if (variant === 'secondary') return LoaderColor.danger
+  return LoaderColor.secondary
+}
+
+const LoaderColor = {
+  primary: '#121212',
+  secondary: '#eeeeee',
+  danger: '#f10000',
+}

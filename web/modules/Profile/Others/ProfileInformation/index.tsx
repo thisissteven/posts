@@ -13,6 +13,7 @@ import { useAuth } from '@/modules/Auth'
 import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 import { FollowButton } from './FollowButton'
+import { useHasBlock } from '../../TabContents/useHasBlock'
 
 export function ProfileInformation({ username }: { username: string }) {
   const { data: user } = useSWR<FindUserResponse>(`/profile/${username}`)
@@ -42,25 +43,34 @@ export function ProfileInformation({ username }: { username: string }) {
         <p className="text-lg">{user?.displayName}</p>
       </div>
 
-      <div className="mx-6 my-4 h-11 flex gap-2">
-        <FollowButton user={user} />
+      {useHasBlock(
+        () => {
+          return (
+            <div className="mx-6 my-4 h-11 flex gap-2">
+              <FollowButton user={user} />
 
-        <Tooltip label="Message" side="top" asChild>
-          <IconButton variant="filled" onClick={openAuthDialog}>
-            <div className="-translate-x-0.5">
-              <RepliesIconFilled />
+              <Tooltip label="Message" side="top" asChild>
+                <IconButton variant="filled" onClick={openAuthDialog}>
+                  <div className="-translate-x-0.5">
+                    <RepliesIconFilled />
+                  </div>
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip label="read.cv" side="top" sideOffset={6} tabIndex={-1}>
+                <IconButton asChild>
+                  <a href="https://read.cv" target="_blank">
+                    <ReadIcon />
+                  </a>
+                </IconButton>
+              </Tooltip>
             </div>
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip label="read.cv" side="top" sideOffset={6} tabIndex={-1}>
-          <IconButton asChild>
-            <a href="https://read.cv" target="_blank">
-              <ReadIcon />
-            </a>
-          </IconButton>
-        </Tooltip>
-      </div>
+          )
+        },
+        () => (
+          <div className="h-4"></div>
+        )
+      )}
     </>
   )
 }

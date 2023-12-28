@@ -8,6 +8,7 @@ import { useDelayedInfiniteSWR } from '@/hooks'
 import { LoadMore, TabLoader, Video } from '@/components/UI'
 
 import { EmptyPlaceholder } from './EmptyPlaceholder'
+import { useHasBlock } from './useHasBlock'
 
 type Media = {
   id: string
@@ -36,7 +37,7 @@ export function Media() {
 
   const router = useRouter()
 
-  return (
+  return useHasBlock(() => (
     <div className="relative">
       <EmptyPlaceholder visible={isEmpty} />
 
@@ -76,5 +77,5 @@ export function Media() {
 
       <TabLoader visible={isLoading} overlayOnly={hasData} />
     </div>
-  )
+  ))
 }

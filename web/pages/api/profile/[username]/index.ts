@@ -27,6 +27,16 @@ export const findUser = async (currentUser: CurrentUser, username: string) => {
               id: true,
             },
           },
+      blockedBy: !currentUser
+        ? false
+        : {
+            where: {
+              id: currentUser.id,
+            },
+            select: {
+              id: true,
+            },
+          },
     },
   })
 

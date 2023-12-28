@@ -6,6 +6,7 @@ type DialogName =
   | 'ALT'
   | 'EDIT_PROFILE'
   | 'ACCOUNT_SETTINGS'
+  | 'BLOCK_USER'
 
 interface DialogState {
   currentOpen: DialogName | null

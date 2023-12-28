@@ -1,16 +1,27 @@
 import { usePathname } from 'next/navigation'
 import React from 'react'
-import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
+
+import { useUser } from '@/hooks'
 
 import { MoreIconWhite } from '@/components/Icons'
 import { Popover } from '@/components/UI'
 
+import { useDialogActions } from '@/store'
+
+import { useAuth } from '@/modules/Auth'
 import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 export function HeaderContent() {
   const pathname = usePathname()
   const username = pathname?.split('/')[1]
-  const { data: user } = useSWR<FindUserResponse>(`/profile/${username}`)
+  const { data: user } = useSWRImmutable<FindUserResponse>(
+    `/profile/${username}`
+  )
+
+  const { isAuthenticated, user: currentUser } = useUser()
+  const { openDialog } = useDialogActions()
+  const { openAuthDialog } = useAuth()
 
   return (
     <>
@@ -24,8 +35,19 @@ export function HeaderContent() {
         </Popover.Trigger>
         <Popover.Content>
           <Popover.Item onSelect={() => {}}>Report</Popover.Item>
-          <Popover.Item onSelect={() => {}} className="text-danger">
-            Block
+          <Popover.Item
+            onSelect={() => {
+              if (!isAuthenticated) {
+                openAuthDialog()
+                return
+              }
+              openDialog('BLOCK_USER', user)
+            }}
+            className="text-danger"
+          >
+            {user?.blockedBy?.some((value) => value?.id === currentUser?.id)
+              ? 'Unblock'
+              : 'Block'}
           </Popover.Item>
         </Popover.Content>
       </Popover>

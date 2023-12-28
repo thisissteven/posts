@@ -3,15 +3,15 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { prisma, requestHandler } from '@/lib'
 
-type Follow = '0' | '1'
+type Block = '0' | '1'
 
-function getFollowingData(
-  follow: Follow,
+function getBlockingData(
+  block: Block,
   id: string
 ): Prisma.UserUpdateArgs['data'] {
-  if (follow === '0') {
+  if (block === '0') {
     return {
-      following: {
+      blocking: {
         disconnect: {
           id,
         },
@@ -19,8 +19,13 @@ function getFollowingData(
     }
   } else {
     return {
-      following: {
+      blocking: {
         connect: {
+          id,
+        },
+      },
+      following: {
+        disconnect: {
           id,
         },
       },
@@ -28,13 +33,13 @@ function getFollowingData(
   }
 }
 
-function getFollowedByData(
-  follow: Follow,
+function getBlockedByData(
+  block: Block,
   id: string
 ): Prisma.UserUpdateArgs['data'] {
-  if (follow === '0') {
+  if (block === '0') {
     return {
-      followedBy: {
+      blockedBy: {
         disconnect: {
           id,
         },
@@ -42,7 +47,7 @@ function getFollowedByData(
     }
   } else {
     return {
-      followedBy: {
+      blockedBy: {
         connect: {
           id,
         },
@@ -61,29 +66,40 @@ export default async function handler(
     },
 
     POST: async (currentUser) => {
-      const userToFollowId = req.query.username as string
-      const follow = req.query.follow as Follow
+      const userToBlockId = req.query.username as string
+      const block = req.query.block as Block
       const userId = currentUser.id as string
 
-      if (userId === userToFollowId) {
-        res.status(400).json('Cannot follow or unfollow self.')
+      if (userId === userToBlockId) {
+        res.status(400).json('Cannot block or unblock self.')
       }
 
-      const user = await prisma.user.update({
+      await prisma.user.update({
         where: {
           id: userId,
         },
         data: {
-          ...getFollowingData(follow, userToFollowId),
+          ...getBlockingData(block, userToBlockId),
         },
       })
 
-      await prisma.user.update({
+      const user = await prisma.user.update({
         where: {
-          id: userToFollowId,
+          id: userToBlockId,
         },
         data: {
-          ...getFollowedByData(follow, userId),
+          ...getBlockedByData(block, userId),
+          followedBy:
+            block === '1'
+              ? undefined
+              : {
+                  disconnect: {
+                    id: userToBlockId,
+                  },
+                },
+        },
+        select: {
+          blockedBy: true,
         },
       })
 
