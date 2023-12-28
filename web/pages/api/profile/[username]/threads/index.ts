@@ -77,9 +77,18 @@ export default async function handler(
                 },
             reposts: {
               where: {
-                user: {
-                  username,
-                },
+                OR: [
+                  {
+                    user: {
+                      username,
+                    },
+                  },
+                  {
+                    user: {
+                      username: currentUser.username,
+                    },
+                  },
+                ],
               },
               select: {
                 user: {
