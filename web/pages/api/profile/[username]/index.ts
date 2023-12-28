@@ -39,7 +39,7 @@ export const findUser = async (currentUser: CurrentUser, username: string) => {
             },
           },
       blocking:
-        username !== currentUser.username
+        username === currentUser.username
           ? false
           : {
               select: {
@@ -62,6 +62,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const username = req.query.username as string
+
   await requestHandler(req, res, {
     allowedRoles: {
       GET: ['PUBLIC', 'USER'],

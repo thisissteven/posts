@@ -60,6 +60,7 @@ export function BlockUserDialogContent() {
           }}
           isLoading={status.state === 'loading'}
           variant="secondary"
+          loaderVariant="danger"
           className="text-danger disabled:bg-soft-background disabled:text-span"
         >
           {hasBlock ? 'Unblock' : 'Block'}

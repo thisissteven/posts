@@ -94,9 +94,11 @@ model User {
   receivedMessages Message[] @relation("receivedMessages")
 
   notifications Notification[]
-  threadReport  ThreadReport[]
   replyLike     ReplyLike[]
   replyRepost   ReplyRepost[]
+
+  userReport   UserReport[]
+  threadReport ThreadReport[]
 }
 
 enum MediaType {
@@ -245,4 +247,13 @@ model ThreadReport {
 
   reporter   User?   @relation(fields: [reporterId], references: [id], onDelete: Cascade)
   reporterId String?
+}
+
+model UserReport {
+  id        String   @id @default(cuid())
+  reason    String
+  createdAt DateTime @default(now())
+
+  reporter   User   @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  reporterId String
 }

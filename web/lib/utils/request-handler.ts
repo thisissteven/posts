@@ -65,15 +65,13 @@ export async function requestHandler(
       return res.status(401).json({ message: 'Unauthorized' })
     }
 
-    const currentUser = !session
-      ? undefined
-      : {
-          avatarUrl: session?.user?.avatarUrl as string,
-          displayName: session?.user?.displayName as string,
-          id: session?.user?.id as string,
-          role: session?.user?.role as 'USER' | 'ADMIN',
-          username: session?.user?.username as string,
-        }
+    const currentUser = {
+      avatarUrl: session?.user?.avatarUrl as string,
+      displayName: session?.user?.displayName as string,
+      id: session?.user?.id ?? '',
+      role: session?.user?.role as 'USER' | 'ADMIN',
+      username: session?.user?.username ?? '',
+    }
 
     await handler[method]?.(currentUser as CurrentUser)
   } catch (err) {

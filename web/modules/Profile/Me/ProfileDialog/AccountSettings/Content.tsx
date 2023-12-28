@@ -1,7 +1,5 @@
 import * as React from 'react'
 
-import { useUser } from '@/hooks'
-
 import { Information } from '@/components/Icons'
 import {
   RegularButton,
@@ -12,6 +10,7 @@ import {
 } from '@/components/UI'
 
 import { BlockedAccounts } from './BlockedAccounts'
+import { ChangeEmail } from './ChangeEmail'
 import { DeleteAccount } from './DeleteAccount'
 import { SettingGroup } from './SettingGroup'
 
@@ -23,7 +22,7 @@ function GeneralSettings() {
         title="Allow new replies from"
         subtitle="Everyone can reply to you"
       >
-        <Select style={{ width: '104px' }}>
+        <Select style={{ width: '104px' }} disabled>
           <option value="Everyone">Everyone</option>
           <option value="Following">Following</option>
           <option value="Nobody">Nobody</option>
@@ -87,18 +86,10 @@ function EmailNotifications() {
 }
 
 function Account() {
-  const {
-    user: { email },
-  } = useUser()
-
   return (
     <div>
       <h2 className="text-lg">Account</h2>
-      <SettingGroup title="Email address" subtitle={email}>
-        <RegularButton variant="secondary" style={{ width: '104px' }}>
-          Change
-        </RegularButton>
-      </SettingGroup>
+      <ChangeEmail />
       <BlockedAccounts />
       <DeleteAccount />
     </div>

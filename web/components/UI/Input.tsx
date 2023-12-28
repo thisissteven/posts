@@ -88,7 +88,7 @@ export const FormInput = React.forwardRef(function FormInput(
           id={name}
           ref={ref}
           className={cn(
-            'w-full px-3 py-2 text-sm rounded-lg bg-soft-background placeholder:text-light-span focus:outline-none',
+            'w-full px-3 py-2 text-sm rounded-lg bg-soft-background placeholder:text-light-span focus:outline-none read-only:opacity-60 read-only:cursor-not-allowed',
             (errorMessage || customError) &&
               value.length > 0 &&
               'ring-2 ring-danger',

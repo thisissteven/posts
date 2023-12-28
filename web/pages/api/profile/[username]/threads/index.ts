@@ -22,8 +22,72 @@ export default async function handler(
         previousCursor,
         params: {
           where: {
+            OR: [
+              {
+                owner: {
+                  username,
+                },
+              },
+              {
+                reposts: {
+                  some: {
+                    user: {
+                      username,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+          include: {
             owner: {
-              username,
+              select: {
+                id: true,
+                avatarUrl: true,
+                isSupporter: true,
+                username: true,
+                displayName: true,
+                blockedBy: !currentUser
+                  ? false
+                  : {
+                      where: {
+                        id: currentUser.id,
+                      },
+                      select: {
+                        id: true,
+                      },
+                    },
+              },
+            },
+            likes: !currentUser
+              ? false
+              : {
+                  where: {
+                    user: {
+                      id: currentUser.id,
+                    },
+                  },
+                  select: {
+                    user: {
+                      select: {
+                        username: true,
+                      },
+                    },
+                  },
+                },
+            reposts: {
+              where: {
+                user: {
+                  username,
+                },
+              },
+              select: {
+                user: {
+                  select: {
+                    username: true,
+                  },
+                },
+              },
             },
           },
         },

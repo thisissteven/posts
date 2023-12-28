@@ -4,7 +4,7 @@ import useSWRImmutable from 'swr/immutable'
 import { cn } from '@/lib'
 import { useUser, useWindowSize } from '@/hooks'
 
-import { MoreIcon } from '@/components/Icons'
+import { MoreIcon, RepostSmall } from '@/components/Icons'
 import { Lightbox, Popover, RegularButton } from '@/components/UI'
 
 import { ChatButton, LikeButton, RepostButton } from './Buttons'
@@ -17,9 +17,15 @@ type ThreadProps = {
   thread: ThreadItem
   className?: string
   onClick?: () => void
+  showRepost?: boolean
 }
 
-export function Thread({ thread, className, onClick }: ThreadProps) {
+export function Thread({
+  thread,
+  className,
+  onClick,
+  showRepost = false,
+}: ThreadProps) {
   const { width } = useWindowSize()
   const { user } = useUser()
 
@@ -41,6 +47,8 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
   const hasBlock =
     thread.owner.blockedBy?.some((value) => value?.id === userId) &&
     !viewAnyway?.[thread.owner.username]
+
+  const repostedBy = thread.reposts && thread.reposts[0]?.user?.username
 
   if (hasBlock) {
     return (
@@ -91,10 +99,15 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
       onClick={onClick}
       role="article"
       className={cn(
-        'cursor-pointer px-6 py-5 border-b border-divider hover:bg-soft-black transition-colors duration-200',
+        'cursor-pointer px-6 py-4 border-b border-divider hover:bg-soft-black transition-colors duration-200',
         className
       )}
     >
+      {showRepost && repostedBy && (
+        <div className="ml-6 mb-2 flex items-center gap-2.5 text-sm font-light text-span">
+          <RepostSmall /> {repostedBy} reposted
+        </div>
+      )}
       <div className="flex gap-3">
         <Avatar threadUser={thread.owner} />
         <div className="flex-1">

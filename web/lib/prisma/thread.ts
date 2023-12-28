@@ -175,8 +175,8 @@ export async function getPaginatedThreads({
   const cursor = getCursor(previousCursor)
 
   const threads = await prisma.thread.findMany({
-    ...params,
     ...getThreadIncludeParams(currentUser, category),
+    ...params,
     skip,
     cursor,
     take: TAKE,

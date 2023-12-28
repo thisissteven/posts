@@ -1,10 +1,14 @@
+import { Prisma } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { CurrentUser, getPaginatedThreads, prisma, requestHandler } from '@/lib'
 
 type Category = 'everyone' | 'highlights' | 'following'
 
-export function getWhereParams(currentUser: CurrentUser, category: Category) {
+export function getWhereParams(
+  currentUser: CurrentUser,
+  category: Category
+): Prisma.ThreadFindManyArgs | undefined {
   switch (category) {
     case 'everyone' || undefined:
       return {
@@ -41,6 +45,13 @@ export function getWhereParams(currentUser: CurrentUser, category: Category) {
               },
               {
                 id: currentUser.id,
+              },
+              {
+                reposts: {
+                  some: {
+                    userId: currentUser.id,
+                  },
+                },
               },
             ],
           },

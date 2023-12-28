@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import React from 'react'
 
 import { useDelayedInfiniteSWR, useMutation } from '@/hooks'
@@ -17,7 +17,6 @@ export function ThreadListTemplate({ url }: { url: string }) {
 
   const {
     data: threadItems,
-    hasData,
     isEnd,
     isEmpty,
     mutate,
@@ -34,6 +33,11 @@ export function ThreadListTemplate({ url }: { url: string }) {
       mutate()
     }
   }, [mutate, status, url])
+
+  const pathname = usePathname()
+  const username = pathname?.split('/')[1]
+  const showRepost =
+    url === `/profile/${username}/threads` || url.includes('following')
 
   return (
     <div className="relative">
@@ -58,6 +62,7 @@ export function ThreadListTemplate({ url }: { url: string }) {
                   item={item}
                 >
                   <Thread
+                    showRepost={showRepost}
                     key={thread.id}
                     onClick={() =>
                       router.push(`${thread.owner.username}/${thread.id}`)

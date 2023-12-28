@@ -9,7 +9,7 @@ export function Switch({
       <input
         type="checkbox"
         checked={checked}
-        className="peer absolute inset-0 w-full h-full opacity-0"
+        className="peer absolute inset-0 w-full h-full opacity-0 disabled:cursor-not-allowed"
         {...rest}
       />
 
