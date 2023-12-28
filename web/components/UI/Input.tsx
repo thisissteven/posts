@@ -23,71 +23,91 @@ export const Input = React.forwardRef(function Input(
 
 type FormInputProps = {
   label?: string
-  id: string
   watchLength?: boolean
+  withSuccessIndicator?: boolean
+  customError?: string
 } & React.ComponentPropsWithoutRef<'input'>
 
 // Use this when working with react-hook-form
-export const FormInput = ({
-  className,
-  label,
-  id,
-  watchLength = false,
-  ...rest
-}: FormInputProps) => {
+export const FormInput = React.forwardRef(function FormInput(
+  {
+    className,
+    label,
+    watchLength = false,
+    required,
+    withSuccessIndicator = false,
+    customError,
+    ...rest
+  }: FormInputProps,
+  ref: React.ForwardedRef<HTMLInputElement>
+) {
+  const name = rest.name as string
+
+  if (!name) {
+    throw new Error('FormInput must have a name')
+  }
+
   const {
-    register,
     control,
     formState: { errors, dirtyFields },
   } = useFormContext()
 
   const value = useWatch({
     control,
-    name: id,
+    name,
   })
 
-  const errorMessage = errors[id]?.message as string
+  const errorMessage = errors[name]?.message as string
 
   return (
     <div className="space-y-1">
       <div className="flex px-0.5">
         {label && (
-          <label htmlFor={id} className="text-xs text-soft-primary flex-1">
+          <label htmlFor={name} className="text-xs text-soft-primary flex-1">
             {label}
+            {required && '*'}
           </label>
         )}
-        {watchLength ? (
+        {watchLength && !customError && !errorMessage && (
           <span className="text-xs font-light text-span">
             {value.length} of {rest.maxLength}
           </span>
-        ) : (
-          value.length > 0 && (
-            <span className="text-xs text-danger-soft">{errorMessage}</span>
-          )
+        )}
+
+        {customError && (
+          <span className="text-xs text-danger-soft">{customError}</span>
+        )}
+
+        {value.length > 0 && errorMessage && !customError && (
+          <span className="text-xs text-danger-soft">{errorMessage}</span>
         )}
       </div>
       <div className="relative">
         <input
           {...rest}
-          id={id}
-          {...register(id)}
+          id={name}
+          ref={ref}
           className={cn(
-            'w-full px-3 py-2 text-sm rounded-lg bg-soft-background placeholder:text-span focus:outline-none',
-            errorMessage && value.length > 0 && 'ring-2 ring-danger',
+            'w-full px-3 py-2 text-sm rounded-lg bg-soft-background placeholder:text-light-span focus:outline-none read-only:opacity-60 read-only:cursor-not-allowed',
+            (errorMessage || customError) &&
+              value.length > 0 &&
+              'ring-2 ring-danger',
             className
           )}
         />
-        <div
-          className={cn(
-            'absolute animate-in origin-center right-3 top-1/2 -translate-y-1/2 transition',
-            !errorMessage && dirtyFields[id]
-              ? 'opacity-100 scale-125'
-              : 'opacity-0 scale-0'
-          )}
-        >
-          <Success />
-        </div>
+        {withSuccessIndicator && (
+          <div
+            className={cn(
+              'absolute origin-center right-3 top-1/2 -translate-y-1/2 transition',
+              !errorMessage && !customError && dirtyFields[name]
+                ? 'opacity-100 scale-125'
+                : 'opacity-0 scale-0'
+            )}
+          >
+            <Success />
+          </div>
+        )}
       </div>
     </div>
   )
-}
+})

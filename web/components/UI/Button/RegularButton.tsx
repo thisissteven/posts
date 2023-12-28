@@ -10,6 +10,7 @@ type RegularButtonProps = {
   className?: string
   asChild?: boolean
   variant?: 'filled' | 'yellow' | 'underline' | 'primary' | 'secondary'
+  loaderVariant?: 'primary' | 'danger' | 'secondary'
   isLoading?: boolean
 } & React.ComponentPropsWithoutRef<'button'>
 
@@ -32,6 +33,7 @@ export const RegularButton = React.forwardRef(function RegularButton(
     className,
     asChild,
     variant = 'primary',
+    loaderVariant = 'primary',
     isLoading = false,
     disabled,
     ...rest
@@ -55,7 +57,7 @@ export const RegularButton = React.forwardRef(function RegularButton(
         {isLoading && (
           <div className="absolute inset-0 w-full h-full grid place-items-center bg-inherit">
             <LoadingBar
-              color={variant === 'primary' ? '#121212' : '#eeeeee'}
+              color={getLoaderColor(loaderVariant)}
               visible={isLoading}
             />
           </div>
@@ -65,3 +67,15 @@ export const RegularButton = React.forwardRef(function RegularButton(
     </Comp>
   )
 })
+
+function getLoaderColor(variant: RegularButtonProps['loaderVariant']) {
+  if (variant === 'primary') return LoaderColor.primary
+  if (variant === 'danger') return LoaderColor.danger
+  return LoaderColor.secondary
+}
+
+const LoaderColor = {
+  primary: '#eeeeee',
+  secondary: '#121212',
+  danger: '#f10000',
+}

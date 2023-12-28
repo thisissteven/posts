@@ -8,6 +8,7 @@ import {
   useWatch,
 } from 'react-hook-form'
 import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
 import { z } from 'zod'
 
 import { useDebounce } from '@/hooks'
@@ -42,7 +43,7 @@ export function OnboardingDialogContent() {
     },
   })
 
-  const { handleSubmit } = methods
+  const { handleSubmit, register } = methods
 
   return (
     <div className="bg-background overflow-x-hidden">
@@ -63,12 +64,13 @@ export function OnboardingDialogContent() {
                 <UsernameInput />
 
                 <FormInput
-                  id="displayName"
+                  {...register('displayName')}
                   label="Display Name"
                   placeholder="The name on your profile"
                   autoComplete="off"
                   maxLength={48}
                   watchLength
+                  withSuccessIndicator
                 />
 
                 <div className="flex justify-between">
@@ -96,7 +98,7 @@ export function OnboardingDialogContent() {
 }
 
 function UsernameInput() {
-  const { control, setError } = useFormContext<OnboardingFormValues>()
+  const { control, setError, register } = useFormContext<OnboardingFormValues>()
 
   const value = useWatch({
     control,
@@ -111,21 +113,14 @@ function UsernameInput() {
 
   const usernameTaken = Boolean(user?.id)
 
-  React.useEffect(() => {
-    if (usernameTaken) {
-      setError('username', {
-        type: 'manual',
-        message: 'This username is taken',
-      })
-    }
-  }, [usernameTaken, setError])
-
   return (
     <FormInput
-      id="username"
+      {...register('username')}
       label="Username"
       placeholder="your unique @username"
       autoComplete="off"
+      withSuccessIndicator
+      customError={usernameTaken ? 'Username is taken' : undefined}
     />
   )
 }
@@ -133,7 +128,7 @@ function UsernameInput() {
 function SubmitButton() {
   const {
     control,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useFormContext<OnboardingFormValues>()
 
   const value = useWatch({
@@ -143,13 +138,13 @@ function SubmitButton() {
 
   const debouncedValue = useDebounce(value, 300)
 
-  const { data: user, isLoading } = useSWR<{
+  const { data: user, isLoading } = useSWRImmutable<{
     id: string
   }>(`/user/${debouncedValue}`)
 
   const { isUpdating } = useOnboarding()
 
-  const usernameTaken = Boolean(user?.id)
+  const usernameTaken = Boolean(user?.id) && Boolean(dirtyFields.username)
 
   return (
     <RegularButton

@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useSession } from 'next-auth/react'
 import React from 'react'
 import {
   Controller,
@@ -9,7 +8,7 @@ import {
   useWatch,
 } from 'react-hook-form'
 
-import { useMutation } from '@/hooks'
+import { useMutation, useUser } from '@/hooks'
 
 import {
   Dialog,
@@ -18,6 +17,7 @@ import {
   UploadImageInput,
 } from '@/components/UI'
 
+import { CharacterCount } from './CharacterCount'
 import {
   createNewThread,
   NewThreadFormValues,
@@ -36,7 +36,7 @@ export function NewThreadTemplate({
   id: string
 }) {
   const [open, setOpen] = React.useState(false)
-  const { data: session } = useSession()
+  const { user } = useUser()
 
   const methods = useForm<NewThreadFormValues>({
     shouldUnregister: true,
@@ -75,7 +75,7 @@ export function NewThreadTemplate({
         onSubmit={handleSubmit(async function (data) {
           await trigger({
             ...data,
-            userId: session?.user.id as string,
+            userId: user.id,
           })
           await onSubmitted?.()
           reset()
@@ -110,7 +110,10 @@ export function NewThreadTemplate({
 
           {open && (
             <div className="flex justify-between mt-2">
-              <UploadImageInput {...register('source')} />
+              <div className="flex gap-4 items-center">
+                <UploadImageInput {...register('source')} />
+                <CharacterCount control={control} />
+              </div>
               <div className="space-x-2">
                 {canEscape ? (
                   <RegularButton
@@ -166,8 +169,9 @@ function PostButton({ mutatedBy }: { mutatedBy: string }) {
   return (
     <RegularButton
       isLoading={status.state === 'loading' && status.mutatedBy === mutatedBy}
+      loaderVariant="secondary"
       disabled={
-        !media && (input.length === 0 || Boolean(errors['textContent']))
+        (!media && input.length === 0) || Boolean(errors['textContent'])
       }
     >
       Post

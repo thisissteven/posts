@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
-import { Session } from 'next-auth'
 
 import { prisma } from '.'
+import { CurrentUser } from '..'
 
 export type Category =
   | 'media'
@@ -12,15 +12,16 @@ export type Category =
   | 'everyone'
 
 export function getThreadIncludeParams(
-  session: Session | null,
+  user: CurrentUser,
   category: Category
-) {
+): Prisma.ThreadFindManyArgs | undefined {
   switch (category) {
     case 'posts':
     case 'replies':
     case 'highlights':
     case 'following':
     case 'everyone':
+    case undefined:
       return {
         include: {
           owner: {
@@ -30,14 +31,24 @@ export function getThreadIncludeParams(
               isSupporter: true,
               username: true,
               displayName: true,
+              blockedBy: !user
+                ? false
+                : {
+                    where: {
+                      id: user.id,
+                    },
+                    select: {
+                      id: true,
+                    },
+                  },
             },
           },
-          likes: !session
+          likes: !user
             ? false
             : {
                 where: {
                   user: {
-                    id: session?.user?.id,
+                    id: user.id,
                   },
                 },
                 select: {
@@ -48,12 +59,12 @@ export function getThreadIncludeParams(
                   },
                 },
               },
-          reposts: !session
+          reposts: !user
             ? false
             : {
                 where: {
                   user: {
-                    id: session?.user?.id,
+                    id: user.id,
                   },
                 },
                 select: {
@@ -71,10 +82,7 @@ export function getThreadIncludeParams(
   }
 }
 
-export function getReplyIncludeParams(
-  session: Session | null,
-  category: Category
-) {
+export function getReplyIncludeParams(user: CurrentUser, category: Category) {
   switch (category) {
     case 'posts':
     case 'replies':
@@ -101,12 +109,12 @@ export function getReplyIncludeParams(
               },
             },
           },
-          likes: !session
+          likes: !user
             ? false
             : {
                 where: {
                   user: {
-                    id: session?.user?.id,
+                    id: user.id,
                   },
                 },
                 select: {
@@ -117,12 +125,12 @@ export function getReplyIncludeParams(
                   },
                 },
               },
-          reposts: !session
+          reposts: !user
             ? false
             : {
                 where: {
                   user: {
-                    id: session?.user?.id,
+                    id: user.id,
                   },
                 },
                 select: {
@@ -153,12 +161,12 @@ export function getCursor(previousCursor?: string | null) {
 const TAKE = 10
 
 export async function getPaginatedThreads({
-  session,
+  currentUser,
   category,
   previousCursor,
   params,
 }: {
-  session: Session | null
+  currentUser: CurrentUser
   category: Category
   previousCursor: string
   params?: Prisma.ThreadFindManyArgs
@@ -167,8 +175,8 @@ export async function getPaginatedThreads({
   const cursor = getCursor(previousCursor)
 
   const threads = await prisma.thread.findMany({
+    ...getThreadIncludeParams(currentUser, category),
     ...params,
-    ...getThreadIncludeParams(session, category),
     skip,
     cursor,
     take: TAKE,
@@ -187,12 +195,12 @@ export async function getPaginatedThreads({
 }
 
 export async function getPaginatedThreadReplies({
-  session,
+  currentUser,
   category,
   previousCursor,
   params,
 }: {
-  session: Session | null
+  currentUser: CurrentUser
   category: Category
   previousCursor: string
   params?: Prisma.ReplyFindManyArgs
@@ -202,7 +210,7 @@ export async function getPaginatedThreadReplies({
 
   const replies = await prisma.reply.findMany({
     ...params,
-    ...getReplyIncludeParams(session, category),
+    ...getReplyIncludeParams(currentUser, category),
     skip,
     cursor,
     take: TAKE,

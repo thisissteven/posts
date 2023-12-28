@@ -1,17 +1,28 @@
-import clsx from 'clsx'
 import * as React from 'react'
 
-export function Overlay({ visible }: { visible: boolean }) {
+import { cn } from '@/lib'
+
+export function Overlay({
+  visible,
+  className,
+  noRemove,
+}: {
+  visible: boolean
+  className?: string
+  noRemove?: boolean
+}) {
   const overlayRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   return (
     <div
       ref={overlayRef}
-      className={clsx(
+      className={cn(
         'absolute z-10 top-0 left-0 w-full h-full bg-background ease-in-out',
-        visible ? 'opacity-100' : 'duration-300 opacity-0 pointer-events-none'
+        visible ? 'opacity-100' : 'duration-300 opacity-0 pointer-events-none',
+        className
       )}
       onTransitionEnd={(_) => {
+        if (noRemove) return
         setTimeout(() => {
           if (overlayRef.current) {
             overlayRef.current.remove()

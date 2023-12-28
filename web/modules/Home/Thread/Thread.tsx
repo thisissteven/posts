@@ -1,12 +1,11 @@
-import { useSession } from 'next-auth/react'
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
 import { cn } from '@/lib'
-import { useWindowSize } from '@/hooks'
+import { useUser, useWindowSize } from '@/hooks'
 
-import { MoreIcon } from '@/components/Icons'
-import { Lightbox, Popover } from '@/components/UI'
+import { MoreIcon, RepostSmall } from '@/components/Icons'
+import { Lightbox, Popover, RegularButton } from '@/components/UI'
 
 import { ChatButton, LikeButton, RepostButton } from './Buttons'
 import { AddBookmark, CopyLinkToPost, DeletePost, ReportPost } from './Popover'
@@ -18,13 +17,19 @@ type ThreadProps = {
   thread: ThreadItem
   className?: string
   onClick?: () => void
+  showRepost?: boolean
 }
 
-export function Thread({ thread, className, onClick }: ThreadProps) {
+export function Thread({
+  thread,
+  className,
+  onClick,
+  showRepost = false,
+}: ThreadProps) {
   const { width } = useWindowSize()
-  const { data: session } = useSession()
+  const { user } = useUser()
 
-  const userId = session?.user?.id
+  const userId = user.id
   const ownerId = thread.owner.id
 
   const isOwner = userId === ownerId
@@ -35,6 +40,44 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
     `/threads/${thread.id}/temp`,
     () => thread
   )
+
+  const { data: viewAnyway, mutate: mutateViewAnyway } =
+    useSWRImmutable<Record<string, boolean>>('/blocked-threads')
+
+  const hasBlock =
+    thread.owner.blockedBy?.some((value) => value?.id === userId) &&
+    !viewAnyway?.[thread.owner.username]
+
+  const repostedBy = thread.reposts && thread.reposts[0]?.user?.username
+
+  if (hasBlock) {
+    return (
+      <div className="flex gap-3 px-6 py-5 border-b border-b-divider">
+        <div className="pointer-events-none">
+          <div className="w-12 h-12 bg-background rounded-full border border-divider"></div>
+        </div>
+        <div className="w-full p-3.5 rounded-2xl border border-divider">
+          <div className="text-sm text-center text-span font-light">
+            Blocked User ·{' '}
+            <RegularButton
+              onClick={() => {
+                mutateViewAnyway(
+                  {
+                    [thread.owner.username]: true,
+                  },
+                  false
+                )
+              }}
+              variant="underline"
+              className="text-sm"
+            >
+              View anyway
+            </RegularButton>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (!data) {
     return (
@@ -56,10 +99,15 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
       onClick={onClick}
       role="article"
       className={cn(
-        'cursor-pointer px-6 py-5 border-b border-divider hover:bg-soft-black transition-colors duration-200',
+        'cursor-pointer px-6 py-4 border-b border-divider hover:bg-soft-black transition-colors duration-200',
         className
       )}
     >
+      {showRepost && repostedBy && (
+        <div className="ml-6 mb-2 flex items-center gap-2.5 text-sm font-light text-span">
+          <RepostSmall /> {repostedBy} reposted
+        </div>
+      )}
       <div className="flex gap-3">
         <Avatar threadUser={thread.owner} />
         <div className="flex-1">
@@ -78,6 +126,7 @@ export function Thread({ thread, className, onClick }: ThreadProps) {
               highResSource={thread.highResSource}
               height={thread.height}
               width={thread.width}
+              alt={thread.alt}
             />
           )}
 

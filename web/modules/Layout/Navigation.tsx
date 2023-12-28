@@ -1,12 +1,10 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
 import { cn } from '@/lib'
-import { useWindowSize } from '@/hooks'
+import { useDelayedIsAuthenticated, useUser, useWindowSize } from '@/hooks'
 
-import { DefaultProfile } from '@/components/Icons'
-import { Tooltip } from '@/components/UI'
+import { SidebarAvatar, Tooltip } from '@/components/UI'
 
 import { useAuth } from '@/modules/Auth'
 
@@ -29,6 +27,7 @@ export function NavItem({
   return (
     <li className={cn('h-[28px] shrink-0', className)}>
       <Link
+        scroll={false}
         onClick={(e) => {
           if (needAuth && !isAuthenticated) {
             e.preventDefault()
@@ -50,22 +49,18 @@ export function ProfileNavItem() {
 
   const params = useParams()
 
-  const { isAuthenticated, session } = useAuth()
+  const {
+    user: { username },
+  } = useUser()
+
+  const isAuthenticated = useDelayedIsAuthenticated()
   const isProfilePage =
     params &&
     params['username'] &&
-    params['username'] === session?.user.username &&
+    params['username'] === username &&
     !params['thread-id']
 
   if (!isAuthenticated) return null
-
-  const hasImage = Boolean(session?.user?.avatarUrl)
-  const hasUsername = Boolean(session?.user?.username)
-
-  const userAvatarUrl = session?.user?.avatarUrl as string
-  const username = session?.user?.username as string
-
-  const hasProfilePhoto = hasImage && hasUsername
 
   return (
     <Tooltip label="Profile" tabIndex={-1} side={side}>
@@ -73,23 +68,12 @@ export function ProfileNavItem() {
         <NavItem href={`/${username}`} className="max-xs:h-[32px]">
           <div
             className={cn(
-              'w-6 h-6 flex items-center justify-center m-1 active:opacity-80 rounded-full',
+              'w-6 h-6 flex items-center justify-center m-1 active:opacity-80 rounded-full overflow-hidden bg-black',
               isProfilePage &&
                 'ring-2 ring-offset-2 ring-offset-background ring-primary duration-200'
             )}
           >
-            {hasProfilePhoto ? (
-              <Image
-                src={userAvatarUrl}
-                width={24}
-                height={24}
-                alt={username}
-              />
-            ) : (
-              <div className="rounded-full bg-background overflow-hidden scale-150">
-                <DefaultProfile />
-              </div>
-            )}
+            <SidebarAvatar />
           </div>
         </NavItem>
       </div>

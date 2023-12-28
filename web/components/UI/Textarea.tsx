@@ -1,6 +1,7 @@
-import clsx from 'clsx'
 import React from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
+
+import { cn } from '@/lib'
 
 type TextareaProps = {
   onEscape?: (e: KeyboardEvent) => void
@@ -45,7 +46,7 @@ export function Textarea({
           textAreaRef.current.style.height = minHeight
           textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`
         }}
-        className={clsx(
+        className={cn(
           'bg-transparent placeholder:text-span resize-none focus:outline-none font-light text-soft-primary w-full',
           className
         )}
@@ -58,6 +59,7 @@ export function Textarea({
 // use this when working with react-hook-form
 export function FormTextarea({
   className,
+  placeholder,
   placeholderClassName,
   minHeight = '48px',
   onEscape = (_) => {},
@@ -100,7 +102,7 @@ export function FormTextarea({
           textAreaRef.current.style.height = minHeight
           textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`
         }}
-        className={clsx(
+        className={cn(
           'bg-transparent placeholder:text-transparent resize-none focus:outline-none font-light text-soft-primary w-full',
           className
         )}
@@ -108,13 +110,13 @@ export function FormTextarea({
       />
       <span
         aria-hidden
-        className={clsx(
+        className={cn(
           'text-span absolute whitespace-nowrap pointer-events-none font-light left-0',
-          value.length > 0 && 'hidden',
+          value?.length > 0 && 'hidden',
           placeholderClassName
         )}
       >
-        What&apos;s on your mind...
+        {placeholder}
       </span>
     </div>
   )

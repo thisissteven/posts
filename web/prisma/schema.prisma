@@ -52,14 +52,20 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  username      String?   @unique
-  displayName   String?
+  id          String  @id @default(cuid())
+  username    String? @unique
+  displayName String?
+
   email         String?   @unique
   emailVerified DateTime?
-  avatarUrl     String?
-  website       String?
-  isSupporter   Boolean   @default(false)
+
+  avatarUrl String?
+
+  profession  String?
+  location    String?
+  pronouns    String?
+  website     String?
+  isSupporter Boolean @default(false)
 
   // --- Unused ---
   name  String?
@@ -81,13 +87,18 @@ model User {
   followedBy User[] @relation("UserFollows")
   following  User[] @relation("UserFollows")
 
+  blockedBy User[] @relation("UserBlocks")
+  blocking  User[] @relation("UserBlocks")
+
   sentMessages     Message[] @relation("sentMessages")
   receivedMessages Message[] @relation("receivedMessages")
 
   notifications Notification[]
-  threadReport  ThreadReport[]
   replyLike     ReplyLike[]
   replyRepost   ReplyRepost[]
+
+  userReport   UserReport[]
+  threadReport ThreadReport[]
 }
 
 enum MediaType {
@@ -100,6 +111,7 @@ model Thread {
   textContent   String
   mediaType     MediaType?
   source        String?
+  alt           String?
   highResSource String?
   width         Int?
   height        Int?
@@ -152,6 +164,7 @@ model Reply {
   textContent   String
   mediaType     MediaType?
   source        String?
+  alt           String?
   highResSource String?
   width         Int?
   height        Int?
@@ -234,4 +247,13 @@ model ThreadReport {
 
   reporter   User?   @relation(fields: [reporterId], references: [id], onDelete: Cascade)
   reporterId String?
+}
+
+model UserReport {
+  id        String   @id @default(cuid())
+  reason    String
+  createdAt DateTime @default(now())
+
+  reporter   User   @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  reporterId String
 }

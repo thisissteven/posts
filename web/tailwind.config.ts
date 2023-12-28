@@ -22,6 +22,7 @@ const config: Config = {
         popover: '#484848',
         primary: '#eeeeee',
         span: '#888888',
+        'light-span': '#616161',
         success: '#32bd64',
         'black-shadow': '#191919',
         'soft-background': '#333333',
@@ -30,6 +31,10 @@ const config: Config = {
         'soft-primary': '#bbbbbb',
         'autumn-brown': '#654e18',
         'autumn-yellow': '#f5b207',
+        orange: '#ffa500',
+        blue: '#0788f5',
+        website: '#383838',
+        'website-active': '#4e4e4e',
       },
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],

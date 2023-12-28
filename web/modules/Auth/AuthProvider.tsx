@@ -1,5 +1,4 @@
 import { usePathname, useRouter } from 'next/navigation'
-import { Session } from 'next-auth'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import React from 'react'
 import { isMobile } from 'react-device-detect'
@@ -19,7 +18,6 @@ type AuthContextValues = {
   signOut: () => void
 
   signInWithGoogle: () => void
-  session: Session | null
 }
 
 const AuthContext = React.createContext({} as AuthContextValues)
@@ -31,7 +29,7 @@ export function useAuth() {
 const needAuthPathnames = ['/replies', '/notifications', '/bookmarks']
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession()
+  const { status } = useSession()
 
   const dialogState = useDialogState()
 
@@ -79,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             newWindow('/google-signin', 'Sign In with Google')
           }
         },
-        signOut: () => {
+        signOut: async () => {
           // clear cache for like and repost on sign out
           mutate(
             (key) =>
@@ -88,9 +86,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             undefined,
             { revalidate: false }
           )
-          signOut({ redirect: false }).then(() => router.replace('/'))
+          await signOut({ redirect: false })
+          router.replace('/')
         },
-        session,
       }}
     >
       <SharedDialog dialogState={dialogState}>

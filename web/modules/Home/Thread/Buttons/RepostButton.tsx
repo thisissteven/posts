@@ -26,7 +26,7 @@ export function RepostButton({ thread }: { thread: ThreadItem }) {
       <span
         aria-hidden={!state.status}
         className={clsx(
-          'text-xs font-light duration-75',
+          'text-xs font-light',
           state.count > 0 ? 'opacity-100' : 'opacity-0',
           state.status ? 'text-success' : 'text-span'
         )}

@@ -1,10 +1,9 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
 import { getRelativeTimeString } from '@/lib'
 
-import { DefaultProfileLarge } from '@/components/Icons'
+import { ThreadUserAvatar } from '@/components/UI'
 
 import { ThreadItem, ThreadOwner } from '@/types'
 
@@ -18,18 +17,7 @@ export function Avatar({ threadUser }: { threadUser: ThreadOwner }) {
       href={`/${threadUser.username}`}
       className="h-fit"
     >
-      <div className="w-12 h-12 rounded-full overflow-hidden">
-        {threadUser.avatarUrl ? (
-          <Image
-            width={48}
-            height={48}
-            src={threadUser.avatarUrl}
-            alt="avatar"
-          />
-        ) : (
-          <DefaultProfileLarge />
-        )}
-      </div>
+      <ThreadUserAvatar threadUser={threadUser} />
     </Link>
   )
 }

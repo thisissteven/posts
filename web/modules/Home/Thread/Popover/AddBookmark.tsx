@@ -2,10 +2,10 @@ import React from 'react'
 
 import { Popover } from '@/components/UI'
 
-import { useGlobalDialogStore } from '@/store'
+import { useDialogActions } from '@/store'
 
 export function AddBookmark() {
-  const openDialog = useGlobalDialogStore((state) => state.openDialog)
+  const { openDialog } = useDialogActions()
 
   return (
     <Popover.Item

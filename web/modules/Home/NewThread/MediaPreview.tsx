@@ -5,9 +5,13 @@ import { useFormContext, useWatch } from 'react-hook-form'
 import { useHasAudio } from '@/hooks/useHasAudio'
 
 import { Close, Muted, Unmuted } from '@/components/Icons'
+import { Popover } from '@/components/UI'
+
+import { DescriptiveText } from './DescriptiveText'
+import { NewThreadFormValues } from './Form'
 
 export const MediaPreview = () => {
-  const { control, setValue } = useFormContext()
+  const { control, setValue } = useFormContext<NewThreadFormValues>()
 
   const input = useWatch({
     control,
@@ -27,6 +31,7 @@ export const MediaPreview = () => {
   return (
     <div className="relative">
       <Media src={mediaUrl} type={mediaType} />
+
       <button
         type="button"
         onClick={() => {
@@ -36,6 +41,28 @@ export const MediaPreview = () => {
       >
         <Close />
       </button>
+      {mediaType === 'image' && (
+        <Popover>
+          <Popover.Trigger asChild>
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+              }}
+              className="absolute active:bg-black/60 duration-200 right-0 top-0 mx-3 my-4 w-7 h-7 rounded-full bg-black/50 text-[10px]"
+            >
+              ALT
+            </button>
+          </Popover.Trigger>
+          <Popover.Content
+            sideOffset={8}
+            align="center"
+            customContent
+            className="w-[calc(100vw-1rem)] xs:w-[320px]"
+          >
+            <DescriptiveText />
+          </Popover.Content>
+        </Popover>
+      )}
     </div>
   )
 }

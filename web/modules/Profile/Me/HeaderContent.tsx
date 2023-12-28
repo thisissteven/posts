@@ -1,14 +1,20 @@
 import React from 'react'
 
+import { useUser } from '@/hooks'
+
 import { MoreIconWhite } from '@/components/Icons'
 import { Popover } from '@/components/UI'
+
+import { useDialogActions } from '@/store'
 
 import { useAuth } from '@/modules/Auth'
 
 export function HeaderContent() {
-  const { signOut, session } = useAuth()
-
-  const username = session?.user?.username as string
+  const { signOut } = useAuth()
+  const {
+    user: { username },
+  } = useUser()
+  const { openDialog } = useDialogActions()
 
   return (
     <>
@@ -21,7 +27,13 @@ export function HeaderContent() {
           </button>
         </Popover.Trigger>
         <Popover.Content>
-          <Popover.Item onSelect={() => {}}>Settings</Popover.Item>
+          <Popover.Item
+            onSelect={() => {
+              openDialog('ACCOUNT_SETTINGS')
+            }}
+          >
+            Settings
+          </Popover.Item>
           <Popover.Item onSelect={signOut}>Log out</Popover.Item>
         </Popover.Content>
       </Popover>

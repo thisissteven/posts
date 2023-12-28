@@ -1,9 +1,8 @@
-import { useSession } from 'next-auth/react'
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
 import { apiClient } from '@/lib'
-import { useDebouncedCallback } from '@/hooks'
+import { useDebouncedCallback, useUser } from '@/hooks'
 
 import { ThreadItem } from '@/types'
 
@@ -33,9 +32,9 @@ export function useButtonCount({
 }) {
   const countKey = React.useMemo(() => getCountKey(countType), [countType])
 
-  const { data: session } = useSession()
-
-  const username = session?.user?.username
+  const {
+    user: { username },
+  } = useUser()
 
   const { data, mutate } = useSWRImmutable(
     `/threads/${thread.id}/${countType}`,

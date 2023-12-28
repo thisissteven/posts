@@ -1,41 +1,95 @@
-import Image from 'next/image'
 import React from 'react'
+import useSWR from 'swr'
 
-import { Camera, PencilIcon, ReadIcon } from '@/components/Icons'
+import { useUser } from '@/hooks'
+
+import { PencilIcon, ReadIcon } from '@/components/Icons'
 import { IconButton, Tooltip } from '@/components/UI'
 
-import { useAuth } from '@/modules/Auth'
+import { useDialogActions } from '@/store'
+
+import { EditProfilePhoto } from '@/modules/Profile/Me'
+import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 import Followers from './Followers'
 import { Following } from './Following'
 
+function getDescription(user?: FindUserResponse) {
+  const pronounOnly = user?.pronouns && !user?.profession && !user?.location
+  const professionOnly = user?.profession && !user?.location && !user?.pronouns
+  const locationOnly = user?.location && !user?.profession && !user?.pronouns
+
+  const pronounAndProfession =
+    user?.pronouns && user?.profession && !user?.location
+  const professionAndLocation =
+    user?.profession && user?.location && !user?.pronouns
+
+  const nothing = !user?.profession && !user?.location && !user?.pronouns
+
+  if (nothing) {
+    return ''
+  }
+
+  if (professionOnly) {
+    return user?.profession
+  }
+
+  if (locationOnly) {
+    return user?.location
+  }
+
+  if (pronounOnly) {
+    return user?.pronouns
+  }
+
+  if (professionAndLocation) {
+    return `${user?.profession} in ${user?.location}`
+  }
+
+  if (pronounAndProfession) {
+    return `${user?.profession}, ${user?.pronouns}`
+  }
+
+  return `${user?.profession} in ${user?.location}, ${user?.pronouns}`
+}
+
 export function ProfileInformation() {
-  const { isAuthenticated, session } = useAuth()
+  const {
+    user: { username, displayName },
+  } = useUser()
+  const { data: user } = useSWR<FindUserResponse>(`/profile/${username}`)
 
-  if (!isAuthenticated) return null
+  const { openDialog } = useDialogActions()
 
-  const hasImage = Boolean(session?.user?.avatarUrl)
-  const hasUsername = Boolean(session?.user?.username)
+  const description = getDescription(user)
 
-  const userAvatarUrl = session?.user?.avatarUrl as string
-  const username = session?.user?.username as string
+  const website = user?.website?.replace('https://', '').replace('http://', '')
 
-  const displayName = session?.user?.displayName as string
-
-  const hasProfilePhoto = hasImage && hasUsername
+  const href =
+    !website?.startsWith('http://') && !website?.startsWith('https://')
+      ? 'https://' + website
+      : website
 
   return (
     <>
       <div className="px-6 py-4 flex items-center gap-4">
-        <div className="w-[92px] h-[92px] rounded-full bg-background border border-divider flex items-center justify-center">
-          {hasProfilePhoto ? (
-            <Image src={userAvatarUrl} width={24} height={24} alt={username} />
-          ) : (
-            <Camera />
+        <EditProfilePhoto />
+
+        <div>
+          <div className="text-2xl font-light">{displayName}</div>
+          <div className="text-sm text-soft-primary">{description}</div>
+          {website && (
+            <div className="mt-1.5">
+              <a
+                href={href}
+                className="active:bg-website-active bg-website px-3 py-1 rounded-full text-xs font-light tracking-wide w-fit text-soft-primary"
+                target="_blank"
+              >
+                {website}
+              </a>
+            </div>
           )}
         </div>
-
-        <p className="text-lg">{displayName}</p>
       </div>
 
       <div className="mx-6 my-4 h-11 flex gap-2">
@@ -51,7 +105,12 @@ export function ProfileInformation() {
         </Tooltip>
 
         <Tooltip label="Edit profile" side="top" asChild>
-          <IconButton variant="filled">
+          <IconButton
+            variant="filled"
+            onClick={() => {
+              openDialog('EDIT_PROFILE')
+            }}
+          >
             <PencilIcon />
           </IconButton>
         </Tooltip>

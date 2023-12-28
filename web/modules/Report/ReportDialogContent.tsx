@@ -4,12 +4,12 @@ import { useMutation } from '@/hooks'
 
 import { RegularButton, SharedDialog, Textarea } from '@/components/UI'
 
-import { useGlobalDialogStore } from '@/store'
+import { useDialogArgs } from '@/store'
 
 import { ThreadItem } from '@/types'
 
 export function ReportDialogContent() {
-  const thread = useGlobalDialogStore((state) => state.dialogArgs) as ThreadItem
+  const thread = useDialogArgs() as ThreadItem
 
   const [reason, setReason] = React.useState('')
 
@@ -63,6 +63,7 @@ export function ReportDialogContent() {
           disabled={reason.length === 0}
           isLoading={status.state === 'loading'}
           variant="secondary"
+          loaderVariant="danger"
           className="text-danger disabled:bg-soft-background disabled:text-span"
         >
           Report

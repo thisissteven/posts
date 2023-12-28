@@ -2,22 +2,22 @@ import React from 'react'
 
 import { Popover } from '@/components/UI'
 
-import { useGlobalDialogStore } from '@/store'
+import { useDialogActions } from '@/store'
 
 import { useAuth } from '@/modules/Auth'
 
 import { ThreadItem } from '@/types'
 
 export function ReportPost({ thread }: { thread: ThreadItem }) {
-  const { session, openAuthDialog } = useAuth()
+  const { openAuthDialog, isAuthenticated } = useAuth()
 
-  const openDialog = useGlobalDialogStore((state) => state.openDialog)
+  const { openDialog } = useDialogActions()
 
   return (
     <Popover.Item
       className="text-danger-soft"
       onSelect={() => {
-        if (!session) {
+        if (!isAuthenticated) {
           openAuthDialog()
         } else {
           openDialog('REPORT', thread)

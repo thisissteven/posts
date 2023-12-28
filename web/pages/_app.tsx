@@ -10,7 +10,9 @@ import { apiClient } from '@/lib'
 import { useScrollRestoration } from '@/hooks'
 
 import { AuthProvider } from '@/modules/Auth'
+import { BlockUserDialog } from '@/modules/BlockUser'
 import { BookmarksDialog } from '@/modules/Bookmarks'
+import { AltDialog } from '@/modules/ImageAlt'
 import { AppLayout } from '@/modules/Layout/AppLayout'
 import { OnboardingProvider } from '@/modules/Onboarding'
 import { ReportDialog } from '@/modules/Report'
@@ -29,12 +31,17 @@ export default function App({ Component, pageProps, router }: AppProps) {
       `}</style>
       <SWRConfig
         value={{
-          fetcher: (url) => apiClient.get(url).then((res) => res.data),
+          fetcher: (url) => {
+            if (url.includes('undefined')) return undefined
+            return apiClient.get(url).then((res) => res.data)
+          },
         }}
       >
         <SessionProvider session={pageProps.session}>
+          <AltDialog />
           <BookmarksDialog />
           <ReportDialog />
+          <BlockUserDialog />
           <AuthProvider>
             <OnboardingProvider>
               <AppLayout>

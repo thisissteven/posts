@@ -9,3 +9,6 @@ export type ProfileTab = (typeof PROFILE_TABS)[number]
 
 export const SOCIAL_TABS = ['Following', 'Followers'] as const
 export type SocialTab = (typeof SOCIAL_TABS)[number]
+
+export const PROFILE_DIALOG_TABS = ['Edit profile', 'Account settings'] as const
+export type ProfileDialogTab = (typeof PROFILE_DIALOG_TABS)[number]

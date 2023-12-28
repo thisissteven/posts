@@ -1,10 +1,10 @@
 import clsx from 'clsx'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import React from 'react'
 
 import { useDelayedInfiniteSWR, useMutation } from '@/hooks'
 
-import { LoadMore, TabLoader, VirtualizedList } from '@/components/UI'
+import { LoadMore, VirtualizedList } from '@/components/UI'
 
 import { Thread } from '@/modules/Home'
 
@@ -17,7 +17,6 @@ export function ThreadListTemplate({ url }: { url: string }) {
 
   const {
     data: threadItems,
-    hasData,
     isEnd,
     isEmpty,
     mutate,
@@ -35,13 +34,21 @@ export function ThreadListTemplate({ url }: { url: string }) {
     }
   }, [mutate, status, url])
 
+  const pathname = usePathname()
+  const username = pathname?.split('/')[1]
+  const showRepost =
+    url === `/profile/${username}/threads` || url.includes('following')
+
   return (
     <div className="relative">
-      <TabLoader visible={isLoading} overlayOnly={hasData} />
-
       <EmptyPlaceholder visible={isEmpty} />
 
-      <div className={clsx(isLoading ? 'opacity-0' : 'opacity-100')}>
+      <div
+        className={clsx(
+          'duration-300',
+          isLoading ? 'opacity-0' : 'opacity-100'
+        )}
+      >
         <VirtualizedList data={threadItems} estimateSize={() => 600}>
           {(items, virtualizer) => {
             if (!threadItems) return null
@@ -55,6 +62,7 @@ export function ThreadListTemplate({ url }: { url: string }) {
                   item={item}
                 >
                   <Thread
+                    showRepost={showRepost}
                     key={thread.id}
                     onClick={() =>
                       router.push(`${thread.owner.username}/${thread.id}`)

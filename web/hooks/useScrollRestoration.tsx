@@ -13,7 +13,7 @@ export function useScrollRestoration(router: Router, paths: string[] = []) {
     let timeout: NodeJS.Timeout
 
     const handleRouteChangeStart = () => {
-      setScrollPosition(router.pathname, document.documentElement.scrollTop)
+      setScrollPosition(router.asPath, document.documentElement.scrollTop)
     }
 
     router.events.on('routeChangeStart', handleRouteChangeStart)
@@ -22,7 +22,7 @@ export function useScrollRestoration(router: Router, paths: string[] = []) {
       router.events.off('routeChangeStart', handleRouteChangeStart)
       clearTimeout(timeout)
     }
-  }, [router.events, router.pathname, scrollPosition, setScrollPosition])
+  }, [router.events, router.asPath, scrollPosition, setScrollPosition])
 
   const timeoutRef = React.useRef<NodeJS.Timeout>()
 
@@ -32,10 +32,10 @@ export function useScrollRestoration(router: Router, paths: string[] = []) {
     if (scrollPosition && paths.includes(router.pathname)) {
       timeoutRef.current = setTimeout(() => {
         document.documentElement.scrollTo({
-          top: scrollPosition[router.pathname] || 0,
+          top: scrollPosition[router.asPath] || 0,
           // behavior: 'smooth',
         })
       }, 300)
     }
-  }, [router.pathname, scrollPosition, setScrollPosition, paths])
+  }, [router.asPath, scrollPosition, setScrollPosition, paths, router.pathname])
 }

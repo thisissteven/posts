@@ -1,20 +1,25 @@
 import { usePathname } from 'next/navigation'
 import React from 'react'
 
+import { useDelayedIsAuthenticated, useUser } from '@/hooks'
+
 import { ProfileInformation } from './Me'
 import { ProfileInformation as OthersProfileInformation } from './Others'
-import { useAuth } from '../Auth'
 
 export function ProfileInfo() {
   const pathname = usePathname()
 
-  const { isAuthenticated, session } = useAuth()
+  const username = pathname?.split('/')[1]
 
-  return isAuthenticated &&
-    session &&
-    pathname === `/${session.user.username}` ? (
+  const { user } = useUser()
+
+  const isAuthenticated = useDelayedIsAuthenticated()
+
+  const isMe = isAuthenticated && pathname === `/${user.username}`
+
+  return isMe ? (
     <ProfileInformation />
   ) : (
-    <OthersProfileInformation />
+    <OthersProfileInformation username={username} />
   )
 }

@@ -16,7 +16,11 @@ export function Overlay({ className }: { className?: string }) {
   const startTimeRef = React.useRef<number | null>(null)
 
   React.useEffect(() => {
-    document.documentElement.style.scrollbarGutter = 'stable'
+    if (status === 'authenticated') {
+      setTimeout(() => {
+        document.documentElement.style.scrollbarGutter = 'stable'
+      }, 300)
+    }
 
     let timeout: NodeJS.Timeout
 

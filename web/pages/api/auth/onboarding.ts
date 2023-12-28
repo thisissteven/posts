@@ -13,10 +13,10 @@ export default async function handler(
     allowedRoles: {
       PUT: ['USER'],
     },
-    PUT: async (session) => {
+    PUT: async (currentUser) => {
       const user = await prisma.user.update({
         where: {
-          id: session?.user.id,
+          id: currentUser.id,
         },
         data: {
           username,

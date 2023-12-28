@@ -3,6 +3,8 @@ import * as React from 'react'
 
 import { useHasAudio } from '@/hooks'
 
+import { useDialogActions } from '@/store'
+
 import { Dialog, useDialog } from './LightboxDialog'
 import { Muted, Unmuted } from '../Icons'
 
@@ -87,13 +89,17 @@ export function Lightbox({
   highResSource,
   width,
   height,
+  alt,
 }: {
   mediaType: 'image' | 'video'
   source: string
   highResSource?: string
   width?: number
   height?: number
+  alt?: string
 }) {
+  const { openDialog } = useDialogActions()
+
   return (
     <Dialog>
       <Dialog.Trigger
@@ -102,15 +108,31 @@ export function Lightbox({
           e.stopPropagation()
         }}
       >
-        <div tabIndex={-1} className="mt-3 relative rounded-lg overflow-hidden">
+        <div
+          tabIndex={-1}
+          className="mt-3 relative bg-soft-background rounded-lg overflow-hidden"
+        >
           {mediaType === 'image' && (
-            <Image
-              className="w-full"
-              src={source}
-              alt="thread"
-              width={width}
-              height={height}
-            />
+            <>
+              <Image
+                className="w-full"
+                src={source}
+                alt="thread"
+                width={width}
+                height={height}
+              />
+              {alt && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    openDialog('ALT', alt)
+                  }}
+                  className="absolute active:bg-black/60 duration-200 right-0 bottom-0 mx-3 my-4 w-7 h-7 rounded-full bg-black/50 text-[10px]"
+                >
+                  ALT
+                </button>
+              )}
+            </>
           )}
 
           {mediaType === 'video' && (

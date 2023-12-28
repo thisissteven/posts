@@ -1,8 +1,8 @@
 import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react'
 import React from 'react'
 
 import { apiClient } from '@/lib'
+import { useUser } from '@/hooks'
 import { useDialogState } from '@/hooks/useDialogState'
 
 import { SharedDialog } from '@/components/UI'
@@ -34,16 +34,10 @@ export function OnboardingProvider({
 }: {
   children: React.ReactNode
 }) {
-  const { data: session, status, update } = useSession()
+  const { updateUser, isAuthenticated, isOnboarded } = useUser()
 
   const dialogState = useDialogState()
   const router = useRouter()
-
-  const isAuthenticated = status === 'authenticated'
-
-  const isOnboarded = Boolean(
-    session?.user?.displayName && session?.user?.username
-  )
 
   React.useEffect(() => {
     let timeout: NodeJS.Timeout
@@ -67,21 +61,14 @@ export function OnboardingProvider({
         isUpdating,
         updateOnboardingState: async ({ username, displayName }) => {
           setIsUpdating(true)
-          const response = await apiClient.put('/auth/onboarding', {
+          await apiClient.put('/auth/onboarding', {
             username,
             displayName,
           })
-          const sessionObj = {
-            ...session,
-            user: {
-              ...session?.user,
-              username: response.data.username,
-              displayName: response.data.displayName,
-            },
-          }
-          update(sessionObj)
+
+          updateUser({ username, displayName })
             .then(() => {
-              router.push(`/${sessionObj.user?.username}`)
+              router.push(`/${username}`)
               dialogState.onOpenChange(false)
             })
             .finally(() => setIsUpdating(false))
