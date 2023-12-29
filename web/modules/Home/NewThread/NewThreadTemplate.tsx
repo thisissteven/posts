@@ -81,7 +81,7 @@ export function NewThreadTemplate({
           reset()
           setOpen(false)
         })}
-        className="w-full"
+        className="flex-1"
       >
         <div className="flex flex-col gap-1 w-full">
           {open && <span className="text-span text-xs">Anyone can reply</span>}

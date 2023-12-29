@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 const extractMetadata = (htmlContent: string) => {
   const ogImageRegex = /<meta property="og:image" content="([^"]+)"/i
   const ogTitleRegex = /<meta property="og:title" content="([^"]+)"/i
@@ -30,4 +32,52 @@ export const extractSiteMetadata = async (url: string) => {
   const data = await response.text()
   const metadata = extractMetadata(data)
   return metadata
+}
+
+export const urlValidator = (arg: string) => {
+  if (arg === undefined || arg === null || arg === '') {
+    return true
+  }
+
+  const domainRegex = /^[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]{2,}$/
+
+  if (!arg.startsWith('http://') && !arg.startsWith('https://')) {
+    return domainRegex.test(arg)
+  }
+
+  try {
+    const url = new URL(arg)
+
+    const hostnameParts = url.hostname.split('.')
+    if (hostnameParts.length < 2) {
+      return false
+    }
+
+    const tld = hostnameParts[hostnameParts.length - 1]
+    if (tld.length < 2) {
+      return false
+    }
+    return true
+  } catch {
+    return false
+  }
+}
+
+export const isWebsite = (word: string) =>
+  z
+    .string()
+    .max(96)
+    .refine(urlValidator, 'Invalid url')
+    .optional()
+    .safeParse(word).success
+
+export const getHref = (url?: string) => {
+  const website = url?.replace('https://', '').replace('http://', '')
+
+  const href =
+    !website?.startsWith('http://') && !website?.startsWith('https://')
+      ? 'https://' + website
+      : website
+
+  return href
 }

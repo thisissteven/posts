@@ -10,6 +10,7 @@ import { Lightbox, Popover, RegularButton } from '@/components/UI'
 import { ChatButton, LikeButton, RepostButton } from './Buttons'
 import { AddBookmark, CopyLinkToPost, DeletePost, ReportPost } from './Popover'
 import { Avatar, UserDisplay } from './Profile'
+import { ThreadText } from './ThreadText'
 
 import { ThreadItem } from '@/types'
 
@@ -114,9 +115,7 @@ export function Thread({
           <UserDisplay thread={thread} />
 
           <div className="mt-1">
-            <p className="text-sm text-soft-primary font-light">
-              {thread.textContent}
-            </p>
+            <ThreadText textContent={thread.textContent} />
           </div>
 
           {thread.mediaType && thread.source && (

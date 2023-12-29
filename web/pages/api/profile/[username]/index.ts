@@ -96,8 +96,6 @@ export default async function handler(
         },
       })
 
-      await new Promise((resolve) => setTimeout(resolve, 500))
-
       res.status(200).json(user)
     },
   })

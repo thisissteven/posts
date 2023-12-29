@@ -3,6 +3,7 @@ import { useFormContext, useWatch } from 'react-hook-form'
 import useSWRImmutable from 'swr/immutable'
 import { z } from 'zod'
 
+import { urlValidator } from '@/lib'
 import { useDebounce } from '@/hooks'
 
 import { FormInput } from '@/components/UI'
@@ -17,38 +18,7 @@ export const editProfileSchema = z.object({
   profession: z.string().max(32).optional(),
   location: z.string().max(32).optional(),
   pronouns: z.string().max(12).optional(),
-  website: z
-    .string()
-    .max(96)
-    .refine((arg) => {
-      if (arg === undefined || arg === null || arg === '') {
-        return true
-      }
-
-      const domainRegex = /^[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]{2,}$/
-
-      if (!arg.startsWith('http://') && !arg.startsWith('https://')) {
-        return domainRegex.test(arg)
-      }
-
-      try {
-        const url = new URL(arg)
-
-        const hostnameParts = url.hostname.split('.')
-        if (hostnameParts.length < 2) {
-          return false
-        }
-
-        const tld = hostnameParts[hostnameParts.length - 1]
-        if (tld.length < 2) {
-          return false
-        }
-        return true
-      } catch {
-        return false
-      }
-    }, 'Invalid url')
-    .optional(),
+  website: z.string().max(96).refine(urlValidator, 'Invalid url').optional(),
 })
 
 export type EditProfileSchema = z.infer<typeof editProfileSchema>
@@ -67,6 +37,7 @@ export function EditProfileForm() {
         autoComplete="off"
         maxLength={48}
         watchLength
+        spellCheck={false}
         required
       />
 
@@ -135,6 +106,7 @@ function UsernameInput() {
       label="Username"
       placeholder="your unique @handle"
       autoComplete="off"
+      spellCheck={false}
       required
       withSuccessIndicator
       customError={isTaken ? 'Username is taken' : undefined}
