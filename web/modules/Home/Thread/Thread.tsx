@@ -99,7 +99,7 @@ export function Thread({
       onClick={onClick}
       role="article"
       className={cn(
-        'cursor-pointer px-6 py-4 border-b border-divider hover:bg-soft-black transition-colors duration-200',
+        'cursor-pointer px-6 py-4 border-b border-divider hover:bg-soft-hover transition-colors duration-200',
         className
       )}
     >

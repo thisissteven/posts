@@ -41,6 +41,10 @@ export function useDelayedInfiniteSWR<Data = unknown, Error = unknown>(
         new Promise((resolve) => setTimeout(resolve, duration)),
       ])
       return data
+    },
+    {
+      revalidateOnMount: config?.revalidateOnMount,
+      revalidateIfStale: config?.revalidateIfStale,
     }
   )
 
