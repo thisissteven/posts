@@ -25,6 +25,7 @@ import {
   newThreadSchema,
 } from './Form'
 import { MediaPreview } from './MediaPreview'
+import { OpenGraphPreview } from './OpenGraphPreview'
 
 export function NewThreadTemplate({
   canEscape = true,
@@ -107,6 +108,7 @@ export function NewThreadTemplate({
           />
 
           <MediaPreview />
+          <OpenGraphPreview />
 
           {open && (
             <div className="flex justify-between mt-2">

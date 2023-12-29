@@ -1,5 +1,11 @@
 import { z } from 'zod'
 
+export type OpenGraphData = {
+  ogImage: string | null
+  ogTitle: string | null
+  ogDescription: string | null
+}
+
 const extractMetadata = (htmlContent: string) => {
   const ogImageRegex = /<meta property="og:image" content="([^"]+)"/i
   const ogTitleRegex = /<meta property="og:title" content="([^"]+)"/i
@@ -75,7 +81,10 @@ export const getHref = (url?: string) => {
   const website = url?.replace('https://', '').replace('http://', '')
 
   const href =
-    !website?.startsWith('http://') && !website?.startsWith('https://')
+    !website?.startsWith('http://') &&
+    !website?.startsWith('https://') &&
+    website !== undefined &&
+    website?.length > 0
       ? 'https://' + website
       : website
 
