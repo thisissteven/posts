@@ -110,7 +110,7 @@ export function Lightbox({
       >
         <div
           tabIndex={-1}
-          className="mt-3 relative bg-soft-background rounded-lg overflow-hidden"
+          className="relative bg-soft-background rounded-lg overflow-hidden"
         >
           {mediaType === 'image' && (
             <>

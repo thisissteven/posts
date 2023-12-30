@@ -61,3 +61,33 @@ export function UserDisplay({ thread }: { thread: ThreadItem }) {
     </p>
   )
 }
+
+export function UserDisplayThreadDetail({ thread }: { thread: ThreadItem }) {
+  const { owner: threadOwner } = thread
+  return (
+    <div className="text-sm">
+      <Link
+        scroll={false}
+        onClick={(e) => {
+          e.stopPropagation()
+        }}
+        href={`/${threadOwner.username}`}
+        className="hover:underline underline-offset-[3px]"
+      >
+        {threadOwner.displayName}
+      </Link>
+      <div className="text-[13px] text-span">
+        <Link
+          scroll={false}
+          onClick={(e) => {
+            e.stopPropagation()
+          }}
+          href={`/${threadOwner.username}`}
+          className="hover:underline underline-offset-[3px]"
+        >
+          @{threadOwner.username}
+        </Link>
+      </div>
+    </div>
+  )
+}

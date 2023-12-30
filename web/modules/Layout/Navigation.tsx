@@ -58,7 +58,8 @@ export function ProfileNavItem() {
     params &&
     params['username'] &&
     params['username'] === username &&
-    !params['thread-id']
+    !params['thread-id'] &&
+    Object.keys(params).length === 1
 
   if (!isAuthenticated) return null
 

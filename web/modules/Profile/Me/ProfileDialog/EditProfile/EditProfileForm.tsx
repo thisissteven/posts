@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import useSWRImmutable from 'swr/immutable'
+import isURL from 'validator/lib/isURL'
 import { z } from 'zod'
 
-import { urlValidator } from '@/lib'
 import { useDebounce } from '@/hooks'
 
 import { FormInput } from '@/components/UI'
@@ -18,7 +18,14 @@ export const editProfileSchema = z.object({
   profession: z.string().max(32).optional(),
   location: z.string().max(32).optional(),
   pronouns: z.string().max(12).optional(),
-  website: z.string().max(96).refine(urlValidator, 'Invalid url').optional(),
+  website: z
+    .string()
+    .max(96)
+    .refine((url) => {
+      if (url.length === 0) return true
+      return isURL(url)
+    }, 'Invalid url')
+    .optional(),
 })
 
 export type EditProfileSchema = z.infer<typeof editProfileSchema>

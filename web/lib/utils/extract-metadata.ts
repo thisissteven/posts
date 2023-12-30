@@ -1,3 +1,4 @@
+import isURL from 'validator/lib/isURL'
 import { z } from 'zod'
 
 export type OpenGraphData = {
@@ -41,42 +42,38 @@ export const extractSiteMetadata = async (url: string) => {
   return metadata
 }
 
-export const urlValidator = (arg: string) => {
-  if (arg === undefined || arg === null || arg === '') {
-    return true
-  }
+// export const urlValidator = (arg: string) => {
+//   if (arg === undefined || arg === null || arg === '') {
+//     return true
+//   }
 
-  const domainRegex = /^[a-zA-Z]+(\.[a-zA-Z]+)+$/
+//   const domainRegex = /^[a-zA-Z]+(\.[a-zA-Z]+)+$/
 
-  if (!arg.startsWith('http://') && !arg.startsWith('https://')) {
-    return domainRegex.test(arg)
-  }
+//   if (!arg.startsWith('http://') && !arg.startsWith('https://')) {
+//     return domainRegex.test(arg)
+//   }
 
-  try {
-    const url = new URL(arg)
+//   try {
+//     const url = new URL(arg)
 
-    const hostnameParts = url.hostname.split('.')
-    if (hostnameParts.length < 2) {
-      return false
-    }
+//     const hostnameParts = url.hostname.split('.')
+//     if (hostnameParts.length < 2) {
+//       return false
+//     }
 
-    const tld = hostnameParts[hostnameParts.length - 1]
-    if (tld.length < 2) {
-      return false
-    }
-    return true
-  } catch {
-    return false
-  }
-}
+//     const tld = hostnameParts[hostnameParts.length - 1]
+//     if (tld.length < 2) {
+//       return false
+//     }
+//     return true
+//   } catch {
+//     return false
+//   }
+// }
 
 export const isWebsite = (word: string) =>
-  z
-    .string()
-    .max(96)
-    .refine(urlValidator, 'Invalid url')
-    .optional()
-    .safeParse(word).success
+  z.string().max(96).refine(isURL, 'Invalid url').optional().safeParse(word)
+    .success
 
 export const getHref = (url?: string) => {
   const website = url?.replace('https://', '').replace('http://', '')

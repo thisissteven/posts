@@ -1,7 +1,15 @@
+import clsx from 'clsx'
+
 import { getHref, isWebsite } from '@/lib'
 
-export function ThreadText({ textContent }: { textContent?: string }) {
-  const lines = textContent?.split('\n') ?? []
+export function ThreadText({
+  textContent,
+  textSize = 'small',
+}: {
+  textContent: string
+  textSize?: 'small' | 'normal'
+}) {
+  const lines = textContent.split('\n') ?? []
   const hasLines = lines.length > 0
 
   if (hasLines) {
@@ -10,7 +18,10 @@ export function ThreadText({ textContent }: { textContent?: string }) {
       return (
         <p
           key={index}
-          className="text-sm text-soft-primary font-light whitespace-pre-line break-all leading-6"
+          className={clsx(
+            'text-soft-primary font-light whitespace-pre-line break-words leading-6',
+            textSize === 'small' ? 'text-sm' : 'text-base'
+          )}
         >
           {line.split(' ').map((word: string, i: number) => {
             if (isWebsite(word)) {
@@ -39,7 +50,12 @@ export function ThreadText({ textContent }: { textContent?: string }) {
   }
 
   return (
-    <p className="text-sm text-soft-primary font-light whitespace-pre-line break-all leading-6">
+    <p
+      className={clsx(
+        'text-soft-primary font-light whitespace-pre-line break-words leading-6',
+        textSize === 'small' ? 'text-sm' : 'text-base'
+      )}
+    >
       {textContent?.split(' ').map((word, i) => {
         if (isWebsite(word)) {
           const href = getHref(word)

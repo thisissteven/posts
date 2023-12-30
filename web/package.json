@@ -42,6 +42,7 @@
     "swr": "^2.2.4",
     "tailwind-merge": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",
+    "validator": "^13.11.0",
     "zod": "^3.22.4",
     "zustand": "^4.4.7"
   },
@@ -50,6 +51,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/validator": "^13.11.7",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.32",
     "prisma": "^5.7.1",

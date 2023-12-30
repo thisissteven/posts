@@ -39,16 +39,18 @@ export function Thread({
   const align = width < 522 ? 'end' : 'start'
 
   const { data, mutate } = useSWRImmutable<unknown>(
-    `/threads/${thread.id}/temp`,
+    `/threads/${thread.id}/deleted`,
     () => thread
   )
 
   const { data: viewAnyway, mutate: mutateViewAnyway } =
-    useSWRImmutable<Record<string, boolean>>('/blocked-threads')
+    useSWRImmutable<boolean>(
+      `blocked-threads/${thread.owner.username}`,
+      () => false
+    )
 
   const hasBlock =
-    thread.owner.blockedBy?.some((value) => value?.id === userId) &&
-    !viewAnyway?.[thread.owner.username]
+    thread.owner.blockedBy?.some((value) => value?.id === userId) && !viewAnyway
 
   const repostedBy = thread.reposts && thread.reposts[0]?.user?.username
 
@@ -63,12 +65,9 @@ export function Thread({
             Blocked User ·{' '}
             <RegularButton
               onClick={() => {
-                mutateViewAnyway(
-                  {
-                    [thread.owner.username]: true,
-                  },
-                  false
-                )
+                mutateViewAnyway(true, {
+                  revalidate: false,
+                })
               }}
               variant="underline"
               className="text-sm"
@@ -101,7 +100,7 @@ export function Thread({
       onClick={onClick}
       role="article"
       className={cn(
-        'cursor-pointer px-6 py-4 border-b border-divider hover:bg-soft-hover transition-colors duration-200',
+        'cursor-pointer px-6 py-4 border-b border-divider hover:bg-soft-black transition-colors duration-200',
         className
       )}
     >
@@ -112,24 +111,28 @@ export function Thread({
       )}
       <div className="flex gap-3">
         <Avatar threadUser={thread.owner} />
-        <div className="flex-1">
+        <div className="w-[calc(100%-60px)]">
           <UserDisplay thread={thread} />
 
-          <div className="mt-1">
-            <ThreadText textContent={thread.textContent} />
-          </div>
+          {thread.textContent && (
+            <div className="mt-1">
+              <ThreadText textContent={thread.textContent} />
+            </div>
+          )}
 
           {thread.embed && <OpenGraphCard embed={thread.embed} />}
 
           {thread.mediaType && thread.source && (
-            <Lightbox
-              mediaType={thread.mediaType}
-              source={thread.source}
-              highResSource={thread.highResSource}
-              height={thread.height}
-              width={thread.width}
-              alt={thread.alt}
-            />
+            <div className="mt-3">
+              <Lightbox
+                mediaType={thread.mediaType}
+                source={thread.source}
+                highResSource={thread.highResSource}
+                height={thread.height}
+                width={thread.width}
+                alt={thread.alt}
+              />
+            </div>
           )}
 
           <div className="mt-4">

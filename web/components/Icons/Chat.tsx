@@ -16,3 +16,22 @@ export function Chat() {
     </svg>
   )
 }
+
+export function ChatLarge() {
+  return (
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M4.5 12.25a7.167 7.167 0 017.167-7.167h4.666a7.167 7.167 0 014.213 12.965l-6.929 5.034a.75.75 0 01-1.174-.765l.627-2.9h-1.403A7.167 7.167 0 014.5 12.25zm16.418-3.331a5.658 5.658 0 00-4.585-2.336h-4.666a5.667 5.667 0 100 11.334h1.61c.85 0 1.483.784 1.303 1.615l-.255 1.182 5.34-3.88a5.667 5.667 0 001.253-7.915z"
+        fill="#888"
+      ></path>
+    </svg>
+  )
+}
