@@ -49,7 +49,7 @@ export function ThreadListTemplate({ url }: { url: string }) {
           isLoading ? 'opacity-0' : 'opacity-100'
         )}
       >
-        <VirtualizedList data={threadItems} estimateSize={() => 600}>
+        <VirtualizedList data={threadItems}>
           {(items, virtualizer) => {
             if (!threadItems) return null
 

@@ -1,7 +1,8 @@
+import clsx from 'clsx'
 import React from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 
-import { cn } from '@/lib'
+import { cn, isWebsite } from '@/lib'
 
 type TextareaProps = {
   onEscape?: (e: KeyboardEvent) => void
@@ -93,21 +94,11 @@ export function FormTextarea({
     name: rest.name as string,
   })
 
+  const lines = value?.split('\n') ?? []
+  const hasLines = lines.length > 0
+
   return (
     <div className="relative">
-      <textarea
-        ref={textAreaRef}
-        onChange={(e) => {
-          if (onChange) onChange(e)
-          textAreaRef.current.style.height = minHeight
-          textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`
-        }}
-        className={cn(
-          'bg-transparent placeholder:text-transparent resize-none focus:outline-none font-light text-soft-primary w-full',
-          className
-        )}
-        {...rest}
-      />
       <span
         aria-hidden
         className={cn(
@@ -118,6 +109,63 @@ export function FormTextarea({
       >
         {placeholder}
       </span>
+      <textarea
+        ref={textAreaRef}
+        onChange={(e) => {
+          if (onChange) onChange(e)
+          textAreaRef.current.style.height = minHeight
+          textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`
+        }}
+        style={{
+          color: 'transparent',
+        }}
+        className="relative bg-transparent placeholder:text-span text-soft-primary resize-none focus:outline-none font-light w-full"
+        {...rest}
+        spellCheck={false}
+      />
+      <div
+        style={{
+          minHeight,
+        }}
+        className={cn(
+          'absolute h-full inset-0 font-light w-full break-words pointer-events-none text-transparent',
+          className
+        )}
+      >
+        {hasLines &&
+          lines.map((line: string, index: number) => {
+            return (
+              <div
+                key={index}
+                className="whitespace-pre-line break-all leading-6"
+              >
+                {line.split(' ').map((word: string, i: number) => {
+                  return (
+                    <span
+                      key={i}
+                      className={clsx(isWebsite(word) ? 'text-primary' : '')}
+                    >
+                      {word}{' '}
+                    </span>
+                  )
+                })}
+                {'\n'}
+              </div>
+            )
+          })}
+
+        {!hasLines &&
+          value.split(' ').map((word: string, i: number) => {
+            return (
+              <span
+                key={i}
+                className={clsx(isWebsite(word) ? 'text-primary' : '')}
+              >
+                {word}{' '}
+              </span>
+            )
+          })}
+      </div>
     </div>
   )
 }

@@ -115,8 +115,10 @@ model Thread {
   highResSource String?
   width         Int?
   height        Int?
-  urlEmbed      String?
-  createdAt     DateTime   @default(now())
+
+  embed Embed?
+
+  createdAt DateTime @default(now())
 
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId String
@@ -131,6 +133,20 @@ model Thread {
   repostCount Int            @default(0)
 
   threadReport ThreadReport[]
+}
+
+model Embed {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  url         String
+  secureUrl   String?
+  image       String?
+  title       String?
+  description String?
+
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadId String @unique
 }
 
 model ThreadLike {

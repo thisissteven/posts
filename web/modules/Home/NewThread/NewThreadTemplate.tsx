@@ -25,6 +25,7 @@ import {
   newThreadSchema,
 } from './Form'
 import { MediaPreview } from './MediaPreview'
+import { OpenGraphPreview } from './OpenGraphPreview'
 
 export function NewThreadTemplate({
   canEscape = true,
@@ -81,7 +82,7 @@ export function NewThreadTemplate({
           reset()
           setOpen(false)
         })}
-        className="w-full"
+        className="flex-1"
       >
         <div className="flex flex-col gap-1 w-full">
           {open && <span className="text-span text-xs">Anyone can reply</span>}
@@ -107,6 +108,7 @@ export function NewThreadTemplate({
           />
 
           <MediaPreview />
+          <OpenGraphPreview />
 
           {open && (
             <div className="flex justify-between mt-2">

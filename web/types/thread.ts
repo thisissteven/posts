@@ -25,6 +25,14 @@ export type ThreadItem = {
   likeCount: number
   repostCount: number
 
+  embed?: {
+    url: string
+    secureUrl: string
+    title?: string
+    description?: string
+    image?: string
+  }
+
   likes?: {
     user?: {
       username: string

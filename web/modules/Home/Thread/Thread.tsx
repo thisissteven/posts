@@ -8,8 +8,10 @@ import { MoreIcon, RepostSmall } from '@/components/Icons'
 import { Lightbox, Popover, RegularButton } from '@/components/UI'
 
 import { ChatButton, LikeButton, RepostButton } from './Buttons'
+import { OpenGraphCard } from './OpenGraphCard'
 import { AddBookmark, CopyLinkToPost, DeletePost, ReportPost } from './Popover'
 import { Avatar, UserDisplay } from './Profile'
+import { ThreadText } from './ThreadText'
 
 import { ThreadItem } from '@/types'
 
@@ -99,7 +101,7 @@ export function Thread({
       onClick={onClick}
       role="article"
       className={cn(
-        'cursor-pointer px-6 py-4 border-b border-divider hover:bg-soft-black transition-colors duration-200',
+        'cursor-pointer px-6 py-4 border-b border-divider hover:bg-soft-hover transition-colors duration-200',
         className
       )}
     >
@@ -114,10 +116,10 @@ export function Thread({
           <UserDisplay thread={thread} />
 
           <div className="mt-1">
-            <p className="text-sm text-soft-primary font-light">
-              {thread.textContent}
-            </p>
+            <ThreadText textContent={thread.textContent} />
           </div>
+
+          {thread.embed && <OpenGraphCard embed={thread.embed} />}
 
           {thread.mediaType && thread.source && (
             <Lightbox

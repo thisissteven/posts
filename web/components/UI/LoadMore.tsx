@@ -11,7 +11,7 @@ export function LoadMore({
 }) {
   const loaderRowRef = React.useRef<HTMLDivElement | null>(null)
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     const loaderRow = loaderRowRef.current
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {

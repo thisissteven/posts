@@ -40,6 +40,15 @@ export default async function handler(
             ],
           },
           include: {
+            embed: {
+              select: {
+                url: true,
+                secureUrl: true,
+                title: true,
+                description: true,
+                image: true,
+              },
+            },
             owner: {
               select: {
                 id: true,
