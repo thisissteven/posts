@@ -5,7 +5,7 @@ import { BackIcon } from '@/components/Icons'
 export function Header() {
   const router = useRouter()
   return (
-    <header className="bg-background sticky top-0 h-[61px]">
+    <header className="bg-background sticky top-0 h-[61px] border-b border-b-popover">
       <div className="flex items-center gap-9 h-full px-6">
         <button
           onClick={() => router.back()}

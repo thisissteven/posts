@@ -117,3 +117,38 @@ export function getRelativeTimeStringLong(
     return `${Math.abs(relativeTime)} years`
   }
 }
+
+const months = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+]
+
+function formatAMPM(date: Date) {
+  let hours = date.getHours()
+  let minutes = date.getMinutes()
+  const ampm = hours >= 12 ? 'PM' : 'AM'
+  hours = hours % 12
+  hours = hours ? hours : 12
+  minutes = minutes < 10 ? 0 + minutes : minutes
+  return `${hours}:${minutes} ${ampm}`
+}
+
+export function formatDate(timestamp?: string | Date) {
+  if (!timestamp) return ''
+
+  const date = new Date(timestamp)
+  const formattedDate = `${
+    months[date.getMonth()]
+  } ${date.getDate()}, ${formatAMPM(date)}`
+  return formattedDate
+}

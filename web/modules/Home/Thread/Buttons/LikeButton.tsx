@@ -1,7 +1,12 @@
 import clsx from 'clsx'
 import React from 'react'
 
-import { LikeActiveSmall, LikeSmall } from '@/components/Icons'
+import {
+  LikeActiveLarge,
+  LikeActiveSmall,
+  LikeLarge,
+  LikeSmall,
+} from '@/components/Icons'
 import { AuthButton } from '@/components/UI'
 
 import { useButtonCount } from './useButtonCount'
@@ -32,6 +37,21 @@ export function LikeButton({ thread }: { thread: ThreadItem }) {
       >
         {state.count}
       </span>
+    </AuthButton>
+  )
+}
+
+export function LikeButtonDetail({ thread }: { thread: ThreadItem }) {
+  const { state, onClick } = useButtonCount({
+    thread,
+    countType: 'like',
+  })
+
+  return (
+    <AuthButton className="flex items-center gap-2 group" onClick={onClick}>
+      <div className="group-active:scale-90">
+        {state.status ? <LikeActiveLarge /> : <LikeLarge />}
+      </div>
     </AuthButton>
   )
 }

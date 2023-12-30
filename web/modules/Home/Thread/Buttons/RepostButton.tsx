@@ -1,7 +1,12 @@
 import clsx from 'clsx'
 import React from 'react'
 
-import { RepostSmall, RepostSmallActive } from '@/components/Icons'
+import {
+  RepostLarge,
+  RepostLargeActive,
+  RepostSmall,
+  RepostSmallActive,
+} from '@/components/Icons'
 import { AuthButton } from '@/components/UI'
 
 import { useButtonCount } from './useButtonCount'
@@ -33,6 +38,21 @@ export function RepostButton({ thread }: { thread: ThreadItem }) {
       >
         {state.count}
       </span>
+    </AuthButton>
+  )
+}
+
+export function RepostButtonDetail({ thread }: { thread: ThreadItem }) {
+  const { state, onClick } = useButtonCount({
+    thread,
+    countType: 'repost',
+  })
+
+  return (
+    <AuthButton className="flex items-center gap-2 group" onClick={onClick}>
+      <div className="group-active:scale-90">
+        {state.status ? <RepostLargeActive /> : <RepostLarge />}
+      </div>
     </AuthButton>
   )
 }

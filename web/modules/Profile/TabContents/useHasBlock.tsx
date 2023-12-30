@@ -25,10 +25,12 @@ export function useHasBlock(
     (value) => value?.id === currentUser?.id
   )
 
-  const { data: viewAnyway, mutate } =
-    useSWRImmutable<Record<string, boolean>>('/blocked-users')
+  const { data: viewAnyway, mutate } = useSWRImmutable<boolean>(
+    `/blocked-users/${username}`,
+    () => false
+  )
 
-  const showBlockedInfo = hasBlock && !viewAnyway?.[username]
+  const showBlockedInfo = hasBlock && !viewAnyway
 
   if (showBlockedInfo && customBlockedInfo) return customBlockedInfo()
 
@@ -39,12 +41,9 @@ export function useHasBlock(
           You blocked @{username} ·{' '}
           <RegularButton
             onClick={() => {
-              mutate(
-                {
-                  [username]: true,
-                },
-                false
-              )
+              mutate(true, {
+                revalidate: false,
+              })
             }}
             variant="underline"
             className="text-base"

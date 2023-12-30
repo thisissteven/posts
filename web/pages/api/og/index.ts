@@ -29,18 +29,7 @@ export default async function handler(
 
       const ogTitle = openGraphData.result.ogTitle ?? null
       const ogImage = openGraphData.result.ogImage
-        ? cl.url(openGraphData.result.ogImage[0].url, {
-            type: 'fetch',
-            secure: true,
-            transformation: [
-              {
-                width: 1080,
-              },
-              {
-                fetch_format: 'auto',
-              },
-            ],
-          })
+        ? getOgImage(openGraphData.result.ogImage[0].url, url)
         : null
 
       const ogDescription = openGraphData.result.ogDescription ?? null
@@ -52,5 +41,35 @@ export default async function handler(
         secureUrl: url,
       })
     },
+  })
+}
+
+function getOgImage(imageUrl: string, url: string) {
+  if (imageUrl.startsWith('/')) {
+    return cl.url(url + imageUrl, {
+      type: 'fetch',
+      secure: true,
+      transformation: [
+        {
+          width: 1080,
+        },
+        {
+          fetch_format: 'auto',
+        },
+      ],
+    })
+  }
+
+  return cl.url(imageUrl, {
+    type: 'fetch',
+    secure: true,
+    transformation: [
+      {
+        width: 1080,
+      },
+      {
+        fetch_format: 'auto',
+      },
+    ],
   })
 }
