@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { prisma, requestHandler } from '@/lib'
@@ -12,6 +13,55 @@ export function getRoomId(firstId: string, secondId: string) {
   } else {
     throw new Error('Cannot provide same id.')
   }
+}
+
+export function getReceiverId(roomId: string, currentUserId: string) {
+  const [firstId, secondId] = roomId.split('-')
+
+  return secondId === currentUserId ? firstId : secondId
+}
+
+async function getRoomMessages(roomIdentifier: string) {
+  return await prisma.message.findMany({
+    where: {
+      roomIdentifier,
+    },
+    include: {
+      sender: {
+        select: {
+          username: true,
+          avatarUrl: true,
+        },
+      },
+    },
+  })
+}
+
+async function getRoomDetails(roomIdentifier: string) {
+  return await prisma.room.findFirst({
+    where: {
+      identifier: roomIdentifier,
+    },
+    include: {
+      sender: {
+        select: {
+          username: true,
+          id: true,
+        },
+      },
+      receiver: {
+        select: {
+          username: true,
+          id: true,
+        },
+      },
+    },
+  })
+}
+
+export type GetRoomMessagesResponse = {
+  messages: Prisma.PromiseReturnType<typeof getRoomMessages>
+  roomDetails: Prisma.PromiseReturnType<typeof getRoomDetails>
 }
 
 export default async function handler(
@@ -31,13 +81,13 @@ export default async function handler(
         return res.status(401).json('Cannot access message.')
       }
 
-      const messages = await prisma.message.findMany({
-        where: {
-          roomIdentifier,
-        },
-      })
+      const messages = await getRoomMessages(roomIdentifier)
+      const roomDetails = await getRoomDetails(roomIdentifier)
 
-      res.status(200).json(messages)
+      res.status(200).json({
+        messages,
+        roomDetails,
+      })
     },
     POST: async (currentUser) => {
       const { content } = req.body

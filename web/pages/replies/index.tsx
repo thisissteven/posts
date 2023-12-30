@@ -10,7 +10,7 @@ import { ThreadUserAvatar } from '@/components/UI'
 
 import { Header } from '@/modules/Replies'
 
-import { GetMessagesResponse } from './api/message'
+import { GetMessagesResponse } from '../api/message'
 
 function RoomItem({
   room,

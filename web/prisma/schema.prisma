@@ -251,10 +251,10 @@ model Room {
   updatedAt  DateTime @updatedAt
 
   sender   User   @relation(name: "sentMessages", fields: [senderId], references: [id])
-  senderId String
+  senderId String @unique
 
   receiver   User   @relation(name: "receivedMessages", fields: [receiverId], references: [id])
-  receiverId String
+  receiverId String @unique
 
   messages Message[]
 }

@@ -1,5 +1,5 @@
 import NextImage from 'next/image'
-import React from 'react'
+import * as React from 'react'
 
 import { useUser } from '@/hooks'
 
@@ -7,11 +7,15 @@ import { Camera, DefaultProfile, DefaultProfileLarge } from '@/components/Icons'
 
 export function ThreadUserAvatar({
   threadUser,
+  style,
+  defaultStyle,
 }: {
   threadUser: {
     username: string
     avatarUrl: string | null
   }
+  style?: React.CSSProperties
+  defaultStyle?: React.CSSProperties
 }) {
   const { user } = useUser()
 
@@ -20,13 +24,19 @@ export function ThreadUserAvatar({
 
   if (!imageUrl)
     return (
-      <div className="w-12 h-12 relative rounded-full overflow-hidden">
+      <div
+        style={defaultStyle}
+        className="shrink-0 w-12 h-12 relative rounded-full overflow-hidden"
+      >
         <DefaultProfileLarge />
       </div>
     )
 
   return (
-    <div className="w-12 h-12 bg-black relative rounded-full overflow-hidden">
+    <div
+      style={style}
+      className="shrink-0 w-12 h-12 bg-black relative rounded-full overflow-hidden"
+    >
       <NextImage
         width={48}
         height={48}
@@ -87,5 +97,35 @@ export function SidebarAvatar() {
       alt={username}
       className="w-full h-full object-cover"
     />
+  )
+}
+
+export function SmallAvatar({
+  avatarUrl,
+  alt,
+}: {
+  avatarUrl?: string | null
+  alt?: string | null
+}) {
+  if (!avatarUrl || !alt) {
+    return (
+      <div className="w-6 h-6 flex items-center justify-center m-1 active:opacity-80 rounded-full overflow-hidden bg-black">
+        <div className="rounded-full bg-background overflow-hidden scale-150">
+          <DefaultProfile />
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="w-6 h-6 flex items-center justify-center m-1 active:opacity-80 rounded-full overflow-hidden bg-black">
+      <NextImage
+        src={avatarUrl}
+        width={48}
+        height={48}
+        alt={alt}
+        className="w-full h-full object-cover"
+      />
+    </div>
   )
 }

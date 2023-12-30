@@ -1,4 +1,4 @@
-import useSWR, { BareFetcher, SWRConfiguration } from 'swr'
+import useSWR, { BareFetcher, Key, SWRConfiguration } from 'swr'
 
 import { apiClient } from '@/lib'
 
@@ -8,7 +8,7 @@ const defaultFetcher = (url: string) =>
   apiClient.get(url).then((res) => res.data)
 
 export function useDelayedSWR<Data = unknown, Error = unknown>(
-  key: string,
+  key: Key,
   config?: SWRConfiguration<Data, Error, BareFetcher<Data>> & {
     duration?: number
     fetcher?: BareFetcher<Data>
