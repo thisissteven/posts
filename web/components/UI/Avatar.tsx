@@ -5,9 +5,14 @@ import { useUser } from '@/hooks'
 
 import { Camera, DefaultProfile, DefaultProfileLarge } from '@/components/Icons'
 
-import { ThreadOwner } from '@/types'
-
-export function ThreadUserAvatar({ threadUser }: { threadUser: ThreadOwner }) {
+export function ThreadUserAvatar({
+  threadUser,
+}: {
+  threadUser: {
+    username: string
+    avatarUrl: string | null
+  }
+}) {
   const { user } = useUser()
 
   const isOwner = threadUser.username === user.username

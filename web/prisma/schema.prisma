@@ -90,15 +90,16 @@ model User {
   blockedBy User[] @relation("UserBlocks")
   blocking  User[] @relation("UserBlocks")
 
-  sentMessages     Message[] @relation("sentMessages")
-  receivedMessages Message[] @relation("receivedMessages")
-
   notifications Notification[]
   replyLike     ReplyLike[]
   replyRepost   ReplyRepost[]
 
   userReport   UserReport[]
   threadReport ThreadReport[]
+
+  sentMessages     Room[]    @relation("sentMessages")
+  receivedMessages Room[]    @relation("receivedMessages")
+  Message          Message[]
 }
 
 enum MediaType {
@@ -237,11 +238,25 @@ model Message {
   content   String
   createdAt DateTime @default(now())
 
-  sender   User   @relation(name: "sentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  sender   User   @relation(fields: [senderId], references: [id])
   senderId String
 
-  receiver   User   @relation(name: "receivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  room           Room   @relation(fields: [roomIdentifier], references: [identifier])
+  roomIdentifier String
+}
+
+model Room {
+  identifier String   @id
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  sender   User   @relation(name: "sentMessages", fields: [senderId], references: [id])
+  senderId String
+
+  receiver   User   @relation(name: "receivedMessages", fields: [receiverId], references: [id])
   receiverId String
+
+  messages Message[]
 }
 
 model Notification {

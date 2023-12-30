@@ -107,7 +107,7 @@ export function getRelativeTimeStringLong(
     if (relativeTime === -1) {
       return 'next week'
     } else {
-      return `${Math.abs(relativeTime)}w`
+      return `${Math.abs(relativeTime)} weeks`
     }
   } else if (unitIndex === 5) {
     // For months

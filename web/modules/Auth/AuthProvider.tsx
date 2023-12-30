@@ -52,16 +52,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [dialogState, isAuthenticated])
 
   React.useEffect(() => {
-    if (!isAuthenticated && needAuthPathnames.includes(pathname)) {
+    if (status === 'unauthenticated' && needAuthPathnames.includes(pathname)) {
       router.replace('/')
     }
-  }, [isAuthenticated, pathname, router])
+  }, [pathname, router, status])
 
   React.useEffect(() => {
-    if (!isAuthenticated && needAuthPathnames.includes(pathname)) {
+    if (status === 'unauthenticated' && needAuthPathnames.includes(pathname)) {
       dialogState.onOpenChange(true)
     }
-  }, [dialogState, isAuthenticated, pathname])
+  }, [dialogState, pathname, status])
 
   return (
     <AuthContext.Provider

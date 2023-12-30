@@ -66,6 +66,7 @@ export function useMutation<T>(
     status,
     data,
     error,
+    isMutating: status.state === 'loading',
     reset: () => {
       reset()
       swrObserver.setMutationState(key, {

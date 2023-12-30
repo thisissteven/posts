@@ -1,7 +1,8 @@
 import { usePathname } from 'next/navigation'
 import React from 'react'
+import useSWRImmutable from 'swr/immutable'
 
-import { useUser } from '@/hooks'
+import { useMutation, useUser } from '@/hooks'
 
 import { RepliesIconFilled } from '@/components/Icons'
 import {
@@ -10,7 +11,10 @@ import {
   RegularButton,
   Textarea,
   Tooltip,
+  useDialog,
 } from '@/components/UI'
+
+import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 export function SendMessageDialog() {
   const { user: currentUser } = useUser()
@@ -52,14 +56,24 @@ function SendMessageDialogContent() {
   const pathname = usePathname()
   const usernameToMessage = pathname?.split('/')[1]
 
-  const [message, setMessage] = React.useState('')
+  const [content, setContent] = React.useState('')
+
+  const { data: userData } = useSWRImmutable<FindUserResponse>(
+    `/profile/${usernameToMessage}`
+  )
+
+  const { trigger, isMutating } = useMutation<{ content: string }>(
+    `/message/${userData?.id}`
+  )
+
+  const { closeDialog } = useDialog()
 
   return (
     <div className="bg-background p-6 rounded-2xl overflow-hidden">
       <p className="text-lg font-medium">New message</p>
       <Textarea
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
         style={{
           height: '82px',
         }}
@@ -75,8 +89,20 @@ function SendMessageDialogContent() {
         </Dialog.Close>
         <RegularButton
           className="disabled:bg-soft-background disabled:opacity-60"
-          disabled={message.length === 0}
+          disabled={content.length === 0}
           variant="secondary"
+          isLoading={isMutating}
+          onClick={() => {
+            trigger(
+              { content },
+              {
+                onSuccess: () => {
+                  setContent('')
+                  closeDialog()
+                },
+              }
+            )
+          }}
         >
           Send
         </RegularButton>
