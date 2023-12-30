@@ -47,6 +47,7 @@ export default async function handler(
         ogImage,
         ogTitle,
         ogDescription,
+        secureUrl: url,
       })
     },
   })

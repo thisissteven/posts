@@ -4,6 +4,7 @@ export type OpenGraphData = {
   ogImage: string | null
   ogTitle: string | null
   ogDescription: string | null
+  secureUrl: string
 }
 
 const extractMetadata = (htmlContent: string) => {
@@ -45,7 +46,7 @@ export const urlValidator = (arg: string) => {
     return true
   }
 
-  const domainRegex = /^[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]{2,}$/
+  const domainRegex = /^[a-zA-Z]+(\.[a-zA-Z]+)+$/
 
   if (!arg.startsWith('http://') && !arg.startsWith('https://')) {
     return domainRegex.test(arg)

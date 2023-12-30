@@ -24,6 +24,15 @@ export function getThreadIncludeParams(
     case undefined:
       return {
         include: {
+          embed: {
+            select: {
+              url: true,
+              secureUrl: true,
+              title: true,
+              description: true,
+              image: true,
+            },
+          },
           owner: {
             select: {
               id: true,

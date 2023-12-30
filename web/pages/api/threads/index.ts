@@ -87,9 +87,18 @@ export default async function handler(
       res.status(200).json(threads)
     },
     POST: async (currentUser) => {
+      const embed = req.body.embed
+
       const user = await prisma.thread.create({
         data: {
           ...req.body,
+          embed: embed
+            ? {
+                create: {
+                  ...embed,
+                },
+              }
+            : undefined,
           ownerId: currentUser.id,
         },
       })

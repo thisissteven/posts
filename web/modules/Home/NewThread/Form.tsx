@@ -23,6 +23,15 @@ export const newThreadSchema = z.object({
       'Only .jpg, .png, .gif, .mp4, and .quicktime formats are supported.'
     ),
   alt: z.string().max(100).optional(),
+  embed: z
+    .object({
+      url: z.string(),
+      secureUrl: z.string(),
+      title: z.string().nullable().optional(),
+      description: z.string().nullable().optional(),
+      image: z.string().nullable().optional(),
+    })
+    .optional(),
 })
 
 export type NewThreadFormValues = z.infer<typeof newThreadSchema>

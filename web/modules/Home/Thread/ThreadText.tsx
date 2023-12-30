@@ -4,8 +4,6 @@ export function ThreadText({ textContent }: { textContent?: string }) {
   const lines = textContent?.split('\n') ?? []
   const hasLines = lines.length > 0
 
-  const lastLineIndex = lines.length - 1
-
   if (hasLines) {
     return lines.map((line: string, index: number) => {
       const lastWordIndex = line.split(' ').length - 1
@@ -31,9 +29,6 @@ export function ThreadText({ textContent }: { textContent?: string }) {
                   {i !== lastWordIndex && ' '}
                 </a>
               )
-            }
-            if (i === lastLineIndex) {
-              return word
             }
             return word + ' '
           })}

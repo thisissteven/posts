@@ -8,6 +8,7 @@ import { MoreIcon, RepostSmall } from '@/components/Icons'
 import { Lightbox, Popover, RegularButton } from '@/components/UI'
 
 import { ChatButton, LikeButton, RepostButton } from './Buttons'
+import { OpenGraphCard } from './OpenGraphCard'
 import { AddBookmark, CopyLinkToPost, DeletePost, ReportPost } from './Popover'
 import { Avatar, UserDisplay } from './Profile'
 import { ThreadText } from './ThreadText'
@@ -117,6 +118,8 @@ export function Thread({
           <div className="mt-1">
             <ThreadText textContent={thread.textContent} />
           </div>
+
+          {thread.embed && <OpenGraphCard embed={thread.embed} />}
 
           {thread.mediaType && thread.source && (
             <Lightbox
