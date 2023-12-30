@@ -22,7 +22,9 @@ export default function ThreadPage() {
     }
   )
 
-  const pageTitle = `${data?.owner?.displayName} posted: ${data?.textContent}`
+  const pageTitle = data
+    ? `${data?.owner?.displayName} posted: ${data?.textContent}`
+    : 'Posts'
 
   return (
     <>

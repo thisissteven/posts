@@ -13,29 +13,27 @@ const ReplyToThread = React.memo(function ReplyToThread() {
   if (!isAuthenticated) return null
 
   return (
-    <section className="border-b border-b-divider">
-      <div className="flex py-5 gap-3 items-start">
-        <div className="shrink-0 w-12 h-12 rounded-full overflow-hidden">
-          {user.avatarUrl ? (
-            <div className="w-full h-full bg-black">
-              <Image
-                width={48}
-                height={48}
-                src={user.avatarUrl}
-                alt="avatar"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ) : (
-            <div className="bg-background">
-              <DefaultProfileLarge />
-            </div>
-          )}
-        </div>
-
-        <NewThreadReplyTemplate id="reply-to-thread" />
+    <div className="flex py-5 gap-3 items-start">
+      <div className="shrink-0 w-12 h-12 rounded-full overflow-hidden">
+        {user.avatarUrl ? (
+          <div className="w-full h-full bg-black">
+            <Image
+              width={48}
+              height={48}
+              src={user.avatarUrl}
+              alt="avatar"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ) : (
+          <div className="bg-background">
+            <DefaultProfileLarge />
+          </div>
+        )}
       </div>
-    </section>
+
+      <NewThreadReplyTemplate id="reply-to-thread" />
+    </div>
   )
 })
 

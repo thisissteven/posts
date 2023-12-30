@@ -108,7 +108,7 @@ export function ThreadDetail({
     <article
       role="article"
       className={cn(
-        'cursor-pointer px-6 py-4 border-b border-divider',
+        'cursor-pointer px-6 pt-4 border-b border-divider',
         className
       )}
     >
