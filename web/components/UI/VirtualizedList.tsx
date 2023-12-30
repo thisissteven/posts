@@ -11,7 +11,7 @@ type VirtualizedListProps<T> = {
     virtualizer: Virtualizer<Window, Element>
   ) => React.ReactNode
   data?: T[]
-  estimateSize?: () => number
+  estimateSize?: (index: number) => number
 }
 
 export function VirtualizedList<T>({
