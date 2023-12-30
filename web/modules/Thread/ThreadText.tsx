@@ -6,10 +6,10 @@ export function ThreadText({
   textContent,
   textSize = 'small',
 }: {
-  textContent?: string
+  textContent: string
   textSize?: 'small' | 'normal'
 }) {
-  const lines = textContent?.split('\n') ?? []
+  const lines = textContent.split('\n') ?? []
   const hasLines = lines.length > 0
 
   if (hasLines) {

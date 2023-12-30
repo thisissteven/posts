@@ -30,7 +30,7 @@ export function ChatButtonDetail({ thread }: { thread: ThreadItem }) {
   const repliesCount = thread.repliesCount
 
   return (
-    <button className="flex items-center gap-2 group">
+    <button className="flex items-center justify-center gap-2 group w-full">
       <div className="group-active:scale-90">
         <ChatLarge />
       </div>

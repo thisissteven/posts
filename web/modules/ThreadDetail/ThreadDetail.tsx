@@ -21,6 +21,7 @@ import {
   UserDisplayThreadDetail,
 } from '@/modules/Thread'
 
+import { LikesAndRepostsCount } from './LikesAndRepostsCount'
 import { ReplyToThread } from './ReplyToThread'
 
 import { ThreadItem } from '@/types'
@@ -123,38 +124,32 @@ export function ThreadDetail({
       </div>
 
       <div className="flex-1">
-        <div className="mt-3">
-          <ThreadText textSize="normal" textContent={thread.textContent} />
-        </div>
+        {thread.textContent && (
+          <div className="mt-3">
+            <ThreadText textSize="normal" textContent={thread.textContent} />
+          </div>
+        )}
 
         {thread.embed && <OpenGraphCard embed={thread.embed} />}
 
         {thread.mediaType && thread.source && (
-          <Lightbox
-            mediaType={thread.mediaType}
-            source={thread.source}
-            highResSource={thread.highResSource}
-            height={thread.height}
-            width={thread.width}
-            alt={thread.alt}
-          />
+          <div className="mt-3">
+            <Lightbox
+              mediaType={thread.mediaType}
+              source={thread.source}
+              highResSource={thread.highResSource}
+              height={thread.height}
+              width={thread.width}
+              alt={thread.alt}
+            />
+          </div>
         )}
 
-        <div className="mt-8 text-span font-light text-sm">
+        <div className="mt-7 text-span font-light text-sm">
           {formatDate(thread.createdAt)}
         </div>
 
-        <div className="mt-4 pt-4 border-t border-t-divider">
-          <div className="text-sm text-span font-light">
-            <button className="hover:underline underline-offset-[3px]">
-              1 Like
-            </button>
-            ,{' '}
-            <button className="hover:underline underline-offset-[3px]">
-              1 Repost
-            </button>
-          </div>
-        </div>
+        <LikesAndRepostsCount thread={thread} />
 
         <div className="mt-4">
           <div className="grid grid-cols-4 place-items-center border-y border-y-divider py-3">
@@ -170,7 +165,7 @@ export function ThreadDetail({
                   onClick={(e) => {
                     e.stopPropagation()
                   }}
-                  className="relative group flex justify-center"
+                  className="relative group flex w-full items-center justify-center"
                 >
                   <div className="group-active:scale-95 origin-left group-active:opacity-90 duration-150">
                     <MoreIconLarge />

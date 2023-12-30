@@ -114,21 +114,25 @@ export function Thread({
         <div className="w-[calc(100%-60px)]">
           <UserDisplay thread={thread} />
 
-          <div className="mt-1">
-            <ThreadText textContent={thread.textContent} />
-          </div>
+          {thread.textContent && (
+            <div className="mt-1">
+              <ThreadText textContent={thread.textContent} />
+            </div>
+          )}
 
           {thread.embed && <OpenGraphCard embed={thread.embed} />}
 
           {thread.mediaType && thread.source && (
-            <Lightbox
-              mediaType={thread.mediaType}
-              source={thread.source}
-              highResSource={thread.highResSource}
-              height={thread.height}
-              width={thread.width}
-              alt={thread.alt}
-            />
+            <div className="mt-3">
+              <Lightbox
+                mediaType={thread.mediaType}
+                source={thread.source}
+                highResSource={thread.highResSource}
+                height={thread.height}
+                width={thread.width}
+                alt={thread.alt}
+              />
+            </div>
           )}
 
           <div className="mt-4">

@@ -49,7 +49,10 @@ export function RepostButtonDetail({ thread }: { thread: ThreadItem }) {
   })
 
   return (
-    <AuthButton className="flex items-center gap-2 group" onClick={onClick}>
+    <AuthButton
+      className="flex items-center justify-center w-full gap-2 group"
+      onClick={onClick}
+    >
       <div className="group-active:scale-90">
         {state.status ? <RepostLargeActive /> : <RepostLarge />}
       </div>
