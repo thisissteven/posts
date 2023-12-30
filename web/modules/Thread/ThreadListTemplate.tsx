@@ -6,9 +6,8 @@ import { useDelayedInfiniteSWR, useMutation } from '@/hooks'
 
 import { LoadMore, VirtualizedList } from '@/components/UI'
 
-import { Thread } from '@/modules/Home'
-
 import { EmptyPlaceholder } from './EmptyPlaceholder'
+import { Thread } from './Thread'
 
 import { ThreadItem } from '@/types'
 

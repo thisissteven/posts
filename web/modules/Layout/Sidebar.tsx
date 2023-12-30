@@ -17,8 +17,8 @@ import {
 } from '@/components/Icons'
 import { Dialog, Tooltip } from '@/components/UI'
 
-import { NewThreadDialog } from '@/modules/Home'
 import { SearchCommandMenu } from '@/modules/Search'
+import { NewThreadDialog } from '@/modules/ThreadForm'
 
 import { BottomBanner } from './BottomBanner'
 import { NavItem, ProfileNavItem } from './Navigation'

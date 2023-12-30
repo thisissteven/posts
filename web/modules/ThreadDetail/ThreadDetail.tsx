@@ -7,21 +7,21 @@ import { useUser, useWindowSize } from '@/hooks'
 import { MoreIconLarge, RepostSmall } from '@/components/Icons'
 import { Lightbox, Popover, RegularButton } from '@/components/UI'
 
-import { OnYourMind } from '../Home'
-import {
-  ChatButtonDetail,
-  LikeButtonDetail,
-  RepostButtonDetail,
-} from '../Home/Thread/Buttons'
-import { OpenGraphCard } from '../Home/Thread/OpenGraphCard'
 import {
   AddBookmark,
+  Avatar,
+  ChatButtonDetail,
   CopyLinkToPost,
   DeletePost,
+  LikeButtonDetail,
+  OpenGraphCard,
   ReportPost,
-} from '../Home/Thread/Popover'
-import { Avatar, UserDisplayThreadDetail } from '../Home/Thread/Profile'
-import { ThreadText } from '../Home/Thread/ThreadText'
+  RepostButtonDetail,
+  ThreadText,
+  UserDisplayThreadDetail,
+} from '@/modules/Thread'
+
+import { ReplyToThread } from './ReplyToThread'
 
 import { ThreadItem } from '@/types'
 
@@ -197,7 +197,7 @@ export function ThreadDetail({
           </div>
         </div>
 
-        <OnYourMind />
+        <ReplyToThread />
       </div>
     </article>
   )
