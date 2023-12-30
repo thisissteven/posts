@@ -37,7 +37,7 @@ export function useButtonCount({
   } = useUser()
 
   const { data, mutate } = useSWRImmutable(
-    `/threads/${thread.id}/${countType}`,
+    `/threads/${thread.id}/${countType}/${username}`,
     () => {
       return {
         status: thread[countKey.type]?.some(
@@ -47,15 +47,6 @@ export function useButtonCount({
       }
     }
   )
-
-  React.useEffect(() => {
-    mutate({
-      status: thread[countKey.type]?.some(
-        (value) => value?.user?.username === username
-      ),
-      count: thread[countKey.count],
-    })
-  }, [mutate, username, thread, countKey.type, countKey.count])
 
   const state = data ?? {
     status: false,
@@ -83,7 +74,9 @@ export function useButtonCount({
     try {
       debounce(() => apiClient.put(`/threads/${threadId}/${countType}`))()
     } catch (error) {
-      mutate(currentState)
+      mutate(currentState, {
+        revalidate: false,
+      })
     }
   }
 

@@ -2,7 +2,6 @@ import { usePathname, useRouter } from 'next/navigation'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import React from 'react'
 import { isMobile } from 'react-device-detect'
-import { mutate } from 'swr'
 
 import { newWindow } from '@/lib'
 import { useDialogState } from '@/hooks/useDialogState'
@@ -78,14 +77,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         },
         signOut: async () => {
-          // clear cache for like and repost on sign out
-          mutate(
-            (key) =>
-              typeof key === 'string' &&
-              (key.includes('like') || key.includes('repost')),
-            undefined,
-            { revalidate: false }
-          )
           await signOut({ redirect: false })
           router.replace('/')
         },

@@ -31,6 +31,7 @@ export default async function handler(
       const ogImage = openGraphData.result.ogImage
         ? cl.url(openGraphData.result.ogImage[0].url, {
             type: 'fetch',
+            secure: true,
             transformation: [
               {
                 width: 1080,
@@ -41,6 +42,7 @@ export default async function handler(
             ],
           })
         : null
+
       const ogDescription = openGraphData.result.ogDescription ?? null
 
       res.status(200).json({
