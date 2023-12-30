@@ -26,8 +26,6 @@ export default async function handler(
         ...getThreadIncludeParams(currentUser, 'everyone'),
       })
 
-      await new Promise((resolve) => setTimeout(resolve, 500))
-
       res.status(200).json(thread)
     },
   })

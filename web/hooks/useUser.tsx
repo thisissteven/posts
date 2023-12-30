@@ -48,6 +48,7 @@ export function useUser() {
       id: user?.id ?? '',
       role: user?.role,
       email: user?.email ?? '',
+      createdAt: user?.createdAt,
     },
     status,
     updateUser: async (args: UpdateUserArgs) => {

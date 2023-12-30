@@ -2,22 +2,17 @@ import Image from 'next/image'
 import React from 'react'
 import useSWR from 'swr'
 
-import {
-  DefaultProfileLarge,
-  ReadIcon,
-  RepliesIconFilled,
-} from '@/components/Icons'
+import { DefaultProfileLarge, ReadIcon } from '@/components/Icons'
 import { IconButton, Tooltip } from '@/components/UI'
 
-import { useAuth } from '@/modules/Auth'
 import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 import { FollowButton } from './FollowButton'
+import { SendMessageDialog } from './SendMessageDialog'
 import { useHasBlock } from '../../TabContents/useHasBlock'
 
 export function ProfileInformation({ username }: { username: string }) {
   const { data: user } = useSWR<FindUserResponse>(`/profile/${username}`)
-  const { openAuthDialog } = useAuth()
 
   const avatarUrl = user?.avatarUrl
 
@@ -49,13 +44,7 @@ export function ProfileInformation({ username }: { username: string }) {
             <div className="mx-6 my-4 h-11 flex gap-2">
               <FollowButton user={user} />
 
-              <Tooltip label="Message" side="top" asChild>
-                <IconButton variant="filled" onClick={openAuthDialog}>
-                  <div className="-translate-x-0.5">
-                    <RepliesIconFilled />
-                  </div>
-                </IconButton>
-              </Tooltip>
+              <SendMessageDialog />
 
               <Tooltip label="read.cv" side="top" sideOffset={6} tabIndex={-1}>
                 <IconButton asChild>
