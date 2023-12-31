@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import React from 'react'
-import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
 
 import { DefaultProfileLarge, ReadIcon } from '@/components/Icons'
 import { IconButton, Tooltip } from '@/components/UI'
@@ -12,7 +12,9 @@ import { SendMessageDialog } from './SendMessageDialog'
 import { useHasBlock } from '../../TabContents/useHasBlock'
 
 export function ProfileInformation({ username }: { username: string }) {
-  const { data: user } = useSWR<FindUserResponse>(`/profile/${username}`)
+  const { data: user } = useSWRImmutable<FindUserResponse>(
+    `/profile/${username}`
+  )
 
   const avatarUrl = user?.avatarUrl
 

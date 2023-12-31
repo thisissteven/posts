@@ -1,5 +1,5 @@
 import React from 'react'
-import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
 
 import { useUser } from '@/hooks'
 
@@ -57,7 +57,9 @@ export function ProfileInformation() {
   const {
     user: { username, displayName },
   } = useUser()
-  const { data: user } = useSWR<FindUserResponse>(`/profile/${username}`)
+  const { data: user } = useSWRImmutable<FindUserResponse>(
+    `/profile/${username}`
+  )
 
   const { openDialog } = useDialogActions()
 

@@ -1,3 +1,4 @@
+import { useParams } from 'next/navigation'
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
@@ -20,6 +21,19 @@ type ThreadProps = {
   className?: string
   onClick?: () => void
   showRepost?: boolean
+}
+
+function getRepostedBy(isMyThread: boolean, thread: ThreadItem) {
+  const reposts = thread.reposts
+  if (!reposts) return null
+
+  if (isMyThread) {
+    return reposts[0]?.user?.username
+  }
+
+  return reposts[0]?.user?.username === thread.owner.username
+    ? reposts[0]?.user?.username
+    : null
 }
 
 export function Thread({
@@ -52,7 +66,11 @@ export function Thread({
   const hasBlock =
     thread.owner.blockedBy?.some((value) => value?.id === userId) && !viewAnyway
 
-  const repostedBy = thread.reposts && thread.reposts[0]?.user?.username
+  const params = useParams()
+
+  const isMyThread = params?.username === user.username
+
+  const repostedBy = getRepostedBy(isMyThread, thread)
 
   if (hasBlock) {
     return (

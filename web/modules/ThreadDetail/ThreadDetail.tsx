@@ -107,10 +107,7 @@ export function ThreadDetail({
   return (
     <article
       role="article"
-      className={cn(
-        'cursor-pointer px-6 pt-4 border-b border-divider',
-        className
-      )}
+      className={cn('px-6 pt-4 border-b border-divider', className)}
     >
       {showRepost && repostedBy && (
         <div className="ml-6 mb-2 flex items-center gap-2.5 text-sm font-light text-span">

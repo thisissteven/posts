@@ -14,7 +14,7 @@ function useFollow(user?: FindUserResponse) {
   const { openAuthDialog } = useAuth()
 
   const { data, mutate } = useSWRImmutable(
-    `/profile/${user?.id}/follow`,
+    `/profile/${user?.id}/follow/${currentUser.username}`,
     () => {
       return {
         status: user?.followedBy?.some((value) => value?.id === currentUser.id),
@@ -22,11 +22,11 @@ function useFollow(user?: FindUserResponse) {
     }
   )
 
-  React.useEffect(() => {
-    mutate({
-      status: user?.followedBy?.some((value) => value?.id === currentUser.id),
-    })
-  }, [currentUser.id, mutate, user])
+  // React.useEffect(() => {
+  //   mutate({
+  //     status: user?.followedBy?.some((value) => value?.id === currentUser.id),
+  //   })
+  // }, [currentUser.id, mutate, user])
 
   const state = data ?? {
     status: false,
