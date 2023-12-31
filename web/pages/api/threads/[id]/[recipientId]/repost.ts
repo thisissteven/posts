@@ -8,6 +8,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const id = req.query.id as string
+  const recipientId = req.query.recipientId as string
 
   await requestHandler(req, res, {
     allowedRoles: {
@@ -32,14 +33,13 @@ export default async function handler(
             repostCount: {
               decrement: 1,
             },
-          },
-        })
-
-        await prisma.threadRepost.delete({
-          where: {
-            threadId_userId: {
-              threadId: id,
-              userId: userId,
+            reposts: {
+              delete: {
+                threadId_userId: {
+                  threadId: id,
+                  userId: userId,
+                },
+              },
             },
           },
         })
@@ -52,18 +52,44 @@ export default async function handler(
             repostCount: {
               increment: 1,
             },
+            reposts: {
+              create: {
+                userId,
+              },
+            },
           },
         })
 
-        await prisma.threadRepost.create({
-          data: {
-            userId,
-            threadId: id,
-          },
+        allowError(async () => {
+          await prisma.notification.create({
+            data: {
+              type: 'REPOST',
+              recipient: {
+                connect: {
+                  id: recipientId,
+                },
+              },
+              repostedByNotification: {
+                create: {
+                  repostedById: userId,
+                  threadId: id,
+                },
+              },
+            },
+          })
         })
       }
 
       res.status(200).json({ message: 'Repost count updated successfully' })
     },
   })
+}
+
+const allowError = (fn: () => Promise<void>) => {
+  try {
+    fn()
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('An error occurred.')
+  }
 }

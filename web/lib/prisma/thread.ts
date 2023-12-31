@@ -209,12 +209,12 @@ export async function getPaginatedThreadReplies({
   currentUser: CurrentUser
   category: Category
   previousCursor: string
-  params?: Prisma.ReplyFindManyArgs
+  params?: Prisma.ThreadFindManyArgs
 }) {
   const skip = previousCursor ? 1 : 0
   const cursor = getCursor(previousCursor)
 
-  const replies = await prisma.reply.findMany({
+  const replies = await prisma.thread.findMany({
     ...params,
     ...getReplyIncludeParams(currentUser, category),
     skip,

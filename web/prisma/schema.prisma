@@ -79,7 +79,6 @@ model User {
   sessions  Session[]
 
   threads Thread[]
-  replies Reply[]
 
   likes   ThreadLike[]
   reposts ThreadRepost[]
@@ -91,8 +90,6 @@ model User {
   blocking  User[] @relation("UserBlocks")
 
   notifications Notification[]
-  replyLike     ReplyLike[]
-  replyRepost   ReplyRepost[]
 
   userReport   UserReport[]
   threadReport ThreadReport[]
@@ -130,8 +127,11 @@ model Thread {
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId String
 
-  replies      Reply[]
-  repliesCount Int     @default(0)
+  replies   Thread[] @relation("ThreadReplies")
+  replyTo   Thread?  @relation("ThreadReplies", fields: [replyToId], references: [id])
+  replyToId String?
+
+  repliesCount Int @default(0)
 
   likes     ThreadLike[]
   likeCount Int          @default(0)
@@ -157,20 +157,6 @@ model Embed {
 
   thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
   threadId String @unique
-}
-
-model ReplyEmbed {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-
-  url         String
-  secureUrl   String?
-  image       String?
-  title       String?
-  description String?
-
-  reply   Reply  @relation(fields: [replyId], references: [id], onDelete: Cascade)
-  replyId String @unique
 }
 
 model ThreadLike {
@@ -199,65 +185,6 @@ model ThreadRepost {
   @@unique([threadId, userId])
 }
 
-model Reply {
-  id            String     @id @default(cuid())
-  textContent   String
-  mediaType     MediaType?
-  source        String?
-  alt           String?
-  highResSource String?
-  width         Int?
-  height        Int?
-  createdAt     DateTime   @default(now())
-
-  embed ReplyEmbed?
-
-  parent   Reply?  @relation("Replies", fields: [parentId], references: [id])
-  parentId String?
-
-  replies      Reply[] @relation("Replies")
-  repliesCount Int     @default(0)
-
-  likes     ReplyLike[]
-  likeCount Int         @default(0)
-
-  reposts     ReplyRepost[]
-  repostCount Int           @default(0)
-
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId String
-
-  thread   Thread  @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  threadId String
-  embedId  String?
-}
-
-model ReplyLike {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-
-  reply   Reply  @relation(fields: [replyId], references: [id], onDelete: Cascade)
-  replyId String
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-
-  @@unique([replyId, userId])
-}
-
-model ReplyRepost {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-
-  reply   Reply  @relation(fields: [replyId], references: [id], onDelete: Cascade)
-  replyId String
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-
-  @@unique([replyId, userId])
-}
-
 model Message {
   id        String   @id @default(cuid())
   content   String
@@ -276,10 +203,10 @@ model Room {
   updatedAt  DateTime @updatedAt
 
   sender   User   @relation(name: "sentMessages", fields: [senderId], references: [id])
-  senderId String @unique
+  senderId String
 
   receiver   User   @relation(name: "receivedMessages", fields: [receiverId], references: [id])
-  receiverId String @unique
+  receiverId String
 
   messages Message[]
 }
@@ -310,49 +237,53 @@ model Notification {
 model LikedByNotification {
   id String @id @default(cuid())
 
-  likedBy   User   @relation(fields: [likedById], references: [id])
+  likedBy   User   @relation(fields: [likedById], references: [id], onDelete: Cascade)
   likedById String
 
-  thread   Thread @relation(fields: [threadId], references: [id])
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
   threadId String
 
-  notification   Notification @relation(fields: [notificationId], references: [id])
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
   notificationId String
+
+  @@unique([likedById, threadId])
 }
 
 model FollowedByNotification {
   id String @id @default(cuid())
 
-  followedBy   User   @relation(fields: [followedById], references: [id])
+  followedBy   User   @relation(fields: [followedById], references: [id], onDelete: Cascade)
   followedById String
 
-  notification   Notification @relation(fields: [notificationId], references: [id])
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
   notificationId String       @unique
 }
 
 model RepostedByNotification {
   id String @id @default(cuid())
 
-  repostedBy   User   @relation(fields: [repostedById], references: [id])
+  repostedBy   User   @relation(fields: [repostedById], references: [id], onDelete: Cascade)
   repostedById String
 
-  thread   Thread @relation(fields: [threadId], references: [id])
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
   threadId String
 
-  notification   Notification @relation(fields: [notificationId], references: [id])
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
   notificationId String
+
+  @@unique([repostedById, threadId])
 }
 
 model RepliedByNotification {
   id String @id @default(cuid())
 
-  repliedBy   User   @relation(fields: [repliedById], references: [id])
+  repliedBy   User   @relation(fields: [repliedById], references: [id], onDelete: Cascade)
   repliedById String
 
-  thread   Thread @relation(fields: [threadId], references: [id])
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
   threadId String
 
-  notification   Notification @relation(fields: [notificationId], references: [id])
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
   notificationId String       @unique
 }
 

@@ -14,7 +14,7 @@ export default async function handler(
     POST: async (currentUser) => {
       const embed = req.body.embed
 
-      const user = await prisma.reply.create({
+      const user = await prisma.thread.create({
         data: {
           ...req.body,
           embed: embed
