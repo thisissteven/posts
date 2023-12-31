@@ -189,7 +189,7 @@ export function ThreadDetail({
           </div>
         </div>
 
-        <ReplyToThread />
+        <ReplyToThread thread={thread} />
       </div>
     </article>
   )

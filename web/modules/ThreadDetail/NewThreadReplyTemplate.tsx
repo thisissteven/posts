@@ -10,12 +10,7 @@ import {
 
 import { useMutation, useUser } from '@/hooks'
 
-import {
-  Dialog,
-  FormTextarea,
-  RegularButton,
-  UploadImageInput,
-} from '@/components/UI'
+import { FormTextarea, RegularButton, UploadImageInput } from '@/components/UI'
 
 import {
   CharacterCount,
@@ -27,15 +22,9 @@ import {
   OpenGraphPreview,
 } from '@/modules//ThreadForm'
 
-export function NewThreadReplyTemplate({
-  canEscape = true,
-  onSubmitted,
-  id,
-}: {
-  canEscape?: boolean
-  onSubmitted?: () => void | Promise<void>
-  id: string
-}) {
+import { ThreadItem } from '@/types'
+
+export function NewThreadReplyTemplate({ thread }: { thread: ThreadItem }) {
   const [open, setOpen] = React.useState(false)
   const { user } = useUser()
 
@@ -53,22 +42,16 @@ export function NewThreadReplyTemplate({
 
   const onEscape = React.useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && canEscape) {
+      if (e.key === 'Escape') {
         e.preventDefault()
         setOpen(false)
         reset()
       }
     },
-    [canEscape, reset]
+    [reset]
   )
 
-  const { trigger } = useMutation<NewThreadPayload>(
-    '/threads',
-    createNewThread,
-    {
-      mutatedBy: id,
-    }
-  )
+  const { trigger } = useMutation<NewThreadPayload>('/threads', createNewThread)
 
   return (
     <FormProvider {...methods}>
@@ -78,14 +61,17 @@ export function NewThreadReplyTemplate({
             ...data,
             userId: user.id,
           })
-          await onSubmitted?.()
           reset()
           setOpen(false)
         })}
         className="flex-1"
       >
         <div className="flex flex-col gap-1 w-full">
-          {open && <span className="text-span text-xs">Replying to ...</span>}
+          {open && (
+            <span className="text-span text-xs">
+              Replying to @{thread.owner.username}
+            </span>
+          )}
 
           <Controller
             control={control}
@@ -117,30 +103,18 @@ export function NewThreadReplyTemplate({
                 <CharacterCount control={control} />
               </div>
               <div className="space-x-2">
-                {canEscape ? (
-                  <RegularButton
-                    type="button"
-                    variant="underline"
-                    className="py-1.5 px-2"
-                    onClick={() => {
-                      setOpen(false)
-                      reset()
-                    }}
-                  >
-                    Cancel
-                  </RegularButton>
-                ) : (
-                  <Dialog.Close asChild>
-                    <RegularButton
-                      type="button"
-                      className="py-1.5 px-2"
-                      variant="underline"
-                    >
-                      Cancel
-                    </RegularButton>
-                  </Dialog.Close>
-                )}
-                <PostButton mutatedBy={id} />
+                <RegularButton
+                  type="button"
+                  variant="underline"
+                  className="py-1.5 px-2"
+                  onClick={() => {
+                    setOpen(false)
+                    reset()
+                  }}
+                >
+                  Cancel
+                </RegularButton>
+                <PostButton mutatedBy="thread-reply" />
               </div>
             </div>
           )}
