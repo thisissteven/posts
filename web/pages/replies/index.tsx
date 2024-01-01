@@ -1,12 +1,11 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import React from 'react'
-import useSWR from 'swr'
 
 import { getRelativeTimeString } from '@/lib'
-import { useUser } from '@/hooks'
+import { useDelayedSWR, useUser } from '@/hooks'
 
-import { ThreadUserAvatar } from '@/components/UI'
+import { TabLoader, ThreadUserAvatar } from '@/components/UI'
 
 import { Header } from '@/modules/Replies'
 
@@ -62,10 +61,45 @@ function RoomItem({
   )
 }
 
-export default function Replies() {
-  const { data } = useSWR<GetMessagesResponse>('/message')
+export function EmptyPlaceholder({ visible }: { visible: boolean }) {
+  if (!visible) return null
 
+  return (
+    <div className="h-52 grid place-items-center">
+      <p className="text-span">No replies yet 🍃</p>
+    </div>
+  )
+}
+
+function RoomItems({ data }: { data?: GetMessagesResponse }) {
   const { user } = useUser()
+
+  if (!data) return null
+
+  return (
+    <ul>
+      {data.rooms.map((room, index) => {
+        const lastMessage = data.lastMessages[index]
+        return (
+          <RoomItem
+            key={room.identifier}
+            me={user}
+            room={room}
+            lastMessage={lastMessage}
+          />
+        )
+      })}
+    </ul>
+  )
+}
+
+export default function Replies() {
+  const { data, isLoading } = useDelayedSWR<GetMessagesResponse>('/message', {
+    duration: 300,
+    once: true,
+  })
+
+  const isEmpty = data?.rooms.length === 0
 
   return (
     <>
@@ -74,19 +108,11 @@ export default function Replies() {
       </Head>
       <Header />
 
-      <ul>
-        {data?.rooms.map((room, index) => {
-          const lastMessage = data?.lastMessages[index]
-          return (
-            <RoomItem
-              key={room.identifier}
-              me={user}
-              room={room}
-              lastMessage={lastMessage}
-            />
-          )
-        })}
-      </ul>
+      <div className="relative">
+        <TabLoader visible={isLoading} />
+        <RoomItems data={data} />
+        <EmptyPlaceholder visible={isEmpty} />
+      </div>
     </>
   )
 }

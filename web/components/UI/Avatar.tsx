@@ -3,24 +3,44 @@ import * as React from 'react'
 
 import { useUser } from '@/hooks'
 
-import { Camera, DefaultProfile, DefaultProfileLarge } from '@/components/Icons'
+import {
+  Camera,
+  DefaultProfile,
+  DefaultProfileLarge,
+  DefaultProfileMedium,
+} from '@/components/Icons'
 
 export function ThreadUserAvatar({
-  threadUser,
+  threadUser = {
+    username: '',
+    avatarUrl: '',
+  },
   style,
   defaultStyle,
+  medium,
 }: {
   threadUser: {
-    username: string
+    username: string | null
     avatarUrl: string | null
   }
   style?: React.CSSProperties
   defaultStyle?: React.CSSProperties
+  medium?: boolean
 }) {
   const { user } = useUser()
 
   const isOwner = threadUser.username === user.username
   const imageUrl = isOwner ? user.avatarUrl : threadUser.avatarUrl
+
+  if (!imageUrl && medium)
+    return (
+      <div
+        style={defaultStyle}
+        className="shrink-0 w-10 h-10 relative rounded-full overflow-hidden"
+      >
+        <DefaultProfileMedium />
+      </div>
+    )
 
   if (!imageUrl)
     return (

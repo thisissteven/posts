@@ -60,24 +60,40 @@ export default async function handler(
           },
         })
 
-        allowError(async () => {
-          await prisma.notification.create({
-            data: {
-              type: 'LIKE',
-              recipient: {
-                connect: {
-                  id: recipientId,
+        if (userId !== recipientId)
+          await allowError(async () => {
+            await prisma.notification.upsert({
+              where: {
+                id: `${recipientId}-${id}-LIKE`,
+              },
+              update: {
+                likedByNotification: {
+                  create: {
+                    likedById: userId,
+                  },
                 },
               },
-              likedByNotification: {
-                create: {
-                  likedById: userId,
-                  threadId: id,
+              create: {
+                id: `${recipientId}-${id}-LIKE`,
+                type: 'LIKE',
+                thread: {
+                  connect: {
+                    id,
+                  },
+                },
+                recipient: {
+                  connect: {
+                    id: recipientId,
+                  },
+                },
+                likedByNotification: {
+                  create: {
+                    likedById: userId,
+                  },
                 },
               },
-            },
+            })
           })
-        })
       }
 
       res.status(200).json({ message: 'Like count updated successfully' })
@@ -85,9 +101,9 @@ export default async function handler(
   })
 }
 
-const allowError = (fn: () => Promise<void>) => {
+const allowError = async (fn: () => Promise<void>) => {
   try {
-    fn()
+    await fn()
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('An error occurred.')

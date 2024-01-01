@@ -60,24 +60,44 @@ export default async function handler(
           },
         })
 
-        allowError(async () => {
-          await prisma.notification.create({
-            data: {
-              type: 'REPOST',
-              recipient: {
-                connect: {
-                  id: recipientId,
+        if (userId !== recipientId)
+          await allowError(async () => {
+            await prisma.notification.upsert({
+              where: {
+                id: `${recipientId}-${id}-REPOST`,
+              },
+              update: {
+                repostedByNotification: {
+                  create: {
+                    repostedById: userId,
+                  },
                 },
               },
-              repostedByNotification: {
-                create: {
-                  repostedById: userId,
-                  threadId: id,
+              create: {
+                id: `${recipientId}-${id}-REPOST`,
+                type: 'REPOST',
+                thread: {
+                  connect: {
+                    id,
+                  },
+                },
+                recipient: {
+                  connect: {
+                    id: recipientId,
+                  },
+                },
+                repostedByNotification: {
+                  create: {
+                    repostedBy: {
+                      connect: {
+                        id: userId,
+                      },
+                    },
+                  },
                 },
               },
-            },
+            })
           })
-        })
       }
 
       res.status(200).json({ message: 'Repost count updated successfully' })
@@ -85,9 +105,9 @@ export default async function handler(
   })
 }
 
-const allowError = (fn: () => Promise<void>) => {
+const allowError = async (fn: () => Promise<void>) => {
   try {
-    fn()
+    await fn()
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('An error occurred.')

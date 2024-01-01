@@ -13,7 +13,9 @@ export default function Notifications() {
       <Head>
         <title>Notifications</title>
       </Head>
+
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
+
       {activeTab === 'All' && <All />}
       {activeTab === 'Mentions' && <Mentions />}
     </>

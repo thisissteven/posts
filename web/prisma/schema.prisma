@@ -139,10 +139,9 @@ model Thread {
   reposts     ThreadRepost[]
   repostCount Int            @default(0)
 
-  threadReport           ThreadReport[]
-  likedByNotification    LikedByNotification[]
-  repostedByNotification RepostedByNotification[]
-  repliedByNotification  RepliedByNotification[]
+  threadReport ThreadReport[]
+
+  notifications Notification[]
 }
 
 model Embed {
@@ -219,11 +218,14 @@ enum NotificationType {
 }
 
 model Notification {
-  id        String   @id @default(cuid())
+  id        String   @id
   createdAt DateTime @default(now())
 
   recipient   User   @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   recipientId String
+
+  thread   Thread? @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadId String?
 
   type NotificationType
 
@@ -240,13 +242,8 @@ model LikedByNotification {
   likedBy   User   @relation(fields: [likedById], references: [id], onDelete: Cascade)
   likedById String
 
-  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  threadId String
-
   notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
   notificationId String
-
-  @@unique([likedById, threadId])
 }
 
 model FollowedByNotification {
@@ -265,13 +262,8 @@ model RepostedByNotification {
   repostedBy   User   @relation(fields: [repostedById], references: [id], onDelete: Cascade)
   repostedById String
 
-  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  threadId String
-
   notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
   notificationId String
-
-  @@unique([repostedById, threadId])
 }
 
 model RepliedByNotification {
@@ -279,9 +271,6 @@ model RepliedByNotification {
 
   repliedBy   User   @relation(fields: [repliedById], references: [id], onDelete: Cascade)
   repliedById String
-
-  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  threadId String
 
   notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
   notificationId String       @unique
