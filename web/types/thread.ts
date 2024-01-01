@@ -3,7 +3,7 @@ export type ThreadOwner = {
   username: string
   displayName: string
   isSupporter: boolean
-  avatarUrl?: string
+  avatarUrl: string | null
   blockedBy?: {
     id: string
   }[]
