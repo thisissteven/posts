@@ -9,7 +9,7 @@ import { RegularButton } from '@/components/UI'
 import { useAuth } from '@/modules/Auth'
 import { FindUserResponse } from '@/pages/api/profile/[username]'
 
-function useFollow(user?: FindUserResponse) {
+export function useFollow(user?: FindUserResponse) {
   const { user: currentUser, isAuthenticated } = useUser()
   const { openAuthDialog } = useAuth()
 
@@ -21,12 +21,6 @@ function useFollow(user?: FindUserResponse) {
       }
     }
   )
-
-  // React.useEffect(() => {
-  //   mutate({
-  //     status: user?.followedBy?.some((value) => value?.id === currentUser.id),
-  //   })
-  // }, [currentUser.id, mutate, user])
 
   const state = data ?? {
     status: false,

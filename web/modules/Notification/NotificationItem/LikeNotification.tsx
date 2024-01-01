@@ -22,11 +22,11 @@ export function LikeNotification({ notification, onClick }: NotificationProps) {
       onClick={onClick}
       className="px-6 py-5 flex gap-3 border-b border-b-divider hover:bg-soft-black active:bg-soft-black cursor-pointer"
     >
-      <div className="w-10 h-10 flex items-center justify-end">
+      <div className="w-12 h-12 flex items-center justify-end">
         <LikeActiveLarge />
       </div>
 
-      <div>
+      <div className="mt-1">
         <ul className="flex gap-2">
           {likers.map(({ likedBy }) => {
             return (
@@ -58,11 +58,17 @@ export function LikeNotification({ notification, onClick }: NotificationProps) {
           <PostLikers likers={likers} />
         </p>
 
-        <div className="mt-0.5 text-sm font-light text-span">
-          {thread?.textContent}
-        </div>
+        <TextContent textContent={thread?.textContent} />
       </div>
     </li>
+  )
+}
+
+function TextContent({ textContent }: { textContent?: string }) {
+  if (!textContent) return null
+
+  return (
+    <div className="mt-0.5 text-sm font-light text-span">{textContent}</div>
   )
 }
 

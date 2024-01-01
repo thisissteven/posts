@@ -29,18 +29,27 @@ async function getUserNotifications(recipientId: string) {
       createdAt: 'desc',
     },
     include: {
-      // followedByNotification: {
-      //   select: {
-      //     followedBy: {
-      //       select: {
-      //         avatarUrl: true,
-      //         username: true,
-      //         profession: true,
-      //         location: true,
-      //       },
-      //     },
-      //   },
-      // },
+      followedByNotification: {
+        select: {
+          followedBy: {
+            select: {
+              id: true,
+              avatarUrl: true,
+              username: true,
+              profession: true,
+              location: true,
+              followedBy: {
+                where: {
+                  id: recipientId,
+                },
+                select: {
+                  id: true,
+                },
+              },
+            },
+          },
+        },
+      },
       recipient: {
         select: {
           username: true,

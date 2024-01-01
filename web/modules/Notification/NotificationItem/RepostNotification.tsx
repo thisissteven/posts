@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { LikeActiveLarge } from '@/components/Icons'
+import { RepostLargeActive } from '@/components/Icons'
 import { ThreadUserAvatar } from '@/components/UI'
 
 import { GetUserNotificationsResponse } from '@/pages/api/notifications'
@@ -25,11 +25,11 @@ export function RepostNotification({
       onClick={onClick}
       className="px-6 py-5 flex gap-3 border-b border-b-divider hover:bg-soft-black active:bg-soft-black cursor-pointer"
     >
-      <div className="w-10 h-10 flex items-center justify-end">
-        <LikeActiveLarge />
+      <div className="w-12 h-12 flex items-center justify-end">
+        <RepostLargeActive />
       </div>
 
-      <div>
+      <div className="mt-1">
         <ul className="flex gap-2">
           {reposters.map(({ repostedBy }) => {
             return (

@@ -18,6 +18,16 @@ export const findUser = async (currentUser: CurrentUser, username: string) => {
       location: true,
       pronouns: true,
       createdAt: true,
+      following: !currentUser
+        ? false
+        : {
+            where: {
+              id: currentUser.id,
+            },
+            select: {
+              id: true,
+            },
+          },
       followedBy: !currentUser
         ? false
         : {

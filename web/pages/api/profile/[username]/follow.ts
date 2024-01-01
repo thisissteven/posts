@@ -87,7 +87,36 @@ export default async function handler(
         },
       })
 
+      if (userId !== userToFollowId)
+        await allowError(async () => {
+          await prisma.notification.create({
+            data: {
+              id: `${userToFollowId}-${userId}-FOLLOW`,
+              type: 'FOLLOW',
+              recipient: {
+                connect: {
+                  id: userToFollowId,
+                },
+              },
+              followedByNotification: {
+                create: {
+                  followedById: userId,
+                },
+              },
+            },
+          })
+        })
+
       res.status(200).json(user)
     },
   })
+}
+
+const allowError = async (fn: () => Promise<void>) => {
+  try {
+    await fn()
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('An error occurred.')
+  }
 }

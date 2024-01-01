@@ -79,9 +79,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
         signOut: async () => {
           await signOut({ redirect: false })
-          mutate((key) => key === '/notifications', undefined, {
-            revalidate: false,
-          })
+          mutate(
+            (key) =>
+              typeof key === 'string' &&
+              (key === '/notifications' ||
+                key.includes('follow') ||
+                key.includes('like') ||
+                key.includes('repost')),
+            undefined,
+            {
+              revalidate: false,
+            }
+          )
           router.replace('/')
         },
       }}

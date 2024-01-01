@@ -84,7 +84,11 @@ export function All() {
                     <FollowNotification
                       key={notification.id}
                       notification={notification}
-                      onClick={() => {}}
+                      onClick={() => {
+                        router.push(
+                          `/${notification.followedByNotification?.followedBy.username}`
+                        )
+                      }}
                     />
                   )
 
