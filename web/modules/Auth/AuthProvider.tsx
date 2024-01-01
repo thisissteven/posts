@@ -80,12 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signOut: async () => {
           await signOut({ redirect: false })
           mutate(
-            (key) =>
-              typeof key === 'string' &&
-              (key === '/notifications' ||
-                key.includes('follow') ||
-                key.includes('like') ||
-                key.includes('repost')),
+            (key) => typeof key === 'string' && key.includes('notifications'),
             undefined,
             {
               revalidate: false,

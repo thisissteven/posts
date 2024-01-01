@@ -10,13 +10,41 @@ export function getWhereParams(
   category: Category
 ): Prisma.ThreadFindManyArgs | undefined {
   switch (category) {
-    case 'everyone' || undefined:
+    case 'everyone':
+    case undefined:
       return {
-        where: undefined,
+        where: {
+          OR: [
+            {
+              AND: [
+                {
+                  replyTo: null,
+                },
+                {
+                  repliesCount: {
+                    gte: 0,
+                  },
+                },
+              ],
+            },
+            {
+              AND: [
+                {
+                  replyTo: {
+                    replyTo: {
+                      isNot: null,
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
       }
     case 'highlights':
       return {
         where: {
+          replyTo: null,
           OR: [
             {
               likeCount: {
@@ -34,27 +62,63 @@ export function getWhereParams(
     case 'following':
       return {
         where: {
-          owner: {
-            OR: [
-              {
-                followedBy: {
-                  some: {
+          OR: [
+            {
+              replyTo: null,
+              repliesCount: {
+                gte: 0,
+              },
+              owner: {
+                OR: [
+                  {
+                    followedBy: {
+                      some: {
+                        id: currentUser.id,
+                      },
+                    },
+                  },
+                  {
                     id: currentUser.id,
                   },
-                },
-              },
-              {
-                id: currentUser.id,
-              },
-              {
-                reposts: {
-                  some: {
-                    userId: currentUser.id,
+                  {
+                    reposts: {
+                      some: {
+                        userId: currentUser.id,
+                      },
+                    },
                   },
+                ],
+              },
+            },
+            {
+              replyTo: {
+                replyTo: {
+                  isNot: null,
                 },
               },
-            ],
-          },
+              owner: {
+                OR: [
+                  {
+                    followedBy: {
+                      some: {
+                        id: currentUser.id,
+                      },
+                    },
+                  },
+                  {
+                    id: currentUser.id,
+                  },
+                  {
+                    reposts: {
+                      some: {
+                        userId: currentUser.id,
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          ],
         },
       }
     default:

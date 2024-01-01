@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { LikeActiveLarge } from '@/components/Icons'
 import { ThreadUserAvatar } from '@/components/UI'
 
-import { GetUserNotificationsResponse } from '@/pages/api/notifications'
+import { GetUserNotificationsResponse } from '@/pages/api/notifications/[id]'
 
 import { NotificationProps } from '.'
 

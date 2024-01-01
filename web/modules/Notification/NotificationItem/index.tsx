@@ -1,4 +1,4 @@
-import { GetUserNotificationsResponse } from '@/pages/api/notifications'
+import { GetUserNotificationsResponse } from '@/pages/api/notifications/[id]'
 
 export type NotificationProps = {
   notification: GetUserNotificationsResponse['data'][number]

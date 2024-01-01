@@ -16,11 +16,12 @@ export default async function handler(
     POST: async (currentUser) => {
       const embed = req.body.embed
 
-      const user = await prisma.thread.update({
+      const thread = await prisma.thread.update({
         where: {
           id: threadId,
         },
         data: {
+          updatedAt: new Date(),
           repliesCount: {
             increment: 1,
           },
@@ -40,7 +41,7 @@ export default async function handler(
         },
       })
 
-      res.status(200).json(user)
+      res.status(200).json(thread)
     },
   })
 }
