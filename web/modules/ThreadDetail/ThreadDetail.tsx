@@ -47,9 +47,9 @@ export function ThreadDetail({
 
   const align = width < 522 ? 'end' : 'start'
 
-  const { data, mutate } = useSWRImmutable<unknown>(
+  const { data: isDeleted, mutate: mutateDeleted } = useSWRImmutable<unknown>(
     `/threads/${thread.id}/deleted`,
-    () => thread
+    () => false
   )
 
   const { data: viewAnyway, mutate: mutateViewAnyway } =
@@ -89,7 +89,7 @@ export function ThreadDetail({
     )
   }
 
-  if (!data) {
+  if (isDeleted) {
     return (
       <div className="flex gap-3 px-6 py-5 border-b border-b-divider">
         <div className="pointer-events-none">
@@ -176,7 +176,7 @@ export function ThreadDetail({
                   <DeletePost
                     threadId={thread.id}
                     onDelete={() => {
-                      mutate(null, {
+                      mutateDeleted(true, {
                         revalidate: false,
                       })
                     }}

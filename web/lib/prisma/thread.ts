@@ -11,78 +11,108 @@ export type Category =
   | 'following'
   | 'everyone'
 
+export function getThreadBaseIncludeParams(user: CurrentUser) {
+  return {
+    embed: {
+      select: {
+        url: true,
+        secureUrl: true,
+        title: true,
+        description: true,
+        image: true,
+      },
+    },
+    owner: {
+      select: {
+        id: true,
+        avatarUrl: true,
+        isSupporter: true,
+        username: true,
+        displayName: true,
+        blockedBy: !user
+          ? false
+          : {
+              where: {
+                id: user.id,
+              },
+              select: {
+                id: true,
+              },
+            },
+      },
+    },
+    likes: !user
+      ? false
+      : {
+          where: {
+            user: {
+              id: user.id,
+            },
+          },
+          select: {
+            user: {
+              select: {
+                username: true,
+              },
+            },
+          },
+        },
+    reposts: !user
+      ? false
+      : {
+          where: {
+            user: {
+              id: user.id,
+            },
+          },
+          select: {
+            user: {
+              select: {
+                username: true,
+              },
+            },
+          },
+        },
+  } satisfies Prisma.ThreadFindManyArgs['include']
+}
+
 export function getThreadIncludeParams(user: CurrentUser, category: Category) {
   switch (category) {
     case 'posts':
     case 'replies':
-    case 'highlights':
     case 'following':
     case 'everyone':
     case undefined:
       return {
         include: {
-          embed: {
-            select: {
-              url: true,
-              secureUrl: true,
-              title: true,
-              description: true,
-              image: true,
+          replies: {
+            take: 1,
+            orderBy: {
+              createdAt: 'desc',
+            },
+            include: {
+              ...getThreadBaseIncludeParams(user),
             },
           },
-          owner: {
+          replyTo: {
             select: {
-              id: true,
-              avatarUrl: true,
-              isSupporter: true,
-              username: true,
-              displayName: true,
-              blockedBy: !user
-                ? false
-                : {
-                    where: {
-                      id: user.id,
-                    },
-                    select: {
-                      id: true,
-                    },
-                  },
+              owner: {
+                select: {
+                  username: true,
+                },
+              },
             },
           },
-          likes: !user
-            ? false
-            : {
-                where: {
-                  user: {
-                    id: user.id,
-                  },
-                },
-                select: {
-                  user: {
-                    select: {
-                      username: true,
-                    },
-                  },
-                },
-              },
-          reposts: !user
-            ? false
-            : {
-                where: {
-                  user: {
-                    id: user.id,
-                  },
-                },
-                select: {
-                  user: {
-                    select: {
-                      username: true,
-                    },
-                  },
-                },
-              },
+          ...getThreadBaseIncludeParams(user),
         },
       } satisfies Prisma.ThreadFindManyArgs
+    case 'highlights':
+      return {
+        include: {
+          ...getThreadBaseIncludeParams(user),
+        },
+      } satisfies Prisma.ThreadFindManyArgs
+
     default:
       return undefined
   }
@@ -90,11 +120,7 @@ export function getThreadIncludeParams(user: CurrentUser, category: Category) {
 
 export function getReplyIncludeParams(user: CurrentUser, category: Category) {
   switch (category) {
-    case 'posts':
     case 'replies':
-    case 'highlights':
-    case 'following':
-    case 'everyone':
       return {
         include: {
           owner: {
@@ -106,7 +132,7 @@ export function getReplyIncludeParams(user: CurrentUser, category: Category) {
               displayName: true,
             },
           },
-          parent: {
+          replyTo: {
             select: {
               owner: {
                 select: {
@@ -148,7 +174,7 @@ export function getReplyIncludeParams(user: CurrentUser, category: Category) {
                 },
               },
         },
-      }
+      } satisfies Prisma.ThreadFindManyArgs
     default:
       return undefined
   }
@@ -187,7 +213,7 @@ export async function getPaginatedThreads({
     cursor,
     take: TAKE,
     orderBy: {
-      createdAt: 'desc',
+      updatedAt: 'desc',
     },
   })
 

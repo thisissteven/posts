@@ -25,6 +25,9 @@ export default async function handler(
             owner: {
               username,
             },
+            replyTo: {
+              isNot: null,
+            },
           },
         },
       })

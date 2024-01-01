@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { LikeActiveLarge } from '@/components/Icons'
 import { ThreadUserAvatar } from '@/components/UI'
 
-import { GetUserNotificationsResponse } from '@/pages/api/notifications'
+import { GetUserNotificationsResponse } from '@/pages/api/notifications/[id]'
 
 import { NotificationProps } from '.'
 
@@ -22,7 +22,7 @@ export function LikeNotification({ notification, onClick }: NotificationProps) {
       onClick={onClick}
       className="px-6 py-5 flex gap-3 border-b border-b-divider hover:bg-soft-black active:bg-soft-black cursor-pointer"
     >
-      <div className="w-12 h-12 flex items-center justify-end">
+      <div className="shrink-0 w-12 h-12 flex items-center justify-end">
         <LikeActiveLarge />
       </div>
 
@@ -68,7 +68,9 @@ function TextContent({ textContent }: { textContent?: string }) {
   if (!textContent) return null
 
   return (
-    <div className="mt-0.5 text-sm font-light text-span">{textContent}</div>
+    <div className="mt-0.5 text-sm font-light text-span line-clamp-2 whitespace-pre-line">
+      {textContent}
+    </div>
   )
 }
 

@@ -123,12 +123,14 @@ model Thread {
   embed Embed?
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId String
 
-  replies   Thread[] @relation("ThreadReplies")
-  replyTo   Thread?  @relation("ThreadReplies", fields: [replyToId], references: [id])
+  replies Thread[] @relation("ThreadReplies")
+
+  replyTo   Thread? @relation("ThreadReplies", fields: [replyToId], references: [id], onDelete: Cascade)
   replyToId String?
 
   repliesCount Int @default(0)

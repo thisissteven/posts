@@ -33,6 +33,16 @@ export type ThreadItem = {
     image?: string
   }
 
+  replies?: ThreadItem[]
+
+  replyTo?: {
+    owner: {
+      username: string
+    }
+  }
+
+  replyToId?: string | null
+
   likes?: {
     user?: {
       username: string

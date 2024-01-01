@@ -49,6 +49,15 @@ export default async function handler(
                 image: true,
               },
             },
+            replyTo: {
+              select: {
+                owner: {
+                  select: {
+                    username: true,
+                  },
+                },
+              },
+            },
             owner: {
               select: {
                 id: true,

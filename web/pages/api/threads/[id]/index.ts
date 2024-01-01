@@ -22,6 +22,18 @@ export default async function handler(
         },
       })
 
+      if (thread.replyToId)
+        await prisma.thread.update({
+          where: {
+            id: thread.replyToId,
+          },
+          data: {
+            repliesCount: {
+              decrement: 1,
+            },
+          },
+        })
+
       res.status(200).json(thread)
     },
   })

@@ -1,25 +1,25 @@
 import { useRouter } from 'next/navigation'
 import * as React from 'react'
 
-import { useDelayedInfiniteSWR } from '@/hooks'
+import { useDelayedInfiniteSWR, useUser } from '@/hooks'
 
 import { VirtualizedList } from '@/components/UI'
 
-import { GetUserNotificationsResponse } from '@/pages/api/notifications'
+import { GetUserNotificationsResponse } from '@/pages/api/notifications/[id]'
 
 import { withIndicator } from './WithIndicator'
 import { ReplyNotification } from '../NotificationItem'
 
 export function Mentions() {
-  const { data, isLoading, isEnd, loadMore } = useDelayedInfiniteSWR<
+  const { user } = useUser()
+  const { data, isLoading, isEnd, loadMore, hasData } = useDelayedInfiniteSWR<
     GetUserNotificationsResponse['data']
-  >('/notifications', {
+  >(`/notifications/${user?.id}`, {
     duration: 200,
     swrInfiniteConfig: {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
       revalidateIfStale: false,
-      revalidateFirstPage: false,
     },
   })
 
@@ -33,6 +33,7 @@ export function Mentions() {
           isLoading,
           isEnd,
           loadMore,
+          hasData,
         },
         (notifications) => (
           <VirtualizedList data={notifications} estimateSize={() => 135}>

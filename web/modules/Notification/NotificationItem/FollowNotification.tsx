@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { FollowedBy } from '@/components/Icons'
 import { RegularButton, ThreadUserAvatar } from '@/components/UI'
 
+import { getDescription } from '@/modules/Profile/Me'
 import { useFollow } from '@/modules/Profile/Others/ProfileInformation/FollowButton'
 import { FindUserResponse } from '@/pages/api/profile/[username]'
 
@@ -21,7 +22,7 @@ export function FollowNotification({
       onClick={onClick}
       className="px-6 py-5 flex gap-3 border-b border-b-divider hover:bg-soft-black active:bg-soft-black cursor-pointer"
     >
-      <div className="w-12 h-12 flex items-center justify-end">
+      <div className="shrink-0 w-12 h-12 flex items-center justify-end">
         <FollowedBy />
       </div>
 
@@ -50,7 +51,7 @@ export function FollowNotification({
         </p>
 
         <p className="mt-0.5 text-sm font-light text-span">
-          {followedBy.location}
+          {getDescription(followedBy as FindUserResponse)}
         </p>
       </div>
 
