@@ -21,7 +21,7 @@ export function RepostNotification({
   const reposters = notification.repostedByNotification
 
   return (
-    <li
+    <div
       onClick={onClick}
       className="px-6 py-5 flex gap-3 border-b border-b-divider hover:bg-soft-black active:bg-soft-black cursor-pointer"
     >
@@ -65,14 +65,14 @@ export function RepostNotification({
           {thread?.textContent}
         </div>
       </div>
-    </li>
+    </div>
   )
 }
 
 function PostReposters({
   reposters,
 }: {
-  reposters: GetUserNotificationsResponse[number]['repostedByNotification']
+  reposters: GetUserNotificationsResponse['data'][number]['repostedByNotification']
 }) {
   if (reposters.length === 1) {
     return <span>{reposters[0].repostedBy.username} reposted your post</span>

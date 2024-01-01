@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { prisma, requestHandler } from '@/lib'
+import { getCursor, prisma, requestHandler } from '@/lib'
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,18 +13,34 @@ export default async function handler(
     },
 
     GET: async (currentUser) => {
-      const notifications = await getUserNotifications(currentUser.id)
+      const previousCursor = req.query.cursor as string
+
+      const notifications = await getUserNotifications(
+        currentUser.id,
+        previousCursor
+      )
 
       res.status(200).json(notifications)
     },
   })
 }
 
-async function getUserNotifications(recipientId: string) {
-  return await prisma.notification.findMany({
+const TAKE = 10
+
+async function getUserNotifications(
+  recipientId: string,
+  previousCursor: string
+) {
+  const skip = previousCursor ? 1 : 0
+  const cursor = getCursor(previousCursor)
+
+  const notifications = await prisma.notification.findMany({
     where: {
       recipientId,
     },
+    skip,
+    cursor,
+    take: TAKE,
     orderBy: {
       createdAt: 'desc',
     },
@@ -100,6 +116,15 @@ async function getUserNotifications(recipientId: string) {
       // },
     },
   })
+
+  const lastThread =
+    notifications.length === TAKE ? notifications[TAKE - 1] : null
+  const lastCursor = lastThread ? lastThread.id : null
+
+  return {
+    data: notifications,
+    cursor: lastCursor,
+  }
 }
 
 export type GetUserNotificationsResponse = Prisma.PromiseReturnType<

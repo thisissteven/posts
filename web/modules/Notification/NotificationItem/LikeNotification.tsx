@@ -18,7 +18,7 @@ export function LikeNotification({ notification, onClick }: NotificationProps) {
   const likers = notification.likedByNotification
 
   return (
-    <li
+    <div
       onClick={onClick}
       className="px-6 py-5 flex gap-3 border-b border-b-divider hover:bg-soft-black active:bg-soft-black cursor-pointer"
     >
@@ -60,7 +60,7 @@ export function LikeNotification({ notification, onClick }: NotificationProps) {
 
         <TextContent textContent={thread?.textContent} />
       </div>
-    </li>
+    </div>
   )
 }
 
@@ -75,7 +75,7 @@ function TextContent({ textContent }: { textContent?: string }) {
 function PostLikers({
   likers,
 }: {
-  likers: GetUserNotificationsResponse[number]['likedByNotification']
+  likers: GetUserNotificationsResponse['data'][number]['likedByNotification']
 }) {
   if (likers.length === 1) {
     return <span>{likers[0].likedBy.username} liked your post</span>

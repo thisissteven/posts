@@ -1,15 +1,13 @@
-import clsx from 'clsx'
 import { useRouter } from 'next/navigation'
 import * as React from 'react'
-import { SWRResponse } from 'swr'
 
-import { useDelayedSWR } from '@/hooks'
+import { useDelayedInfiniteSWR } from '@/hooks'
 
-import { TabLoader } from '@/components/UI'
+import { VirtualizedList } from '@/components/UI'
 
 import { GetUserNotificationsResponse } from '@/pages/api/notifications'
 
-import { EmptyPlaceholder } from './EmptyPlaceholder'
+import { withIndicator } from './WithIndicator'
 import {
   FollowNotification,
   LikeNotification,
@@ -17,107 +15,92 @@ import {
   RepostNotification,
 } from '../NotificationItem'
 
-function withIndicator<T extends any[]>(
-  response: SWRResponse<T, any, any>,
-  renderChild: (data: T) => React.ReactNode
-) {
-  const { data, isLoading } = response
-
-  const isEmpty = data?.length === 0
-  const hasData = data !== undefined
-
-  return (
-    <React.Fragment>
-      <TabLoader visible={isLoading} />
-      <EmptyPlaceholder visible={isEmpty} />
-
-      <div
-        className={clsx(
-          'duration-300',
-          isLoading ? 'opacity-0' : 'opacity-100'
-        )}
-      >
-        {hasData && renderChild(data)}
-      </div>
-    </React.Fragment>
-  )
-}
-
 export function All() {
-  const swrResponse = useDelayedSWR<GetUserNotificationsResponse>(
-    '/notifications',
-    {
-      duration: 300,
-      swrConfig: {
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-        revalidateIfStale: false,
-      },
-    }
-  )
+  const { data, isLoading, isEnd, loadMore } = useDelayedInfiniteSWR<
+    GetUserNotificationsResponse['data']
+  >('/notifications', {
+    duration: 200,
+    swrInfiniteConfig: {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+      revalidateFirstPage: false,
+    },
+  })
 
   const router = useRouter()
 
   return (
     <div className="relative">
       {withIndicator(
-        swrResponse,
-        (notifications: GetUserNotificationsResponse) => (
-          <ul>
-            {notifications.map((notification) => {
-              switch (notification.type) {
-                case 'LIKE':
-                  return (
-                    <LikeNotification
-                      key={notification.id}
-                      notification={notification}
-                      onClick={() => {
-                        router.push(
-                          `/${notification.recipient.username}/${notification.threadId}`
-                        )
-                      }}
-                    />
-                  )
+        {
+          data,
+          isLoading,
+          isEnd,
+          loadMore,
+        },
+        (notifications) => (
+          <VirtualizedList data={notifications} estimateSize={() => 135}>
+            {(items, virtualizer) => {
+              if (!notifications) return null
 
-                case 'FOLLOW':
-                  return (
-                    <FollowNotification
-                      key={notification.id}
-                      notification={notification}
-                      onClick={() => {
-                        router.push(
-                          `/${notification.followedByNotification?.followedBy.username}`
-                        )
-                      }}
-                    />
-                  )
+              return items.map((item) => {
+                const notification = notifications[item.index]
+                const type = notification.type
+                return (
+                  <VirtualizedList.Item
+                    key={item.key}
+                    virtualizer={virtualizer}
+                    item={item}
+                  >
+                    {type === 'LIKE' && (
+                      <LikeNotification
+                        key={notification.id}
+                        notification={notification}
+                        onClick={() => {
+                          router.push(
+                            `/${notification.recipient.username}/${notification.threadId}`
+                          )
+                        }}
+                      />
+                    )}
 
-                case 'REPLY':
-                  return (
-                    <ReplyNotification
-                      key={notification.id}
-                      notification={notification}
-                      onClick={() => {}}
-                    />
-                  )
+                    {type === 'FOLLOW' && (
+                      <FollowNotification
+                        key={notification.id}
+                        notification={notification}
+                        onClick={() => {
+                          router.push(
+                            `/${notification.followedByNotification?.followedBy.username}`
+                          )
+                        }}
+                      />
+                    )}
 
-                case 'REPOST':
-                  return (
-                    <RepostNotification
-                      key={notification.id}
-                      notification={notification}
-                      onClick={() => {
-                        router.push(
-                          `/${notification.recipient.username}/${notification.threadId}`
-                        )
-                      }}
-                    />
-                  )
-                default:
-                  return null
-              }
-            })}
-          </ul>
+                    {type === 'REPLY' && (
+                      <ReplyNotification
+                        key={notification.id}
+                        notification={notification}
+                        onClick={() => {}}
+                      />
+                    )}
+
+                    {type === 'REPOST' && (
+                      <RepostNotification
+                        key={notification.id}
+                        notification={notification}
+                        onClick={() => {
+                          router.push(
+                            `/${notification.recipient.username}/${notification.threadId}`
+                          )
+                        }}
+                      />
+                    )}
+                  </VirtualizedList.Item>
+                )
+              })
+            }}
+          </VirtualizedList>
         )
       )}
     </div>

@@ -17,7 +17,7 @@ export function FollowNotification({
   if (!followedBy) return null
 
   return (
-    <li
+    <div
       onClick={onClick}
       className="px-6 py-5 flex gap-3 border-b border-b-divider hover:bg-soft-black active:bg-soft-black cursor-pointer"
     >
@@ -57,7 +57,7 @@ export function FollowNotification({
       <div className="ml-auto flex items-center">
         <FollowButton user={followedBy as FindUserResponse} />
       </div>
-    </li>
+    </div>
   )
 }
 
