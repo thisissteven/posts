@@ -30,6 +30,15 @@ export function getThreadIncludeParams(user: CurrentUser, category: Category) {
               image: true,
             },
           },
+          replyTo: {
+            select: {
+              owner: {
+                select: {
+                  username: true,
+                },
+              },
+            },
+          },
           owner: {
             select: {
               id: true,
@@ -106,7 +115,7 @@ export function getReplyIncludeParams(user: CurrentUser, category: Category) {
               displayName: true,
             },
           },
-          parent: {
+          replyTo: {
             select: {
               owner: {
                 select: {
@@ -148,7 +157,7 @@ export function getReplyIncludeParams(user: CurrentUser, category: Category) {
                 },
               },
         },
-      }
+      } satisfies Prisma.ThreadFindManyArgs
     default:
       return undefined
   }

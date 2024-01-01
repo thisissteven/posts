@@ -5,11 +5,12 @@ import useSWRImmutable from 'swr/immutable'
 import { DefaultProfileLarge, ReadIcon } from '@/components/Icons'
 import { IconButton, Tooltip } from '@/components/UI'
 
+import { UserBio } from '@/modules/Profile/Me'
+import { useHasBlock } from '@/modules/Profile/TabContents/useHasBlock'
 import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 import { FollowButton } from './FollowButton'
 import { SendMessageDialog } from './SendMessageDialog'
-import { useHasBlock } from '../../TabContents/useHasBlock'
 
 export function ProfileInformation({ username }: { username: string }) {
   const { data: user } = useSWRImmutable<FindUserResponse>(
@@ -37,7 +38,7 @@ export function ProfileInformation({ username }: { username: string }) {
           )}
         </div>
 
-        <p className="text-lg">{user?.displayName}</p>
+        <UserBio user={user} />
       </div>
 
       {useHasBlock(

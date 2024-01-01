@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
@@ -72,6 +73,8 @@ export function Thread({
 
   const repostedBy = getRepostedBy(isMyThread, thread)
 
+  const replyTo = thread.replyTo?.owner.username
+
   if (hasBlock) {
     return (
       <div className="flex gap-3 px-6 py-5 border-b border-b-divider">
@@ -127,10 +130,24 @@ export function Thread({
           <RepostSmall /> {repostedBy} reposted
         </div>
       )}
+
       <div className="flex gap-3">
         <Avatar threadUser={thread.owner} />
         <div className="w-[calc(100%-60px)]">
           <UserDisplay thread={thread} />
+
+          {replyTo !== undefined && (
+            <p className="mt-1 text-sm font-light text-span">
+              Replying to{' '}
+              <Link
+                onClick={(e) => e.stopPropagation()}
+                href={`/${replyTo}`}
+                className="text-soft-primary hover:underline underline-offset-[3px]"
+              >
+                @{replyTo}
+              </Link>
+            </p>
+          )}
 
           {thread.textContent && (
             <div className="mt-1">

@@ -24,7 +24,6 @@ export function All() {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
       revalidateIfStale: false,
-      revalidateFirstPage: false,
     },
   })
 

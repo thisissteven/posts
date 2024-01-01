@@ -21,7 +21,6 @@ export function withIndicator<T extends any[]>(
 
   return (
     <React.Fragment>
-      <TabLoader visible={isLoading} />
       <EmptyPlaceholder visible={isEmpty} />
 
       <div
@@ -34,6 +33,8 @@ export function withIndicator<T extends any[]>(
       </div>
 
       <LoadMore isEnd={isEnd} whenInView={loadMore} />
+
+      <TabLoader visible={isLoading} />
     </React.Fragment>
   )
 }

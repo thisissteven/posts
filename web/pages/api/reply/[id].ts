@@ -6,6 +6,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const threadId = req.query.id as string
+
   await requestHandler(req, res, {
     allowedRoles: {
       POST: ['USER'],
@@ -14,17 +16,27 @@ export default async function handler(
     POST: async (currentUser) => {
       const embed = req.body.embed
 
-      const user = await prisma.thread.create({
+      const user = await prisma.thread.update({
+        where: {
+          id: threadId,
+        },
         data: {
-          ...req.body,
-          embed: embed
-            ? {
-                create: {
-                  ...embed,
-                },
-              }
-            : undefined,
-          ownerId: currentUser.id,
+          repliesCount: {
+            increment: 1,
+          },
+          replies: {
+            create: {
+              ...req.body,
+              embed: embed
+                ? {
+                    create: {
+                      ...embed,
+                    },
+                  }
+                : undefined,
+              ownerId: currentUser.id,
+            },
+          },
         },
       })
 
