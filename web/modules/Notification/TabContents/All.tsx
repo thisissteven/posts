@@ -1,22 +1,108 @@
+import { useRouter } from 'next/navigation'
 import * as React from 'react'
 
-import { TabLoader } from '@/components/UI'
+import { useDelayedInfiniteSWR } from '@/hooks'
 
-import { EmptyPlaceholder } from './EmptyPlaceholder'
+import { VirtualizedList } from '@/components/UI'
+
+import { GetUserNotificationsResponse } from '@/pages/api/notifications'
+
+import { withIndicator } from './WithIndicator'
+import {
+  FollowNotification,
+  LikeNotification,
+  ReplyNotification,
+  RepostNotification,
+} from '../NotificationItem'
 
 export function All() {
-  const [loading, setLoading] = React.useState(true)
+  const { data, isLoading, isEnd, loadMore } = useDelayedInfiniteSWR<
+    GetUserNotificationsResponse['data']
+  >('/notifications', {
+    duration: 200,
+    swrInfiniteConfig: {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+      revalidateFirstPage: false,
+    },
+  })
 
-  React.useEffect(() => {
-    setTimeout(() => {
-      setLoading(false)
-    }, 500)
-  }, [])
+  const router = useRouter()
 
   return (
     <div className="relative">
-      <TabLoader visible={loading} />
-      <EmptyPlaceholder />
+      {withIndicator(
+        {
+          data,
+          isLoading,
+          isEnd,
+          loadMore,
+        },
+        (notifications) => (
+          <VirtualizedList data={notifications} estimateSize={() => 135}>
+            {(items, virtualizer) => {
+              if (!notifications) return null
+
+              return items.map((item) => {
+                const notification = notifications[item.index]
+                const type = notification.type
+                return (
+                  <VirtualizedList.Item
+                    key={item.key}
+                    virtualizer={virtualizer}
+                    item={item}
+                  >
+                    {type === 'LIKE' && (
+                      <LikeNotification
+                        key={notification.id}
+                        notification={notification}
+                        onClick={() => {
+                          router.push(
+                            `/${notification.recipient.username}/${notification.threadId}`
+                          )
+                        }}
+                      />
+                    )}
+
+                    {type === 'FOLLOW' && (
+                      <FollowNotification
+                        key={notification.id}
+                        notification={notification}
+                        onClick={() => {
+                          router.push(
+                            `/${notification.followedByNotification?.followedBy.username}`
+                          )
+                        }}
+                      />
+                    )}
+
+                    {type === 'REPLY' && (
+                      <ReplyNotification
+                        key={notification.id}
+                        notification={notification}
+                        onClick={() => {}}
+                      />
+                    )}
+
+                    {type === 'REPOST' && (
+                      <RepostNotification
+                        key={notification.id}
+                        notification={notification}
+                        onClick={() => {
+                          router.push(
+                            `/${notification.recipient.username}/${notification.threadId}`
+                          )
+                        }}
+                      />
+                    )}
+                  </VirtualizedList.Item>
+                )
+              })
+            }}
+          </VirtualizedList>
+        )
+      )}
     </div>
   )
 }

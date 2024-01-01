@@ -110,7 +110,7 @@ export function Lightbox({
       >
         <div
           tabIndex={-1}
-          className="relative bg-soft-background rounded-lg overflow-hidden"
+          className="cursor-pointer relative bg-soft-background rounded-lg overflow-hidden"
         >
           {mediaType === 'image' && (
             <>

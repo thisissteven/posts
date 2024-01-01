@@ -107,7 +107,7 @@ export function getRelativeTimeStringLong(
     if (relativeTime === -1) {
       return 'next week'
     } else {
-      return `${Math.abs(relativeTime)}w`
+      return `${Math.abs(relativeTime)} weeks`
     }
   } else if (unitIndex === 5) {
     // For months
@@ -133,14 +133,15 @@ const months = [
   'Dec',
 ]
 
-function formatAMPM(date: Date) {
-  let hours = date.getHours()
-  let minutes = date.getMinutes()
-  const ampm = hours >= 12 ? 'PM' : 'AM'
-  hours = hours % 12
-  hours = hours ? hours : 12
-  minutes = minutes < 10 ? 0 + minutes : minutes
-  return `${hours}:${minutes} ${ampm}`
+export function getAMPM(timestamp?: string | Date) {
+  if (!timestamp) return ''
+
+  return new Intl.DateTimeFormat('default', {
+    hour: 'numeric',
+    minute: 'numeric',
+  })
+    .format(new Date(timestamp))
+    .toLowerCase()
 }
 
 export function formatDate(timestamp?: string | Date) {
@@ -149,6 +150,6 @@ export function formatDate(timestamp?: string | Date) {
   const date = new Date(timestamp)
   const formattedDate = `${
     months[date.getMonth()]
-  } ${date.getDate()}, ${formatAMPM(date)}`
+  } ${date.getDate()}, ${getAMPM(date).toUpperCase()}`
   return formattedDate
 }

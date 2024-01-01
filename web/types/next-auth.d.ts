@@ -14,6 +14,7 @@ declare module 'next-auth' {
     avatarUrl?: string | null
     displayName?: string | null
     username?: string | null
+    createdAt?: Date | null
     role: 'USER' | 'ADMIN'
   }
 }

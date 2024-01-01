@@ -10,12 +10,10 @@ import { OnYourMind } from '@/modules/ThreadForm'
 export default function Home() {
   const { activeTab, setActiveTab } = useLastOpenedTab()
 
-  const title = activeTab ? `Posts - ${activeTab}` : 'Posts'
-
   return (
     <>
       <Head>
-        <title>{title}</title>
+        <title>Posts</title>
       </Head>
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
 

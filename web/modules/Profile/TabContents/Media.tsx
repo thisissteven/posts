@@ -33,8 +33,12 @@ export function Media() {
     loadMore,
   } = useDelayedInfiniteSWR<Media[]>(`/profile/${username}/threads/media`, {
     duration: 300,
-    revalidateOnMount: false,
-    revalidateIfStale: false,
+    swrInfiniteConfig: {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+      revalidateFirstPage: false,
+    },
   })
 
   const router = useRouter()

@@ -20,7 +20,7 @@ const variantClassName = {
   yellow:
     'w-full text-autumn-yellow bg-autumn-brown py-2 px-6 flex gap-1 items-center justify-center active:opacity-80',
   underline:
-    'rounded-lg text-primary text-sm hover:underline underline-offset-[3px]',
+    'rounded-none text-primary text-sm hover:underline underline-offset-[3px]',
   primary:
     'text-sm text-background px-3 py-1.5 rounded-lg active:opacity-80 disabled:bg-span bg-primary disabled:data-[loading=true]:bg-primary',
   secondary:

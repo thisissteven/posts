@@ -27,14 +27,7 @@ export function OpenGraphPreview() {
     name: 'embed',
   })
 
-  const lines = textContent?.split('\n') ?? []
-  const hasLines = lines.length > 0
-
-  const lastLineIndex = lines.length - 1
-
-  const textToCheck = hasLines ? lines[lastLineIndex] : textContent
-
-  const href = getHref(textToCheck?.split(' ').find(isWebsite))
+  const href = getHref(textContent?.split(/[\n\s]+/).find(isWebsite))
 
   const secureUrl = useDebounce(href, 500)
 

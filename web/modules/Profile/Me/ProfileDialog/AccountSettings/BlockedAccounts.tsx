@@ -13,8 +13,6 @@ import { FindUserResponse } from '@/pages/api/profile/[username]'
 
 import { SettingGroup } from './SettingGroup'
 
-import { ThreadOwner } from '@/types'
-
 function UnblockButton({ userId }: { userId: string }) {
   const {
     user: { username },
@@ -88,7 +86,12 @@ export function BlockedAccounts() {
                     >
                       <div className="flex items-center gap-2">
                         <div className="scale-90 origin-left">
-                          <ThreadUserAvatar threadUser={user as ThreadOwner} />
+                          <ThreadUserAvatar
+                            threadUser={{
+                              avatarUrl: user.avatarUrl,
+                              username: user.username!,
+                            }}
+                          />
                         </div>
 
                         <div className="text-sm font-light">

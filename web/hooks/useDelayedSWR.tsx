@@ -1,4 +1,4 @@
-import useSWR, { BareFetcher, SWRConfiguration } from 'swr'
+import useSWR, { BareFetcher, Key, SWRConfiguration } from 'swr'
 
 import { apiClient } from '@/lib'
 
@@ -8,24 +8,29 @@ const defaultFetcher = (url: string) =>
   apiClient.get(url).then((res) => res.data)
 
 export function useDelayedSWR<Data = unknown, Error = unknown>(
-  key: string,
-  config?: SWRConfiguration<Data, Error, BareFetcher<Data>> & {
+  key: Key,
+  config?: {
     duration?: number
     fetcher?: BareFetcher<Data>
     once?: boolean
+    swrConfig?: SWRConfiguration<Data, Error, BareFetcher<Data>>
   }
 ) {
   const duration = config?.duration ?? 200
   const fetcher = config?.fetcher ?? defaultFetcher
   const once = config?.once ?? false
 
-  const { data, isLoading, ...rest } = useSWR(key, async (url: string) => {
-    const [data] = await Promise.all([
-      fetcher(url),
-      new Promise((resolve) => setTimeout(resolve, duration)),
-    ])
-    return data
-  })
+  const { data, isLoading, ...rest } = useSWR(
+    key,
+    async (url: string) => {
+      const [data] = await Promise.all([
+        fetcher(url),
+        new Promise((resolve) => setTimeout(resolve, duration)),
+      ])
+      return data
+    },
+    config?.swrConfig
+  )
 
   const isEmpty = data?.length === 0
 

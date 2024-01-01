@@ -1,5 +1,5 @@
-import { BareFetcher, SWRConfiguration } from 'swr'
-import useSWRInfinite from 'swr/infinite'
+import { BareFetcher } from 'swr'
+import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 
 import { apiClient } from '@/lib'
 
@@ -10,10 +10,11 @@ const defaultFetcher = (url: string) =>
 
 export function useDelayedInfiniteSWR<Data = unknown, Error = unknown>(
   key: string,
-  config?: SWRConfiguration<Data, Error, BareFetcher<Data>> & {
+  config?: {
     duration?: number
     fetcher?: BareFetcher<Data>
     once?: boolean
+    swrInfiniteConfig?: SWRInfiniteConfiguration<Data, Error, BareFetcher<Data>>
   }
 ) {
   const duration = config?.duration ?? 200
@@ -41,7 +42,8 @@ export function useDelayedInfiniteSWR<Data = unknown, Error = unknown>(
         new Promise((resolve) => setTimeout(resolve, duration)),
       ])
       return data
-    }
+    },
+    config?.swrInfiniteConfig
   )
 
   const isEmpty = Boolean(data && data[0]?.data.length === 0)

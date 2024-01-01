@@ -72,7 +72,9 @@ export function useButtonCount({
       }
     )
     try {
-      debounce(() => apiClient.put(`/threads/${threadId}/${countType}`))()
+      debounce(() =>
+        apiClient.put(`/threads/${threadId}/${thread.owner.id}/${countType}`)
+      )()
     } catch (error) {
       mutate(currentState, {
         revalidate: false,

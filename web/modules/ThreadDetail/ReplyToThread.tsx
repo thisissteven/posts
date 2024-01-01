@@ -7,7 +7,13 @@ import { DefaultProfileLarge } from '@/components/Icons'
 
 import { NewThreadReplyTemplate } from './NewThreadReplyTemplate'
 
-const ReplyToThread = React.memo(function ReplyToThread() {
+import { ThreadItem } from '@/types'
+
+const ReplyToThread = React.memo(function ReplyToThread({
+  thread,
+}: {
+  thread: ThreadItem
+}) {
   const { isAuthenticated, user } = useUser()
 
   if (!isAuthenticated) return null
@@ -32,7 +38,7 @@ const ReplyToThread = React.memo(function ReplyToThread() {
         )}
       </div>
 
-      <NewThreadReplyTemplate id="reply-to-thread" />
+      <NewThreadReplyTemplate thread={thread} />
     </div>
   )
 })

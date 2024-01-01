@@ -2,6 +2,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import React from 'react'
 import { isMobile } from 'react-device-detect'
+import { mutate } from 'swr'
 
 import { newWindow } from '@/lib'
 import { useDialogState } from '@/hooks/useDialogState'
@@ -52,16 +53,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [dialogState, isAuthenticated])
 
   React.useEffect(() => {
-    if (!isAuthenticated && needAuthPathnames.includes(pathname)) {
+    if (status === 'unauthenticated' && needAuthPathnames.includes(pathname)) {
       router.replace('/')
     }
-  }, [isAuthenticated, pathname, router])
+  }, [pathname, router, status])
 
   React.useEffect(() => {
-    if (!isAuthenticated && needAuthPathnames.includes(pathname)) {
+    if (status === 'unauthenticated' && needAuthPathnames.includes(pathname)) {
       dialogState.onOpenChange(true)
     }
-  }, [dialogState, isAuthenticated, pathname])
+  }, [dialogState, pathname, status])
 
   return (
     <AuthContext.Provider
@@ -78,6 +79,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
         signOut: async () => {
           await signOut({ redirect: false })
+          mutate(
+            (key) =>
+              typeof key === 'string' &&
+              (key === '/notifications' ||
+                key.includes('follow') ||
+                key.includes('like') ||
+                key.includes('repost')),
+            undefined,
+            {
+              revalidate: false,
+            }
+          )
           router.replace('/')
         },
       }}

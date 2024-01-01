@@ -4,13 +4,9 @@ import useSWRImmutable from 'swr/immutable'
 
 import { useUser } from '@/hooks'
 
-import { MoreIconWhite } from '@/components/Icons'
-import { Popover } from '@/components/UI'
-
-import { useDialogActions } from '@/store'
-
-import { useAuth } from '@/modules/Auth'
 import { FindUserResponse } from '@/pages/api/profile/[username]'
+
+import { UserPopover } from '.'
 
 export function HeaderContent() {
   const pathname = usePathname()
@@ -19,38 +15,20 @@ export function HeaderContent() {
     `/profile/${username}`
   )
 
-  const { isAuthenticated, user: currentUser } = useUser()
-  const { openDialog } = useDialogActions()
-  const { openAuthDialog } = useAuth()
+  const { user: currentUser } = useUser()
+
+  const followsMe = user?.following?.some((u) => u.id === currentUser.id)
+  const textContent = followsMe ? (
+    <span className="text-span">follows you</span>
+  ) : null
 
   return (
     <>
-      <h1 className="text-sm font-light">@{user?.username}</h1>
+      <h1 className="text-sm font-light">
+        @{user?.username} {textContent}
+      </h1>
 
-      <Popover>
-        <Popover.Trigger asChild>
-          <button className="relative ml-auto active:opacity-80 duration-200">
-            <MoreIconWhite />
-          </button>
-        </Popover.Trigger>
-        <Popover.Content>
-          <Popover.Item onSelect={() => {}}>Report</Popover.Item>
-          <Popover.Item
-            onSelect={() => {
-              if (!isAuthenticated) {
-                openAuthDialog()
-                return
-              }
-              openDialog('BLOCK_USER', user)
-            }}
-            className="text-danger"
-          >
-            {user?.blockedBy?.some((value) => value?.id === currentUser?.id)
-              ? 'Unblock'
-              : 'Block'}
-          </Popover.Item>
-        </Popover.Content>
-      </Popover>
+      <UserPopover user={user} />
     </>
   )
 }

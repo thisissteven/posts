@@ -12,7 +12,7 @@ function useFollow(user?: FindUserResponse) {
   const { user: currentUser } = useUser()
 
   const { data, mutate } = useSWRImmutable(
-    `/profile/${user?.id}/follow`,
+    `/profile/${user?.id}/follow/${currentUser.username}`,
     () => {
       return {
         status: user?.followedBy?.some((value) => value?.id === currentUser.id),
