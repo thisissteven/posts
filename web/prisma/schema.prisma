@@ -132,7 +132,7 @@ model Thread {
 
   replies Thread[] @relation("ThreadReplies")
 
-  replyTo   Thread? @relation("ThreadReplies", fields: [replyToId], references: [id])
+  replyTo   Thread? @relation("ThreadReplies", fields: [replyToId], references: [id], onDelete: Cascade)
   replyToId String?
 
   repliesCount Int @default(0)

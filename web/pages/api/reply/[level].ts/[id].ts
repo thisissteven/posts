@@ -16,6 +16,21 @@ export default async function handler(
     POST: async (currentUser) => {
       const embed = req.body.embed
 
+      const newThread = await prisma.thread.create({
+        data: {
+          ...req.body,
+          level: parseInt(level) + 1,
+          embed: embed
+            ? {
+                create: {
+                  ...embed,
+                },
+              }
+            : undefined,
+          ownerId: currentUser.id,
+        },
+      })
+
       const thread = await prisma.thread.update({
         where: {
           id: threadId,
@@ -26,23 +41,60 @@ export default async function handler(
             increment: 1,
           },
           replies: {
-            create: {
-              ...req.body,
-              level: parseInt(level) + 1,
-              embed: embed
-                ? {
-                    create: {
-                      ...embed,
-                    },
-                  }
-                : undefined,
-              ownerId: currentUser.id,
+            connect: {
+              id: newThread.id,
             },
           },
         },
       })
 
+      if (currentUser.id !== thread.ownerId)
+        await allowError(async () => {
+          await prisma.notification.upsert({
+            where: {
+              id: `${thread.ownerId}-${newThread.id}-REPLY`,
+            },
+            update: {
+              repliedByNotification: {
+                create: {
+                  id: `${newThread.id}-${currentUser.id}-REPLY`,
+                  repliedById: currentUser.id,
+                },
+              },
+            },
+            create: {
+              id: `${thread.ownerId}-${newThread.id}-REPLY`,
+              type: 'REPLY',
+              thread: {
+                connect: {
+                  id: newThread.id,
+                },
+              },
+              recipient: {
+                connect: {
+                  id: thread.ownerId,
+                },
+              },
+              repliedByNotification: {
+                create: {
+                  id: `${newThread.id}-${currentUser.id}-REPLY`,
+                  repliedById: currentUser.id,
+                },
+              },
+            },
+          })
+        })
+
       res.status(200).json(thread)
     },
   })
+}
+
+const allowError = async (fn: () => Promise<void>) => {
+  try {
+    await fn()
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('An error occurred.')
+  }
 }

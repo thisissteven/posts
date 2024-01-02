@@ -83,7 +83,11 @@ export function All() {
                       <ReplyNotification
                         key={notification.id}
                         notification={notification}
-                        onClick={() => {}}
+                        onClick={() => {
+                          router.push(
+                            `/${notification.repliedByNotification?.repliedBy.username}/${notification.threadId}`
+                          )
+                        }}
                       />
                     )}
 
