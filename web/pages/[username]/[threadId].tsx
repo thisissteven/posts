@@ -6,6 +6,7 @@ import React from 'react'
 import { useDelayedSWR } from '@/hooks'
 
 import { Header } from '@/modules/Thread'
+import { Thread } from '@/modules/Thread/Thread'
 import { ThreadDetail } from '@/modules/ThreadDetail'
 
 import { ThreadItem } from '@/types'
@@ -21,10 +22,7 @@ function withLoader<T>(
 
   return (
     <div
-      className={clsx(
-        'duration-300 mt-1',
-        isLoading ? 'opacity-0' : 'opacity-100'
-      )}
+      className={clsx('duration-300', isLoading ? 'opacity-0' : 'opacity-100')}
     >
       {!!data && renderChild(data)}
     </div>
@@ -60,16 +58,44 @@ export default function ThreadPage() {
         <title>{pageTitle}</title>
       </Head>
       <Header />
-      {withLoader({ isLoading, data: data?.thread }, (thread) => (
-        <>
+      {withLoader({ isLoading, data: data }, ({ thread, parentThread }) => (
+        <div className="min-h-screen">
+          <div className="flex flex-col">
+            {getParentThreads(parentThread).map((thread, index) => (
+              <Thread
+                key={thread.id}
+                thread={thread}
+                isReply={index > 0}
+                hasReplyTo={index > 0}
+                isOnlyThread={false}
+                isThreadDetail={true}
+                isRootThread={index === 0}
+              />
+            ))}
+          </div>
           <ThreadDetail thread={thread} />
           {/* <ThreadDetailListTemplate
             threadId={thread.id}
             threadLevel={thread.level}
             url="/threads"
           /> */}
-        </>
+        </div>
       ))}
     </>
   )
+}
+
+function getParentThreads(thread: ThreadItem | null) {
+  if (!thread) return []
+
+  const parentThreads = []
+
+  let parent = thread.replyTo
+
+  while (parent) {
+    parentThreads.push(parent)
+    parent = parent.replyTo
+  }
+
+  return [thread, ...parentThreads].reverse()
 }

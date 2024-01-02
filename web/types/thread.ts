@@ -37,11 +37,7 @@ export type ThreadItem = {
 
   replies?: ThreadItem[]
 
-  replyTo?: {
-    owner: {
-      username: string
-    }
-  }
+  replyTo?: ThreadItem | null
 
   replyToId?: string | null
 

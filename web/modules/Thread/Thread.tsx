@@ -26,6 +26,8 @@ type ThreadProps = {
   isReply?: boolean
   hasReplyTo?: boolean
   isOnlyThread?: boolean
+  isThreadDetail?: boolean
+  isRootThread?: boolean
 }
 
 function getRepostedBy(isMyThread: boolean, thread: ThreadItem) {
@@ -49,6 +51,8 @@ export function Thread({
   isReply = false,
   hasReplyTo = false,
   isOnlyThread = false,
+  isThreadDetail = false,
+  isRootThread = false,
 }: ThreadProps) {
   const { width } = useWindowSize()
   const { user } = useUser()
@@ -116,10 +120,14 @@ export function Thread({
       role="article"
       className={cn(
         'cursor-pointer px-6 hover:bg-soft-black transition-colors duration-200',
-        (!hasReplies || isOnlyThread) && 'border-b border-divider',
+        (!hasReplies || isOnlyThread) &&
+          !isThreadDetail &&
+          'border-b border-divider',
         'py-4',
         hasReplies && 'pt-4 pb-0',
         isReply && 'pb-4 pt-0',
+        isThreadDetail && 'py-0',
+        isRootThread && 'pt-4',
         className
       )}
     >
@@ -159,7 +167,7 @@ export function Thread({
         <div className="flex flex-col items-center">
           {isReply && <div className="h-4 w-[2px] bg-soft-background"></div>}
           <Avatar threadUser={thread.owner} />
-          {hasReplies && !isOnlyThread && (
+          {((hasReplies && !isOnlyThread) || isThreadDetail) && (
             <div className="flex-1 w-[2px] bg-soft-background"></div>
           )}
         </div>
@@ -183,7 +191,8 @@ export function Thread({
             className={clsx(
               'w-[calc(100%-60px)]',
               isReply && 'pt-4',
-              hasReplies && 'pb-4'
+              hasReplies && 'pb-4',
+              isThreadDetail && 'pb-4'
             )}
           >
             <UserDisplay thread={thread} />
