@@ -90,6 +90,8 @@ export function OpenGraphPreview() {
     )
   }
 
+  const shortUrl = url?.split('/')[0]
+
   return (
     <div className="relative mt-2">
       <a href={secureUrl} target="_blank">
@@ -105,7 +107,7 @@ export function OpenGraphPreview() {
               {embed?.description}
             </div>
             <div className="line-clamp-1 mt-2 text-xs font-light text-span">
-              {url}
+              {shortUrl}
             </div>
           </div>
         </div>

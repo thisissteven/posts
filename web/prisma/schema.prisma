@@ -125,6 +125,8 @@ model Thread {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
+  level Int @default(0)
+
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId String
 
@@ -144,6 +146,8 @@ model Thread {
   threadReport ThreadReport[]
 
   notifications Notification[]
+
+  @@index([replyToId], name: "replyToId")
 }
 
 model Embed {
@@ -220,7 +224,7 @@ enum NotificationType {
 }
 
 model Notification {
-  id        String   @id
+  id        String   @id @unique
   createdAt DateTime @default(now())
 
   recipient   User   @relation(fields: [recipientId], references: [id], onDelete: Cascade)
@@ -239,7 +243,7 @@ model Notification {
 }
 
 model LikedByNotification {
-  id String @id @default(cuid())
+  id String @id @unique
 
   likedBy   User   @relation(fields: [likedById], references: [id], onDelete: Cascade)
   likedById String
@@ -249,7 +253,7 @@ model LikedByNotification {
 }
 
 model FollowedByNotification {
-  id String @id @default(cuid())
+  id String @id @unique
 
   followedBy   User   @relation(fields: [followedById], references: [id], onDelete: Cascade)
   followedById String
@@ -259,7 +263,7 @@ model FollowedByNotification {
 }
 
 model RepostedByNotification {
-  id String @id @default(cuid())
+  id String @id @unique
 
   repostedBy   User   @relation(fields: [repostedById], references: [id], onDelete: Cascade)
   repostedById String
@@ -269,7 +273,7 @@ model RepostedByNotification {
 }
 
 model RepliedByNotification {
-  id String @id @default(cuid())
+  id String @id @unique
 
   repliedBy   User   @relation(fields: [repliedById], references: [id], onDelete: Cascade)
   repliedById String

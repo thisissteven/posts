@@ -69,6 +69,7 @@ export default async function handler(
               update: {
                 likedByNotification: {
                   create: {
+                    id: `${id}-${userId}-LIKE`,
                     likedById: userId,
                   },
                 },
@@ -88,6 +89,7 @@ export default async function handler(
                 },
                 likedByNotification: {
                   create: {
+                    id: `${id}-${userId}-LIKE`,
                     likedById: userId,
                   },
                 },

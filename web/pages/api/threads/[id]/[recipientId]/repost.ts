@@ -69,6 +69,7 @@ export default async function handler(
               update: {
                 repostedByNotification: {
                   create: {
+                    id: `${id}-${userId}-REPOST`,
                     repostedById: userId,
                   },
                 },
@@ -88,11 +89,8 @@ export default async function handler(
                 },
                 repostedByNotification: {
                   create: {
-                    repostedBy: {
-                      connect: {
-                        id: userId,
-                      },
-                    },
+                    id: `${id}-${userId}-REPOST`,
+                    repostedById: userId,
                   },
                 },
               },

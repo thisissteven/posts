@@ -119,7 +119,7 @@ export function FormTextarea({
         style={{
           color: 'transparent',
         }}
-        className="relative bg-transparent placeholder:text-span text-soft-primary resize-none focus:outline-none font-light w-full"
+        className="relative bg-transparent whitespace-pre-line break-all placeholder:text-span text-soft-primary resize-none focus:outline-none font-light w-full"
         {...rest}
         spellCheck={false}
       />

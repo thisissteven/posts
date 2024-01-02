@@ -52,7 +52,7 @@ export function NewThreadReplyTemplate({ thread }: { thread: ThreadItem }) {
   )
 
   const { trigger } = useMutation<NewThreadPayload>(
-    `/reply/${thread.id}`,
+    `/reply/${thread.level}/${thread.id}`,
     createNewThread,
     {
       mutatedBy: 'thread-reply',
@@ -120,7 +120,11 @@ export function NewThreadReplyTemplate({ thread }: { thread: ThreadItem }) {
                 >
                   Cancel
                 </RegularButton>
-                <PostButton threadId={thread.id} mutatedBy="thread-reply" />
+                <PostButton
+                  threadId={thread.id}
+                  threadLevel={thread.level}
+                  mutatedBy="thread-reply"
+                />
               </div>
             </div>
           )}
@@ -133,9 +137,11 @@ export function NewThreadReplyTemplate({ thread }: { thread: ThreadItem }) {
 function PostButton({
   mutatedBy,
   threadId,
+  threadLevel,
 }: {
   mutatedBy: string
   threadId: string
+  threadLevel: number
 }) {
   const {
     control,
@@ -152,7 +158,7 @@ function PostButton({
     name: 'source',
   })
 
-  const { status } = useMutation(`/reply/${threadId}`)
+  const { status } = useMutation(`/reply/${threadLevel}/${threadId}`)
 
   return (
     <RegularButton

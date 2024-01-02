@@ -7,10 +7,16 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const threadId = req.query.id as string
+  const level = req.query.level as string
 
   await requestHandler(req, res, {
     allowedRoles: {
+      GET: ['PUBLIC', 'USER'],
       POST: ['USER'],
+    },
+
+    GET: async (currentUser) => {
+      // const threads = getPaginatedThreadReplies
     },
 
     POST: async (currentUser) => {
@@ -28,6 +34,7 @@ export default async function handler(
           replies: {
             create: {
               ...req.body,
+              level: parseInt(level) + 1,
               embed: embed
                 ? {
                     create: {

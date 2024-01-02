@@ -91,6 +91,15 @@ export function getThreadIncludeParams(user: CurrentUser, category: Category) {
               createdAt: 'desc',
             },
             include: {
+              replyTo: {
+                select: {
+                  owner: {
+                    select: {
+                      username: true,
+                    },
+                  },
+                },
+              },
               ...getThreadBaseIncludeParams(user),
             },
           },

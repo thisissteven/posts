@@ -33,6 +33,8 @@ export type ThreadItem = {
     image?: string
   }
 
+  level: number
+
   replies?: ThreadItem[]
 
   replyTo?: {
