@@ -65,32 +65,36 @@ export default function ThreadPage() {
         <title>{pageTitle}</title>
       </Head>
       <Header />
-      {withLoader({ isLoading, data: data }, ({ thread, parentThread }) => (
-        <div className="min-h-screen pb-16">
-          <div className="flex flex-col">
-            {getParentThreads(parentThread).map((thread, index) => (
-              <Thread
-                key={thread.id}
-                onClick={() =>
-                  router.push(`/${thread.owner.username}/${thread.id}`)
-                }
-                thread={thread}
-                isReply={index > 0}
-                hasReplyTo={index > 0}
-                isOnlyThread={false}
-                isThreadDetail={true}
-                isRootThread={index === 0}
-              />
-            ))}
+      {withLoader({ isLoading, data: data }, ({ thread, parentThread }) => {
+        if (!thread) return null
+
+        return (
+          <div className="min-h-screen pb-16">
+            <div className="flex flex-col">
+              {getParentThreads(parentThread).map((thread, index) => (
+                <Thread
+                  key={thread.id}
+                  onClick={() =>
+                    router.push(`/${thread.owner.username}/${thread.id}`)
+                  }
+                  thread={thread}
+                  isReply={index > 0}
+                  hasReplyTo={index > 0}
+                  isOnlyThread={false}
+                  isThreadDetail={true}
+                  isRootThread={index === 0}
+                />
+              ))}
+            </div>
+            <ThreadDetail thread={thread} />
+            <ThreadDetailListTemplate
+              threadId={thread.id}
+              threadLevel={thread.level}
+              url={`/thread/${thread.owner.username}/${thread.id}/replies`}
+            />
           </div>
-          <ThreadDetail thread={thread} />
-          <ThreadDetailListTemplate
-            threadId={thread.id}
-            threadLevel={thread.level}
-            url={`/thread/${thread.owner.username}/${thread.id}/replies`}
-          />
-        </div>
-      ))}
+        )
+      })}
     </>
   )
 }

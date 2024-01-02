@@ -1,5 +1,4 @@
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 
@@ -78,41 +77,34 @@ function ThreadDecider({
   thread: ThreadItem
   router: AppRouterInstance
 }) {
-  const hasReplyTo = Boolean(thread.replyTo)
-  const hasReply = Boolean(thread.replies && thread.replies?.length > 0)
+  const replyLength = thread.replies?.length ?? 0
 
-  if (hasReply && thread.replies?.[0] && !hasReplyTo) {
-    const threadReply = thread.replies[0]
+  if (replyLength > 0) {
     return (
-      <div>
+      <div className="flex flex-col">
         <Thread
           key={thread.id}
           onClick={() => router.push(`/${thread.owner.username}/${thread.id}`)}
+          isOnlyThread={false}
           thread={thread}
+          isReply={false}
+          hasReplyTo={true}
         />
-        {thread.repliesCount > 1 && (
-          <div className="text-sm font-light text-span px-6 flex items-center gap-3">
-            <div className="w-12 h-8 flex flex-col items-center gap-1">
-              <div className="w-[2px] flex-1 bg-soft-background"></div>
-              <div className="w-1.5 h-1.5 rounded-full bg-soft-background"></div>
-              <div className="w-[2px] flex-1 bg-soft-background"></div>
-            </div>
-            <Link
-              href={`/${thread.owner.username}/${thread.id}`}
-              className="hover:underline underline-offset-[3px] w-fit"
-            >
-              {thread.repliesCount - 1} more replies
-            </Link>
-          </div>
-        )}
-        <Thread
-          key={threadReply.id}
-          onClick={() =>
-            router.push(`/${threadReply.owner.username}/${threadReply.id}`)
-          }
-          thread={threadReply}
-          isReply
-        />
+        {thread.replies?.map((reply, index) => {
+          return (
+            <Thread
+              key={reply.id}
+              onClick={() =>
+                router.push(`/${reply.owner.username}/${reply.id}`)
+              }
+              thread={reply}
+              isReply={true}
+              hasReplyTo={index > 0}
+              isOnlyThread={false}
+              isThreadDetail={index !== replyLength - 1}
+            />
+          )
+        })}
       </div>
     )
   }
@@ -123,7 +115,6 @@ function ThreadDecider({
       onClick={() => router.push(`/${thread.owner.username}/${thread.id}`)}
       isOnlyThread
       thread={thread}
-      hasReplyTo={hasReplyTo}
     />
   )
 }

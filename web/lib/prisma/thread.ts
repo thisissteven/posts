@@ -132,6 +132,28 @@ export function getReplyIncludeParams(user: CurrentUser, category: Category) {
     case 'replies':
       return {
         include: {
+          replies: {
+            take: 4,
+            where: {
+              replyTo: {
+                repliesCount: {
+                  lt: 5,
+                },
+              },
+            },
+            include: {
+              replyTo: {
+                select: {
+                  owner: {
+                    select: {
+                      username: true,
+                    },
+                  },
+                },
+              },
+              ...getThreadBaseIncludeParams(user),
+            },
+          },
           owner: {
             select: {
               id: true,
