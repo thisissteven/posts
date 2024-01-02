@@ -123,7 +123,7 @@ model Thread {
   embed Embed?
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+  updatedAt DateTime? @default(now())
 
   level Int @default(0)
 
@@ -132,7 +132,7 @@ model Thread {
 
   replies Thread[] @relation("ThreadReplies")
 
-  replyTo   Thread? @relation("ThreadReplies", fields: [replyToId], references: [id], onDelete: Cascade)
+  replyTo   Thread? @relation("ThreadReplies", fields: [replyToId], references: [id])
   replyToId String?
 
   repliesCount Int @default(0)
@@ -195,10 +195,10 @@ model Message {
   content   String
   createdAt DateTime @default(now())
 
-  sender   User   @relation(fields: [senderId], references: [id])
+  sender   User   @relation(fields: [senderId], references: [id], onDelete: Cascade)
   senderId String
 
-  room           Room   @relation(fields: [roomIdentifier], references: [identifier])
+  room           Room   @relation(fields: [roomIdentifier], references: [identifier], onDelete: Cascade)
   roomIdentifier String
 }
 
@@ -207,10 +207,10 @@ model Room {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  sender   User   @relation(name: "sentMessages", fields: [senderId], references: [id])
+  sender   User   @relation(name: "sentMessages", fields: [senderId], references: [id], onDelete: Cascade)
   senderId String
 
-  receiver   User   @relation(name: "receivedMessages", fields: [receiverId], references: [id])
+  receiver   User   @relation(name: "receivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
   receiverId String
 
   messages Message[]

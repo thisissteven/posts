@@ -27,6 +27,11 @@ export function ThreadDetailListTemplate({
     loadMore,
   } = useDelayedInfiniteSWR<ThreadItem[]>(url, {
     duration: 300,
+    swrInfiniteConfig: {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   })
 
   const { status } = useMutation(`/reply/${threadLevel}/${threadId}`)
@@ -82,7 +87,7 @@ function ThreadDecider({
       <div>
         <Thread
           key={thread.id}
-          onClick={() => router.push(`${thread.owner.username}/${thread.id}`)}
+          onClick={() => router.push(`/${thread.owner.username}/${thread.id}`)}
           thread={thread}
         />
         {thread.repliesCount > 1 && (
@@ -103,7 +108,7 @@ function ThreadDecider({
         <Thread
           key={threadReply.id}
           onClick={() =>
-            router.push(`${threadReply.owner.username}/${threadReply.id}`)
+            router.push(`/${threadReply.owner.username}/${threadReply.id}`)
           }
           thread={threadReply}
           isReply
@@ -115,7 +120,7 @@ function ThreadDecider({
   return (
     <Thread
       key={thread.id}
-      onClick={() => router.push(`${thread.owner.username}/${thread.id}`)}
+      onClick={() => router.push(`/${thread.owner.username}/${thread.id}`)}
       isOnlyThread
       thread={thread}
       hasReplyTo={hasReplyTo}

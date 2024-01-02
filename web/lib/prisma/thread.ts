@@ -256,7 +256,7 @@ export async function getPaginatedThreadReplies({
     cursor,
     take: TAKE,
     orderBy: {
-      createdAt: 'desc',
+      updatedAt: 'desc',
     },
   })
 

@@ -11,14 +11,8 @@ export default async function handler(
 
   await requestHandler(req, res, {
     allowedRoles: {
-      GET: ['PUBLIC', 'USER'],
       POST: ['USER'],
     },
-
-    GET: async (currentUser) => {
-      // const threads = getPaginatedThreadReplies
-    },
-
     POST: async (currentUser) => {
       const embed = req.body.embed
 

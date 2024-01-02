@@ -1,13 +1,13 @@
 import clsx from 'clsx'
 import Head from 'next/head'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import React from 'react'
 
 import { useDelayedSWR } from '@/hooks'
 
 import { Header } from '@/modules/Thread'
 import { Thread } from '@/modules/Thread/Thread'
-import { ThreadDetail } from '@/modules/ThreadDetail'
+import { ThreadDetail, ThreadDetailListTemplate } from '@/modules/ThreadDetail'
 
 import { ThreadItem } from '@/types'
 
@@ -43,6 +43,11 @@ export default function ThreadPage() {
     `/thread/${username}/${threadId}`,
     {
       duration: 300,
+      swrConfig: {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        revalidateIfStale: false,
+      },
     }
   )
 
@@ -52,6 +57,8 @@ export default function ThreadPage() {
     ? `${thread?.owner?.displayName} posted: ${thread?.textContent}`
     : 'Posts'
 
+  const router = useRouter()
+
   return (
     <>
       <Head>
@@ -59,11 +66,14 @@ export default function ThreadPage() {
       </Head>
       <Header />
       {withLoader({ isLoading, data: data }, ({ thread, parentThread }) => (
-        <div className="min-h-screen">
+        <div className="min-h-screen pb-16">
           <div className="flex flex-col">
             {getParentThreads(parentThread).map((thread, index) => (
               <Thread
                 key={thread.id}
+                onClick={() =>
+                  router.push(`/${thread.owner.username}/${thread.id}`)
+                }
                 thread={thread}
                 isReply={index > 0}
                 hasReplyTo={index > 0}
@@ -74,11 +84,11 @@ export default function ThreadPage() {
             ))}
           </div>
           <ThreadDetail thread={thread} />
-          {/* <ThreadDetailListTemplate
+          <ThreadDetailListTemplate
             threadId={thread.id}
             threadLevel={thread.level}
-            url="/threads"
-          /> */}
+            url={`/thread/${thread.owner.username}/${thread.id}/replies`}
+          />
         </div>
       ))}
     </>

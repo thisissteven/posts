@@ -34,7 +34,7 @@ export function useDelayedSWR<Data = unknown, Error = unknown>(
 
   const isEmpty = data?.length === 0
 
-  const loading = useFakeLoading() || isLoading
+  const loading = useFakeLoading(duration) || isLoading
 
   return {
     data: data as Data | undefined,
