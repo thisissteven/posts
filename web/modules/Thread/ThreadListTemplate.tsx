@@ -3,17 +3,25 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.share
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import React from 'react'
+import useSWRImmutable from 'swr/immutable'
 
 import { useDelayedInfiniteSWR, useMutation } from '@/hooks'
 
 import { LoadMore, VirtualizedList } from '@/components/UI'
 
+import RefreshPostsButton from './Buttons/RefreshPostsButton'
 import { EmptyPlaceholder } from './EmptyPlaceholder'
 import { Thread } from './Thread'
 
 import { ThreadItem } from '@/types'
 
-export function ThreadListTemplate({ url }: { url: string }) {
+export function ThreadListTemplate({
+  url,
+  useBuffer = false,
+}: {
+  url: string
+  useBuffer?: boolean
+}) {
   const {
     data: threadItems,
     isEnd,
@@ -24,6 +32,11 @@ export function ThreadListTemplate({ url }: { url: string }) {
   } = useDelayedInfiniteSWR<ThreadItem[]>(url, {
     duration: 300,
   })
+
+  const { data: bufferedThreadItems, mutate: mutateBuffer } = useSWRImmutable(
+    isLoading ? null : `${url}/buffered`,
+    () => threadItems
+  )
 
   const { status } = useMutation('/threads')
 
@@ -40,22 +53,35 @@ export function ThreadListTemplate({ url }: { url: string }) {
 
   const router = useRouter()
 
+  const data = useBuffer ? bufferedThreadItems : threadItems
+
+  const isBufferStale =
+    useBuffer &&
+    bufferedThreadItems?.length !== threadItems?.length &&
+    !isLoading
+
   return (
     <div className="relative">
       <EmptyPlaceholder visible={isEmpty} />
 
+      <RefreshPostsButton
+        onClick={() => {
+          mutateBuffer(threadItems)
+        }}
+        showButton={isBufferStale}
+      />
       <div
         className={clsx(
           'duration-300',
           isLoading ? 'opacity-0' : 'opacity-100'
         )}
       >
-        <VirtualizedList data={threadItems}>
+        <VirtualizedList data={data}>
           {(items, virtualizer) => {
-            if (!threadItems) return null
+            if (!data) return null
 
             return items.map((item) => {
-              const thread = threadItems[item.index]
+              const thread = data[item.index]
 
               return (
                 <VirtualizedList.Item
@@ -74,7 +100,6 @@ export function ThreadListTemplate({ url }: { url: string }) {
           }}
         </VirtualizedList>
       </div>
-
       <LoadMore isEnd={isEnd} whenInView={loadMore} />
     </div>
   )

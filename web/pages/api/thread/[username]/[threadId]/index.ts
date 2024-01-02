@@ -47,6 +47,7 @@ export default async function handler(
           thread,
           parentThread,
         })
+        return
       }
 
       res.status(200).json({
