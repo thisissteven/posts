@@ -2,6 +2,8 @@ import React from 'react'
 
 import { useButtonCount } from '@/modules/Thread'
 
+import { LikersDialog, RepostersDialog } from './Dialog'
+
 import { ThreadItem } from '@/types'
 
 export function LikesAndRepostsCount({ thread }: { thread: ThreadItem }) {
@@ -23,17 +25,11 @@ export function LikesAndRepostsCount({ thread }: { thread: ThreadItem }) {
   return (
     <div className="mt-4 pt-4 border-t border-t-divider">
       <div className="text-sm text-span font-light">
-        {hasLikes && (
-          <button className="hover:underline underline-offset-[3px]">
-            {likeState.count} {likeState.count === 1 ? 'Like' : 'Likes'}
-          </button>
-        )}
+        <LikersDialog likeState={likeState} thread={thread} />
+
         {hasLikes && hasReposts && ', '}
-        {hasReposts && (
-          <button className="hover:underline underline-offset-[3px]">
-            {repostState.count} {repostState.count === 1 ? 'Repost' : 'Reposts'}
-          </button>
-        )}
+
+        <RepostersDialog repostState={repostState} thread={thread} />
       </div>
     </div>
   )
