@@ -1,7 +1,13 @@
 import { Prisma } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { getCursor, prisma, requestHandler } from '@/lib'
+import {
+  CurrentUser,
+  getCursor,
+  getReplyIncludeParams,
+  prisma,
+  requestHandler,
+} from '@/lib'
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,7 +22,7 @@ export default async function handler(
       const previousCursor = req.query.cursor as string
 
       const notifications = await getUserNotifications(
-        currentUser.id,
+        currentUser,
         previousCursor
       )
 
@@ -28,11 +34,13 @@ export default async function handler(
 const TAKE = 10
 
 async function getUserNotifications(
-  recipientId: string,
+  currentUser: CurrentUser,
   previousCursor: string
 ) {
   const skip = previousCursor ? 1 : 0
   const cursor = getCursor(previousCursor)
+
+  const recipientId = currentUser.id
 
   const notifications = await prisma.notification.findMany({
     where: {
@@ -72,9 +80,7 @@ async function getUserNotifications(
         },
       },
       thread: {
-        select: {
-          textContent: true,
-        },
+        ...getReplyIncludeParams(currentUser, 'replies'),
       },
       likedByNotification: {
         take: 4,
@@ -98,22 +104,16 @@ async function getUserNotifications(
           },
         },
       },
-      // repliedByNotification: {
-      //   select: {
-      //     repliedBy: {
-      //       select: {
-      //         username: true,
-      //         displayName: true,
-      //       },
-      //     },
-      //     thread: {
-      //       select: {
-      //         id: true,
-      //         textContent: true,
-      //       },
-      //     },
-      //   },
-      // },
+      repliedByNotification: {
+        select: {
+          repliedBy: {
+            select: {
+              username: true,
+              displayName: true,
+            },
+          },
+        },
+      },
     },
   })
 

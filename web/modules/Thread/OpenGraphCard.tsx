@@ -39,6 +39,8 @@ export function OpenGraphCard({ embed }: { embed?: ThreadItem['embed'] }) {
     )
   }
 
+  const shortUrl = embed?.url?.split('/')[0]
+
   return (
     <div className="relative mt-3">
       <a
@@ -65,7 +67,7 @@ export function OpenGraphCard({ embed }: { embed?: ThreadItem['embed'] }) {
               {embed?.description}
             </div>
             <div className="line-clamp-1 mt-2 text-xs font-light text-span">
-              {embed?.url}
+              {shortUrl}
             </div>
           </div>
         </div>

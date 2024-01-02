@@ -63,6 +63,8 @@ export function ThreadDetail({
 
   const repostedBy = thread.reposts && thread.reposts[0]?.user?.username
 
+  const hasReplyTo = !!thread.replyToId
+
   if (hasBlock) {
     return (
       <div className="flex gap-3 px-6 py-5 border-b border-b-divider">
@@ -107,7 +109,7 @@ export function ThreadDetail({
   return (
     <article
       role="article"
-      className={cn('px-6 pt-4 border-b border-divider', className)}
+      className={cn('px-6 border-b border-divider pt-4', className)}
     >
       {showRepost && repostedBy && (
         <div className="ml-6 mb-2 flex items-center gap-2.5 text-sm font-light text-span">
@@ -116,7 +118,12 @@ export function ThreadDetail({
       )}
 
       <div className="flex items-center gap-3">
-        <Avatar threadUser={thread.owner} />
+        <div className="relative">
+          {hasReplyTo && (
+            <div className="absolute left-1/2 -translate-x-1/2 -translate-y-full h-4 w-[2px] bg-soft-background"></div>
+          )}
+          <Avatar threadUser={thread.owner} />
+        </div>
         <UserDisplayThreadDetail thread={thread} />
       </div>
 

@@ -100,6 +100,7 @@ export default async function handler(
               },
               followedByNotification: {
                 create: {
+                  id: `${userToFollowId}-${userId}-FOLLOW`,
                   followedById: userId,
                 },
               },

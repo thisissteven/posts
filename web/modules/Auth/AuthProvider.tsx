@@ -2,7 +2,6 @@ import { usePathname, useRouter } from 'next/navigation'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import React from 'react'
 import { isMobile } from 'react-device-detect'
-import { mutate } from 'swr'
 
 import { newWindow } from '@/lib'
 import { useDialogState } from '@/hooks/useDialogState'
@@ -79,14 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
         signOut: async () => {
           await signOut({ redirect: false })
-          mutate(
-            (key) => typeof key === 'string' && key.includes('notifications'),
-            undefined,
-            {
-              revalidate: false,
-            }
-          )
-          router.replace('/')
+          window.location.href = '/'
         },
       }}
     >

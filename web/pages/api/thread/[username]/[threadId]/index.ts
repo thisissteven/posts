@@ -1,6 +1,7 @@
+import { Prisma } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { getThreadIncludeParams } from '@/lib'
+import { CurrentUser, getThreadBaseIncludeParams } from '@/lib'
 import { prisma, requestHandler } from '@/lib'
 
 export default async function handler(
@@ -23,10 +24,63 @@ export default async function handler(
           },
           id: threadId,
         },
-        ...getThreadIncludeParams(currentUser, 'everyone'),
+        include: {
+          ...getThreadBaseIncludeParams(currentUser),
+        },
       })
 
-      res.status(200).json(thread)
+      // has parent
+      if (thread?.replyToId && thread?.level > 0) {
+        const includeParams = {
+          ...getThreadBaseIncludeParams(currentUser),
+          ...generateNestedIncludes(thread.level, currentUser),
+        }
+
+        const parentThread = await prisma.thread.findUnique({
+          where: {
+            id: thread.replyToId,
+          },
+          include: includeParams,
+        })
+
+        res.status(200).json({
+          thread,
+          parentThread,
+        })
+      }
+
+      res.status(200).json({
+        thread,
+        parentThread: null,
+      })
     },
   })
+}
+
+const generateNestedIncludes = (level: number, currentUser: CurrentUser) => {
+  if (level <= 0) {
+    return null
+  }
+
+  const includeParams = {
+    replyTo: {
+      include: {
+        ...getThreadBaseIncludeParams(currentUser),
+      },
+    },
+  } satisfies Prisma.ThreadFindManyArgs['include']
+
+  let nestedIncludes = includeParams
+  for (let i = 1; i < level; i++) {
+    nestedIncludes = {
+      replyTo: {
+        include: {
+          ...getThreadBaseIncludeParams(currentUser),
+          ...nestedIncludes,
+        },
+      },
+    } satisfies Prisma.ThreadFindManyArgs['include']
+  }
+
+  return nestedIncludes
 }

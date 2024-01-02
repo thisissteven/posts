@@ -33,13 +33,11 @@ export type ThreadItem = {
     image?: string
   }
 
+  level: number
+
   replies?: ThreadItem[]
 
-  replyTo?: {
-    owner: {
-      username: string
-    }
-  }
+  replyTo?: ThreadItem | null
 
   replyToId?: string | null
 

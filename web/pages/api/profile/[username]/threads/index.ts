@@ -22,6 +22,7 @@ export default async function handler(
         previousCursor,
         params: {
           where: {
+            replyTo: null,
             OR: [
               {
                 owner: {

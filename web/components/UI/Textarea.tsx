@@ -119,7 +119,7 @@ export function FormTextarea({
         style={{
           color: 'transparent',
         }}
-        className="relative bg-transparent placeholder:text-span text-soft-primary resize-none focus:outline-none font-light w-full"
+        className="relative bg-transparent whitespace-pre-line break-words placeholder:text-span text-soft-primary resize-none focus:outline-none font-light w-full"
         {...rest}
         spellCheck={false}
       />
@@ -137,7 +137,7 @@ export function FormTextarea({
             return (
               <div
                 key={index}
-                className="whitespace-pre-line break-all leading-6"
+                className="whitespace-pre-line break-words leading-6"
               >
                 {line.split(' ').map((word: string, i: number) => {
                   return (

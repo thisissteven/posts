@@ -91,6 +91,15 @@ export function getThreadIncludeParams(user: CurrentUser, category: Category) {
               createdAt: 'desc',
             },
             include: {
+              replyTo: {
+                select: {
+                  owner: {
+                    select: {
+                      username: true,
+                    },
+                  },
+                },
+              },
               ...getThreadBaseIncludeParams(user),
             },
           },
@@ -123,6 +132,28 @@ export function getReplyIncludeParams(user: CurrentUser, category: Category) {
     case 'replies':
       return {
         include: {
+          replies: {
+            take: 4,
+            where: {
+              replyTo: {
+                repliesCount: {
+                  lt: 5,
+                },
+              },
+            },
+            include: {
+              replyTo: {
+                select: {
+                  owner: {
+                    select: {
+                      username: true,
+                    },
+                  },
+                },
+              },
+              ...getThreadBaseIncludeParams(user),
+            },
+          },
           owner: {
             select: {
               id: true,
@@ -247,7 +278,7 @@ export async function getPaginatedThreadReplies({
     cursor,
     take: TAKE,
     orderBy: {
-      createdAt: 'desc',
+      updatedAt: 'desc',
     },
   })
 
