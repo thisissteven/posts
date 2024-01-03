@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { prisma, requestHandler } from '@/lib'
+import { handleNotificationUpdate, prisma, requestHandler } from '@/lib'
 
 export default async function handler(
   req: NextApiRequest,
@@ -61,66 +61,17 @@ export default async function handler(
         })
 
         if (userId !== recipientId)
-          await allowError(async () => {
-            await prisma.notification.upsert({
-              where: {
-                id: `${recipientId}-${id}-REPOST`,
-              },
-              update: {
-                repostedByNotification: {
-                  create: {
-                    id: `${id}-${userId}-REPOST`,
-                    repostedById: userId,
-                  },
-                },
-              },
-              create: {
-                id: `${recipientId}-${id}-REPOST`,
-                type: 'REPOST',
-                thread: {
-                  connect: {
-                    id,
-                  },
-                },
-                recipient: {
-                  connect: {
-                    id: recipientId,
-                  },
-                },
-                repostedByNotification: {
-                  create: {
-                    id: `${id}-${userId}-REPOST`,
-                    repostedById: userId,
-                  },
-                },
-              },
-            })
-
-            await prisma.userNotificationStatus.upsert({
-              create: {
-                id: recipientId,
-                status: 'UNREAD',
-              },
-              where: {
-                id: recipientId,
-              },
-              update: {
-                status: 'UNREAD',
-              },
-            })
+          await handleNotificationUpdate({
+            payload: {
+              recipientId,
+              userId,
+              id,
+            },
+            type: 'REPOST',
           })
       }
 
       res.status(200).json({ message: 'Repost count updated successfully' })
     },
   })
-}
-
-const allowError = async (fn: () => Promise<void>) => {
-  try {
-    await fn()
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error('An error occurred.')
-  }
 }

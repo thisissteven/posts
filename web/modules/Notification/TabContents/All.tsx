@@ -23,24 +23,38 @@ export function All() {
   const { data: notificationStatus, mutate } =
     useSWRImmutable<UserNotificationStatus>('/notifications/status')
 
-  const { data, isLoading, isEnd, loadMore, hasData } = useDelayedInfiniteSWR<
-    GetUserNotificationsResponse['data']
-  >(`/notifications/${user?.id}`, {
-    duration: 200,
-    swrInfiniteConfig: {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      revalidateIfStale: false,
-      onSuccess: () => {
-        if (notificationStatus) {
-          mutate({
-            ...notificationStatus,
-            status: 'READ',
-          })
-        }
+  const {
+    data,
+    isLoading,
+    isEnd,
+    loadMore,
+    hasData,
+    mutate: mutateNotification,
+  } = useDelayedInfiniteSWR<GetUserNotificationsResponse['data']>(
+    `/notifications/${user?.id}`,
+    {
+      duration: 200,
+      swrInfiniteConfig: {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        revalidateIfStale: false,
+        onSuccess: () => {
+          if (notificationStatus) {
+            mutate({
+              ...notificationStatus,
+              status: 'READ',
+            })
+          }
+        },
       },
-    },
-  })
+    }
+  )
+
+  React.useEffect(() => {
+    if (notificationStatus?.status === 'UNREAD') {
+      mutateNotification()
+    }
+  }, [mutateNotification, notificationStatus?.status])
 
   const router = useRouter()
 

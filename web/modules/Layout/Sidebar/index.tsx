@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { usePathname } from 'next/navigation'
-import useSWRImmutable from 'swr/immutable'
+import * as React from 'react'
 
 import { useWindowSize } from '@/hooks'
 
@@ -21,8 +21,9 @@ import { Dialog, Tooltip } from '@/components/UI'
 import { SearchCommandMenu } from '@/modules/Search'
 import { NewThreadDialog } from '@/modules/ThreadForm'
 
-import { BottomBanner } from './BottomBanner'
 import { NavItem, ProfileNavItem } from './Navigation'
+import { NotificationStatus } from './NotificationStatus'
+import { BottomBanner } from '../BottomBanner'
 
 export function Sidebar() {
   const { width } = useWindowSize()
@@ -117,18 +118,4 @@ export function Sidebar() {
       </div>
     </aside>
   )
-}
-
-function NotificationStatus() {
-  const { data } = useSWRImmutable('/notifications/status')
-
-  const isUnread = data?.status === 'UNREAD'
-
-  if (isUnread) {
-    return (
-      <div className="absolute top-0 right-0 w-1 h-1 rounded-full bg-danger-soft"></div>
-    )
-  }
-
-  return null
 }

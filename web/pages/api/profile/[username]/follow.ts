@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { prisma, requestHandler } from '@/lib'
+import { handleNotificationUpdate, prisma, requestHandler } from '@/lib'
 
 type Follow = '0' | '1'
 
@@ -88,49 +88,16 @@ export default async function handler(
       })
 
       if (userId !== userToFollowId)
-        await allowError(async () => {
-          await prisma.notification.create({
-            data: {
-              id: `${userToFollowId}-${userId}-FOLLOW`,
-              type: 'FOLLOW',
-              recipient: {
-                connect: {
-                  id: userToFollowId,
-                },
-              },
-              followedByNotification: {
-                create: {
-                  id: `${userToFollowId}-${userId}-FOLLOW`,
-                  followedById: userId,
-                },
-              },
-            },
-          })
-
-          await prisma.userNotificationStatus.upsert({
-            create: {
-              id: userToFollowId,
-              status: 'UNREAD',
-            },
-            where: {
-              id: userToFollowId,
-            },
-            update: {
-              status: 'UNREAD',
-            },
-          })
+        await handleNotificationUpdate({
+          payload: {
+            recipientId: userToFollowId,
+            userId,
+            id: '',
+          },
+          type: 'FOLLOW',
         })
 
       res.status(200).json(user)
     },
   })
-}
-
-const allowError = async (fn: () => Promise<void>) => {
-  try {
-    await fn()
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error('An error occurred.')
-  }
 }

@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { prisma, requestHandler } from '@/lib'
+import { handleNotificationUpdate, prisma, requestHandler } from '@/lib'
 
 export default async function handler(
   req: NextApiRequest,
@@ -49,65 +49,16 @@ export default async function handler(
       })
 
       if (currentUser.id !== thread.ownerId)
-        await allowError(async () => {
-          await prisma.notification.upsert({
-            where: {
-              id: `${thread.ownerId}-${newThread.id}-REPLY`,
-            },
-            update: {
-              repliedByNotification: {
-                create: {
-                  id: `${newThread.id}-${currentUser.id}-REPLY`,
-                  repliedById: currentUser.id,
-                },
-              },
-            },
-            create: {
-              id: `${thread.ownerId}-${newThread.id}-REPLY`,
-              type: 'REPLY',
-              thread: {
-                connect: {
-                  id: newThread.id,
-                },
-              },
-              recipient: {
-                connect: {
-                  id: thread.ownerId,
-                },
-              },
-              repliedByNotification: {
-                create: {
-                  id: `${newThread.id}-${currentUser.id}-REPLY`,
-                  repliedById: currentUser.id,
-                },
-              },
-            },
-          })
-
-          await prisma.userNotificationStatus.upsert({
-            create: {
-              id: thread.ownerId,
-              status: 'UNREAD',
-            },
-            where: {
-              id: thread.ownerId,
-            },
-            update: {
-              status: 'UNREAD',
-            },
-          })
+        await handleNotificationUpdate({
+          payload: {
+            recipientId: thread.ownerId,
+            userId: currentUser.id,
+            id: newThread.id,
+          },
+          type: 'REPLY',
         })
 
       res.status(200).json(thread)
     },
   })
-}
-
-const allowError = async (fn: () => Promise<void>) => {
-  try {
-    await fn()
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error('An error occurred.')
-  }
 }
