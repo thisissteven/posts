@@ -36,7 +36,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           }
         }
       `}</style>
-      <div id="container" className="text-primary antialiased">
+      <div id="container" className="text-primary">
         <Overlay />
         <Sidebar />
         <main className="border-x border-x-divider max-xs:border-none max-xs:pb-[60px]">

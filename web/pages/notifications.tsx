@@ -1,5 +1,6 @@
-import Head from 'next/head'
 import React from 'react'
+
+import { Seo } from '@/components/Seo'
 
 import { All, Header, Mentions } from '@/modules/Notification'
 
@@ -10,9 +11,7 @@ export default function Notifications() {
 
   return (
     <>
-      <Head>
-        <title>Notifications</title>
-      </Head>
+      <Seo title="Notifications" />
 
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
 

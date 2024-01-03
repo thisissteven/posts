@@ -1,9 +1,10 @@
 import clsx from 'clsx'
-import Head from 'next/head'
 import { useParams } from 'next/navigation'
 import React from 'react'
 
 import { useDelayedSWR, useUser } from '@/hooks'
+
+import { Seo } from '@/components/Seo'
 
 import { ChatRoom, DetailHeader } from '@/modules/Replies'
 
@@ -36,9 +37,7 @@ export default function ReplyPage() {
 
   return (
     <>
-      <Head>
-        <title>{pageTitle}</title>
-      </Head>
+      <Seo title={pageTitle} />
       <DetailHeader from={from} />
 
       <div

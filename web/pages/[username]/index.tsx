@@ -1,8 +1,9 @@
-import Head from 'next/head'
 import { usePathname } from 'next/navigation'
 import React from 'react'
 import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
+
+import { Seo } from '@/components/Seo'
 
 import { Header, ProfileInfo, ProfileLoader } from '@/modules/Profile'
 import { Media, Posts, ProfileTabs, Replies } from '@/modules/Profile'
@@ -27,9 +28,7 @@ export default function ProfilePage() {
 
   return (
     <>
-      <Head>
-        <title>{user?.displayName}</title>
-      </Head>
+      <Seo title={user?.displayName ?? username} />
       <ProfileDialog />
 
       <ProfileLoader>

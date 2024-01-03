@@ -26,6 +26,8 @@ export function ThreadText({
           {line.split(' ').map((word: string, i: number) => {
             if (isWebsite(word)) {
               const href = getHref(word)
+              const truncatedUrl = truncateURL(word)
+
               return (
                 <a
                   onClick={(e) => {
@@ -36,7 +38,7 @@ export function ThreadText({
                   key={i}
                   className="text-primary hover:underline underline-offset-[3px]"
                 >
-                  {word}
+                  {truncatedUrl}
                   {i !== lastWordIndex && ' '}
                 </a>
               )
@@ -77,4 +79,19 @@ export function ThreadText({
       })}
     </p>
   )
+}
+
+function truncateURL(url: string, maxLength: number = 14) {
+  const splitted = url.split('/')
+
+  if (splitted.length > 1) {
+    const lastPart = splitted[splitted.length - 1]
+    if (lastPart.length > maxLength) {
+      const truncated = lastPart.substring(0, maxLength) + '...'
+      splitted[splitted.length - 1] = truncated
+      return splitted.join('/')
+    }
+  }
+
+  return url
 }

@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
@@ -38,7 +39,7 @@ export function ThreadDetail({
   showRepost = false,
 }: ThreadProps) {
   const { width } = useWindowSize()
-  const { user } = useUser()
+  const { user, isAuthenticated } = useUser()
 
   const userId = user.id
   const ownerId = thread.owner.id
@@ -156,7 +157,14 @@ export function ThreadDetail({
         <LikesAndRepostsCount thread={thread} />
 
         <div className="mt-4">
-          <div className="grid grid-cols-4 place-items-center border-y border-y-divider py-3">
+          <div
+            className={clsx(
+              'grid grid-cols-4 place-items-center py-3',
+              isAuthenticated
+                ? 'border-y border-y-divider'
+                : 'border-t border-t-divider'
+            )}
+          >
             <ChatButtonDetail thread={thread} />
 
             <RepostButtonDetail thread={thread} />

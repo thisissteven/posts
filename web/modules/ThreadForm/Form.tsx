@@ -45,7 +45,7 @@ export type NewThreadPayload = {
 } & NewThreadFormValues
 
 export async function createNewThread(url: string, payload: NewThreadPayload) {
-  if (payload.source) {
+  if (payload.source && payload.source.length > 0) {
     const formData = new FormData()
     formData.append('file', payload.source[0])
 

@@ -1,6 +1,6 @@
-import Head from 'next/head'
 import React from 'react'
 
+import { Seo } from '@/components/Seo'
 import { LinkButton } from '@/components/UI'
 
 import { Header, SupporterOnly } from '@/modules/Bookmarks'
@@ -8,9 +8,7 @@ import { Header, SupporterOnly } from '@/modules/Bookmarks'
 export default function Bookmarks() {
   return (
     <>
-      <Head>
-        <title>Bookmarks</title>
-      </Head>
+      <Seo title="Bookmarks" />
       <Header />
       <div className="h-[calc(100%-61px)] w-full flex flex-col justify-center">
         <div className="px-3 max-w-[440px] mx-auto">

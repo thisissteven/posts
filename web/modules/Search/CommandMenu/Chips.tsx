@@ -16,13 +16,16 @@ export function CommandMenuChips() {
     <div
       ref={ref}
       {...rest}
-      className="h-[42px] pb-2 flex items-center overflow-x-auto scrollbar-none w-full"
+      className="cursor-not-allowed h-[42px] pb-2 flex items-center overflow-x-auto scrollbar-none w-full"
     >
       <ul className="px-2 flex gap-1.5 whitespace-nowrap">
         {chips.map((chip) => {
           return (
             <li key={chip} className="text-xs text-soft-primary font-light">
-              <button className="bg-background border-[1.5px] border-divider rounded-full px-3 py-1">
+              <button
+                disabled
+                className="cursor-not-allowed opacity-60 bg-background border-[1.5px] border-divider rounded-full px-3 py-1"
+              >
                 {chip}
               </button>
             </li>

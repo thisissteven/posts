@@ -1,9 +1,10 @@
 import clsx from 'clsx'
-import Head from 'next/head'
 import { useParams, useRouter } from 'next/navigation'
 import React from 'react'
 
 import { useDelayedSWR } from '@/hooks'
+
+import { Seo } from '@/components/Seo'
 
 import { Header } from '@/modules/Thread'
 import { Thread } from '@/modules/Thread/Thread'
@@ -61,9 +62,7 @@ export default function ThreadPage() {
 
   return (
     <>
-      <Head>
-        <title>{pageTitle}</title>
-      </Head>
+      <Seo title={pageTitle} />
       <Header />
       {withLoader({ isLoading, data: data }, ({ thread, parentThread }) => {
         if (!thread) return null

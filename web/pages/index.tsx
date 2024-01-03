@@ -1,7 +1,8 @@
-import Head from 'next/head'
 import React from 'react'
 
 import { useLastOpenedTab } from '@/hooks'
+
+import { Seo } from '@/components/Seo'
 
 import { Header } from '@/modules/Home'
 import { Everyone, Following, Highlights } from '@/modules/Home'
@@ -12,9 +13,7 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>Posts</title>
-      </Head>
+      <Seo />
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <OnYourMind />
