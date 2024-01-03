@@ -25,7 +25,7 @@ export function NavItem({
   const { openAuthDialog, isAuthenticated } = useAuth()
 
   return (
-    <li className={cn('h-[28px] shrink-0', className)}>
+    <li className={cn('relative h-[28px] shrink-0', className)}>
       <Link
         scroll={false}
         onClick={(e) => {

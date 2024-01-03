@@ -105,6 +105,17 @@ model User {
   repliedByNotification  RepliedByNotification[]
 }
 
+enum UserNotificationStatusType {
+  READ
+  UNREAD
+}
+
+model UserNotificationStatus {
+  id String @id
+
+  status UserNotificationStatusType
+}
+
 enum MediaType {
   image
   video

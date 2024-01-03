@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { usePathname } from 'next/navigation'
+import useSWRImmutable from 'swr/immutable'
 
 import { useWindowSize } from '@/hooks'
 
@@ -67,6 +68,7 @@ export function Sidebar() {
 
           <Tooltip label="Notifications" tabIndex={-1} side={side}>
             <NavItem href="/notifications" needAuth>
+              <NotificationStatus />
               {pathname === '/notifications' ? (
                 <NotificationIcon />
               ) : (
@@ -115,4 +117,18 @@ export function Sidebar() {
       </div>
     </aside>
   )
+}
+
+function NotificationStatus() {
+  const { data } = useSWRImmutable('/notifications/status')
+
+  const isUnread = data?.status === 'UNREAD'
+
+  if (isUnread) {
+    return (
+      <div className="absolute top-0 right-0 w-1 h-1 rounded-full bg-danger-soft"></div>
+    )
+  }
+
+  return null
 }

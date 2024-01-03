@@ -95,6 +95,19 @@ export default async function handler(
                 },
               },
             })
+
+            await prisma.userNotificationStatus.upsert({
+              create: {
+                id: recipientId,
+                status: 'UNREAD',
+              },
+              where: {
+                id: recipientId,
+              },
+              update: {
+                status: 'UNREAD',
+              },
+            })
           })
       }
 

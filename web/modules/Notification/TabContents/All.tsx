@@ -1,11 +1,13 @@
 import { useRouter } from 'next/navigation'
 import * as React from 'react'
+import useSWRImmutable from 'swr/immutable'
 
 import { useDelayedInfiniteSWR, useUser } from '@/hooks'
 
 import { VirtualizedList } from '@/components/UI'
 
 import { GetUserNotificationsResponse } from '@/pages/api/notifications/[id]'
+import { UserNotificationStatus } from '@/pages/api/notifications/status'
 
 import { withIndicator } from './WithIndicator'
 import {
@@ -18,6 +20,9 @@ import {
 export function All() {
   const { user } = useUser()
 
+  const { data: notificationStatus, mutate } =
+    useSWRImmutable<UserNotificationStatus>('/notifications/status')
+
   const { data, isLoading, isEnd, loadMore, hasData } = useDelayedInfiniteSWR<
     GetUserNotificationsResponse['data']
   >(`/notifications/${user?.id}`, {
@@ -26,6 +31,14 @@ export function All() {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
       revalidateIfStale: false,
+      onSuccess: () => {
+        if (notificationStatus) {
+          mutate({
+            ...notificationStatus,
+            status: 'READ',
+          })
+        }
+      },
     },
   })
 

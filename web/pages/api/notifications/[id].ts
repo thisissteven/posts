@@ -117,6 +117,19 @@ async function getUserNotifications(
     },
   })
 
+  await prisma.userNotificationStatus.upsert({
+    create: {
+      id: recipientId,
+      status: 'READ',
+    },
+    where: {
+      id: recipientId,
+    },
+    update: {
+      status: 'READ',
+    },
+  })
+
   const lastThread =
     notifications.length === TAKE ? notifications[TAKE - 1] : null
   const lastCursor = lastThread ? lastThread.id : null

@@ -106,6 +106,19 @@ export default async function handler(
               },
             },
           })
+
+          await prisma.userNotificationStatus.upsert({
+            create: {
+              id: userToFollowId,
+              status: 'UNREAD',
+            },
+            where: {
+              id: userToFollowId,
+            },
+            update: {
+              status: 'UNREAD',
+            },
+          })
         })
 
       res.status(200).json(user)

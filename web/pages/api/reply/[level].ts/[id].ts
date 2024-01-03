@@ -83,6 +83,19 @@ export default async function handler(
               },
             },
           })
+
+          await prisma.userNotificationStatus.upsert({
+            create: {
+              id: thread.ownerId,
+              status: 'UNREAD',
+            },
+            where: {
+              id: thread.ownerId,
+            },
+            update: {
+              status: 'UNREAD',
+            },
+          })
         })
 
       res.status(200).json(thread)
