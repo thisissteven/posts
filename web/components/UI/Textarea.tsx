@@ -39,7 +39,7 @@ export function Textarea({
   }, [onEscape])
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <textarea
         ref={textAreaRef}
         onChange={(e) => {

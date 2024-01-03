@@ -25,7 +25,6 @@ export function ThreadListTemplate({
   const {
     data: threadItems,
     isEnd,
-    isEmpty,
     mutate,
     loadMore,
     isLoading,
@@ -60,16 +59,19 @@ export function ThreadListTemplate({
     bufferedThreadItems?.length !== threadItems?.length &&
     !isLoading
 
+  const isEmpty = Boolean(data && data?.length === 0)
+
   return (
     <div className="relative">
-      <EmptyPlaceholder visible={isEmpty} />
-
       <RefreshPostsButton
         onClick={() => {
           mutateBuffer(threadItems)
         }}
         showButton={isBufferStale}
       />
+
+      <EmptyPlaceholder visible={isEmpty} />
+
       <div
         className={clsx(
           'duration-300',

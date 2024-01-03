@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import useSWRImmutable from 'swr/immutable'
 
@@ -40,7 +41,12 @@ export function DetailHeader({ from }: { from?: string | null }) {
                 avatarUrl: chattingWith?.avatarUrl,
               }}
             />
-            <div className="text-sm font-light">{from}</div>
+            <Link
+              href={`/${from}`}
+              className="hover:underline underline-offset-[3px] text-sm font-light"
+            >
+              {from}
+            </Link>
           </div>
         )}
 

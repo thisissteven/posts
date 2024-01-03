@@ -1,7 +1,4 @@
-export function getRelativeTimeString(
-  date: Date | number,
-  lang = navigator.language
-) {
+export function getRelativeTimeString(date: Date | number) {
   const timeMs = typeof date === 'number' ? date : date.getTime()
   const deltaSeconds = Math.round((timeMs - Date.now()) / 1000)
 

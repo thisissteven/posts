@@ -1,3 +1,4 @@
+export * from './Airplane'
 export * from './Back'
 export * from './Bookmarks'
 export * from './Camera'

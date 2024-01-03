@@ -11,10 +11,18 @@ type GroupedMessages = {
 }
 
 export function ChatRoom({ data }: { data?: GetRoomMessagesResponse }) {
+  const containerRef = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight
+    }
+  }, [data])
+
   if (!data) return null
 
   // Group messages by time string
-  const groupedMessages: GroupedMessages = data.messages.reduce(
+  const groupedMessages: GroupedMessages = data?.messages.reduce(
     (groups, message) => {
       const timeString = getRelativeTimeString(new Date(message.createdAt))
       const timeSenderString = `${timeString}-${message.sender.username}`
@@ -30,15 +38,18 @@ export function ChatRoom({ data }: { data?: GetRoomMessagesResponse }) {
   )
 
   // Create a sorted array based on timeSenderString keys
-  const sortedMessages = Object.keys(groupedMessages)
-    .sort()
-    .map((timeSenderString) => ({
+  const sortedMessages = Object.keys(groupedMessages).map(
+    (timeSenderString) => ({
       timeSenderString,
       messages: groupedMessages[timeSenderString],
-    }))
+    })
+  )
 
   return (
-    <div className="p-8 space-y-5">
+    <div
+      ref={containerRef}
+      className="p-8 space-y-5 overflow-y-auto h-full scrollbar-none"
+    >
       {sortedMessages.map((messageGroup) => {
         const alt = messageGroup.messages[0].sender.username
         const avatarUrl = messageGroup.messages[0].sender.avatarUrl
