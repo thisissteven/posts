@@ -24,6 +24,7 @@ export default async function handler(
         select: {
           user: {
             select: {
+              id: true,
               displayName: true,
               username: true,
               avatarUrl: true,

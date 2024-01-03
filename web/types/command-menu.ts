@@ -5,4 +5,5 @@ export type CommandMenuItemProps = {
   description: string
   alt: string
   onSelect?: (value: string) => void
+  value?: string
 }

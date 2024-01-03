@@ -28,6 +28,7 @@ export function CommandMenuProfileItem() {
         description=""
         avatar={user.avatarUrl}
         alt="view profile"
+        value={`${user.displayName} ${user.username}`}
       />
     </Command.Group>
   )

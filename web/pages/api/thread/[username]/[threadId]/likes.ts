@@ -12,10 +12,14 @@ async function getThreadLikes(payload: {
   return await prisma.threadLike.findMany({
     where: {
       threadId,
+      userId: {
+        not: currentUser.id,
+      },
     },
     select: {
       user: {
         select: {
+          id: true,
           displayName: true,
           username: true,
           avatarUrl: true,

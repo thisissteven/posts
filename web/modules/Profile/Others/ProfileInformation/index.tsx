@@ -66,3 +66,5 @@ export function ProfileInformation({ username }: { username: string }) {
     </>
   )
 }
+
+export * from './FollowButton'

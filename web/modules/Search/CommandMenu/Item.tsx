@@ -12,10 +12,11 @@ export function CommandMenuItem({
   description,
   alt,
   onSelect,
+  value = `${displayName} ${username}`,
 }: CommandMenuItemProps) {
   return (
     <Command.Item
-      value={`${displayName} ${username}`}
+      value={value}
       onSelect={onSelect}
       className="cursor-pointer w-full px-2 py-1.5 flex items-center rounded-xl data-[selected=true]:bg-divider active:bg-divider select-none text-sm font-light gap-3"
     >
