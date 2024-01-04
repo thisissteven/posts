@@ -16,12 +16,6 @@ export function Overlay({ className }: { className?: string }) {
   const startTimeRef = React.useRef<number | null>(null)
 
   React.useEffect(() => {
-    if (status !== 'loading') {
-      setTimeout(() => {
-        document.documentElement.style.scrollbarGutter = 'stable'
-      }, 300)
-    }
-
     let timeout: NodeJS.Timeout
 
     if (status === 'loading' && !startTimeRef.current) {

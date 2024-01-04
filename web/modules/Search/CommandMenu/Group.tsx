@@ -33,13 +33,13 @@ export function CommandMenuGroup({
         {data.map((props) => {
           return (
             <CommandMenuItem
-              onSelect={async (value) => {
-                const profileUrl = `/${value}`.replace('@', '')
+              onSelect={async () => {
+                const profileUrl = `/${props.username}`.replace('@', '')
 
                 router.push(profileUrl)
                 closeDialog()
               }}
-              key={props.username}
+              key={props.objectID}
               {...props}
             />
           )

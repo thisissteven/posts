@@ -56,15 +56,6 @@ export function Dialog({
     }
   }
 
-  // Prevent layout shift caused by scrollbar
-  React.useEffect(() => {
-    if (open) {
-      document.documentElement.style.scrollbarGutter = 'auto'
-    } else {
-      document.documentElement.style.scrollbarGutter = 'stable'
-    }
-  }, [open])
-
   const onOpenChange = React.useCallback((open: boolean) => {
     clearTimeout(timeoutRef.current!)
     if (open) {

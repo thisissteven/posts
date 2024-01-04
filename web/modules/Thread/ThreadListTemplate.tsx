@@ -3,11 +3,13 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.share
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import React from 'react'
+import useSWRImmutable from 'swr/immutable'
 
 import { useDelayedInfiniteSWR, useMutation } from '@/hooks'
 
 import { LoadMore, VirtualizedList } from '@/components/UI'
 
+import RefreshPostsButton from './Buttons/RefreshPostsButton'
 import { EmptyPlaceholder } from './EmptyPlaceholder'
 import { Thread } from './Thread'
 
@@ -26,15 +28,14 @@ export function ThreadListTemplate({
     mutate,
     loadMore,
     isLoading,
-    isEmpty,
   } = useDelayedInfiniteSWR<ThreadItem[]>(url, {
     duration: 300,
   })
 
-  // const { data: bufferedThreadItems, mutate: mutateBuffer } = useSWRImmutable(
-  //   !threadItems ? null : `${url}/buffered`,
-  //   () => threadItems
-  // )
+  const { data: bufferedThreadItems, mutate: mutateBuffer } = useSWRImmutable(
+    !threadItems ? null : `${url}/buffered`,
+    () => threadItems
+  )
 
   const { status } = useMutation('/threads')
 
@@ -51,23 +52,35 @@ export function ThreadListTemplate({
 
   const router = useRouter()
 
-  // const data = useBuffer ? bufferedThreadItems : threadItems
+  const data = useBuffer ? bufferedThreadItems : threadItems
 
-  // const isBufferStale =
-  //   useBuffer &&
-  //   bufferedThreadItems?.length !== threadItems?.length &&
-  //   !isLoading
+  const isBufferStale = Boolean(
+    useBuffer &&
+      bufferedThreadItems &&
+      threadItems &&
+      bufferedThreadItems?.length > 0 &&
+      threadItems?.length > 0 &&
+      bufferedThreadItems?.[0].id !== threadItems?.[0].id &&
+      !isLoading
+  )
 
-  // const isEmpty = Boolean(data && data?.length === 0 && !isLoading)
+  // mutate buffer on load more
+  React.useEffect(() => {
+    if (bufferedThreadItems?.length !== threadItems?.length) {
+      mutateBuffer(threadItems)
+    }
+  }, [bufferedThreadItems?.length, mutateBuffer, threadItems])
+
+  const isEmpty = Boolean(data && data?.length === 0 && !isLoading)
 
   return (
     <div className="relative">
-      {/* <RefreshPostsButton
+      <RefreshPostsButton
         onClick={() => {
           mutateBuffer(threadItems)
         }}
         showButton={isBufferStale}
-      /> */}
+      />
 
       <EmptyPlaceholder visible={isEmpty} />
 
@@ -77,16 +90,16 @@ export function ThreadListTemplate({
           isLoading ? 'opacity-0' : 'opacity-100'
         )}
       >
-        <VirtualizedList data={threadItems}>
+        <VirtualizedList data={data}>
           {(items, virtualizer) => {
-            if (!threadItems) return null
+            if (!data) return null
 
             return items.map((item) => {
-              const thread = threadItems[item.index]
+              const thread = data[item.index]
 
               return (
                 <VirtualizedList.Item
-                  key={item.key}
+                  key={thread.id}
                   virtualizer={virtualizer}
                   item={item}
                 >

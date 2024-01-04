@@ -3,17 +3,26 @@ import { faker } from '@faker-js/faker'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const profiles = new Array(100).fill(0).map((_) => {
+  const profiles = new Array(1000).fill(0).map((_) => {
     const displayName = faker.person.fullName()
     const username = `@${displayName.split(' ')[0].toLowerCase()}`
+
+    const createdAt = faker.date.between({
+      from: '2023-01-25',
+      to: '2023-12-25',
+    })
     const data = {
-      avatar: `https://picsum.photos/36/36/?random=${faker.number.int({
-        max: 1000,
-      })}`,
+      avatarUrl:
+        Math.random() > 0.25
+          ? `https://picsum.photos/36/36/?random=${faker.number.int({
+              max: 1000,
+            })}`
+          : null,
       displayName,
       username,
-      description: Math.random() > 0.6 ? faker.lorem.sentence() : username,
-      alt: faker.string.alpha({ length: 2, casing: 'upper' }),
+      bio: Math.random() > 0.25 ? faker.lorem.sentence() : null,
+      createdAt: createdAt,
+      timestamp: Math.floor(createdAt.getTime() / 1000),
     }
     return data
   })

@@ -3,11 +3,15 @@ import React from 'react'
 import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
 
+import { useUser } from '@/hooks'
+
 import { Seo } from '@/components/Seo'
+
+import { useUpdateRecentlyViewed } from '@/store'
 
 import { Header, ProfileInfo, ProfileLoader } from '@/modules/Profile'
 import { Media, Posts, ProfileTabs, Replies } from '@/modules/Profile'
-import { ProfileDialog } from '@/modules/Profile/Me'
+import { getDescription, ProfileDialog } from '@/modules/Profile/Me'
 
 import { FindUserResponse } from '../api/profile/[username]'
 
@@ -25,6 +29,22 @@ export default function ProfilePage() {
   const activeTab = data ?? 'Posts'
 
   const { data: user } = useSWR<FindUserResponse>(`/profile/${username}`)
+
+  const { user: currentUser } = useUser()
+
+  const updateRecentlyViewed = useUpdateRecentlyViewed()
+
+  React.useEffect(() => {
+    if (user && user.id !== currentUser.id) {
+      updateRecentlyViewed({
+        username: user.username!,
+        avatarUrl: user.avatarUrl,
+        displayName: user.displayName!,
+        bio: getDescription(user),
+        objectID: user.id,
+      })
+    }
+  }, [currentUser.id, pathname, updateRecentlyViewed, user])
 
   return (
     <>

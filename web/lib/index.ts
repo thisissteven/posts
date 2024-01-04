@@ -1,3 +1,4 @@
+export * from './algolia'
 export * from './cloudinary'
 export * from './prisma'
 export * from './supabase'

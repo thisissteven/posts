@@ -27,6 +27,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@supabase/supabase-js": "^2.39.2",
     "@tanstack/react-virtual": "^3.0.1",
+    "algoliasearch": "^4.22.0",
     "axios": "^1.6.2",
     "cloudinary": "^1.41.1",
     "clsx": "^2.0.0",

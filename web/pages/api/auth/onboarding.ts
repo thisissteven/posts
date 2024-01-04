@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { prisma, requestHandler } from '@/lib'
+import { prisma, requestHandler, saveUser } from '@/lib'
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,6 +22,13 @@ export default async function handler(
           username,
           displayName,
         },
+      })
+
+      await saveUser({
+        id: currentUser.id,
+        username,
+        displayName,
+        bio: '',
       })
 
       res.status(200).json(user)

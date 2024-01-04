@@ -1,7 +1,9 @@
 import { Prisma } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { CurrentUser, prisma, requestHandler } from '@/lib'
+import { CurrentUser, prisma, requestHandler, updateUser } from '@/lib'
+
+import { getDescription } from '@/modules/Profile/Me'
 
 export const findUser = async (currentUser: CurrentUser, username: string) => {
   const user = await prisma.user.findUnique({
@@ -104,6 +106,13 @@ export default async function handler(
           pronouns,
           website,
         },
+      })
+
+      await updateUser({
+        id: currentUser.id,
+        username,
+        displayName,
+        bio: getDescription(user as unknown as FindUserResponse),
       })
 
       res.status(200).json(user)

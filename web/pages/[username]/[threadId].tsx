@@ -127,7 +127,8 @@ const MainThread = React.memo(function MainThread({
     } else {
       onScrollFinish()
     }
-  }, [onScrollFinish, parentThread])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [parentThread])
 
   return (
     <>

@@ -6,13 +6,12 @@ import React from 'react'
 import { CommandMenuItemProps } from '@/types'
 
 export function CommandMenuItem({
-  avatar,
+  avatarUrl,
   username,
   displayName,
-  description,
-  alt,
+  bio,
   onSelect,
-  value = `${displayName} ${username}`,
+  value = `${displayName} ${username} ${bio}`,
 }: CommandMenuItemProps) {
   return (
     <Command.Item
@@ -21,11 +20,11 @@ export function CommandMenuItem({
       className="cursor-pointer w-full px-2 py-1.5 flex items-center rounded-xl data-[selected=true]:bg-divider active:bg-divider select-none text-sm font-light gap-3"
     >
       <div className="shrink-0 w-9 h-9 rounded-full bg-background overflow-hidden">
-        {avatar ? (
+        {avatarUrl ? (
           <Image
             draggable={false}
-            src={avatar}
-            alt={alt}
+            src={avatarUrl}
+            alt={displayName}
             width={36}
             height={36}
           />
@@ -49,7 +48,9 @@ export function CommandMenuItem({
       </div>
       <div className="flex-1">
         <div className="text-primary">{displayName}</div>
-        <div className="text-[11.5px] -mt-0.5 line-clamp-1">{description}</div>
+        <div className="text-[11.5px] -mt-0.5 line-clamp-1">
+          {bio ?? username}
+        </div>
       </div>
     </Command.Item>
   )
