@@ -2,7 +2,8 @@ import { Command } from 'cmdk'
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
-import { getRecentlyJoined } from '@/lib'
+import { getRecentlyJoined, searchUser } from '@/lib'
+import { useDebounce } from '@/hooks'
 
 import { Dialog } from '@/components/UI'
 
@@ -62,9 +63,26 @@ function CommandMenuContent({ showProfile }: { showProfile: boolean }) {
 
   const [value, setValue] = React.useState('')
 
+  const keyword = useDebounce(value, 300)
+
+  const { data: searchResults } = useSWRImmutable<CommandMenuItemProps[]>(
+    keyword ? `/search/${keyword}` : null,
+    async () => {
+      const users = await searchUser(keyword)
+      return users as unknown as CommandMenuItemProps[]
+    },
+    {
+      keepPreviousData: true,
+    }
+  )
+
+  const isSearchEmpty = value.length === 0
+  const isResultEmpty = searchResults?.length === 0
+
   return (
     <>
       <Command
+        filter={() => 1}
         label="Search for people or teams"
         className="relative bg-background h-[60vh] min-h-[400px]"
       >
@@ -83,14 +101,21 @@ function CommandMenuContent({ showProfile }: { showProfile: boolean }) {
           }}
           className="overflow-y-auto h-[calc(100%-94px)] scrollbar-none p-2 scroll-pb-[86px] scroll-pt-[62px] pb-[calc(28px+0.5rem)]"
         >
-          <CommandNoResults />
+          {isResultEmpty && <CommandNoResults />}
 
-          {showProfile && <CommandMenuProfileItem />}
+          {showProfile && isSearchEmpty && <CommandMenuProfileItem />}
 
-          {recentlyViewed && (
+          {recentlyViewed && isSearchEmpty && (
             <CommandMenuGroup heading="Recently viewed" data={recentlyViewed} />
           )}
-          <CommandMenuGroup heading="Recently joined" data={recentlyJoined} />
+
+          {isSearchEmpty && (
+            <CommandMenuGroup heading="Recently joined" data={recentlyJoined} />
+          )}
+
+          {searchResults && searchResults?.length > 0 && (
+            <CommandMenuGroup data={searchResults} />
+          )}
         </Command.List>
       </Command>
       <CommandMenuFooter />

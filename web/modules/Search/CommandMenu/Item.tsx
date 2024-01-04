@@ -49,7 +49,7 @@ export function CommandMenuItem({
       <div className="flex-1">
         <div className="text-primary">{displayName}</div>
         <div className="text-[11.5px] -mt-0.5 line-clamp-1">
-          {bio ?? username}
+          {bio ? bio : username ? `@${username}` : null}
         </div>
       </div>
     </Command.Item>

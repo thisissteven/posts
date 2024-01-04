@@ -6,6 +6,7 @@ import { CommandMenuItemProps } from '@/types'
 interface StoreState {
   recentlyViewed: CommandMenuItemProps[] | null
   updateRecentlyViewed: (user: CommandMenuItemProps) => void
+  clearRecentlyViewed: () => void
 }
 
 const useRecentlyViewedStore = create<StoreState>()(
@@ -21,16 +22,14 @@ const useRecentlyViewedStore = create<StoreState>()(
           }
 
           // check if currentUser is the last viewed
-          if (
-            recentlyViewed[recentlyViewed.length - 1].objectID === user.objectID
-          ) {
+          if (recentlyViewed[recentlyViewed.length - 1].id === user.id) {
             return {
               recentlyViewed,
             }
           }
 
           let currentRecentlyViewed = recentlyViewed.filter(
-            (currentUser) => currentUser.objectID !== user.objectID
+            (currentUser) => currentUser.id !== user.id
           )
           currentRecentlyViewed = [user, ...currentRecentlyViewed].slice(0, 3)
 
@@ -38,6 +37,10 @@ const useRecentlyViewedStore = create<StoreState>()(
             recentlyViewed: currentRecentlyViewed,
           }
         }),
+      clearRecentlyViewed: () =>
+        set(() => ({
+          recentlyViewed: null,
+        })),
     }),
     {
       name: 'recently-viewed-storage',
@@ -50,3 +53,6 @@ export const useRecentlyViewed = () =>
 
 export const useUpdateRecentlyViewed = () =>
   useRecentlyViewedStore((state) => state.updateRecentlyViewed)
+
+export const useClearRecentlyViewed = () =>
+  useRecentlyViewedStore((state) => state.clearRecentlyViewed)

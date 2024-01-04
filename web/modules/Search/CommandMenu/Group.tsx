@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { Command } from 'cmdk'
 import { useRouter } from 'next/navigation'
 import React from 'react'
@@ -12,7 +13,7 @@ export function CommandMenuGroup({
   heading,
   data,
 }: {
-  heading: string
+  heading?: string
   data: CommandMenuItemProps[]
 }) {
   const router = useRouter()
@@ -28,19 +29,23 @@ export function CommandMenuGroup({
       `}</style>
       <Command.Group
         heading={heading}
-        className="mt-1.5 text-span text-xs font-light tracking-wide"
+        className={clsx(
+          'text-span text-xs font-light tracking-wide',
+          heading && 'mt-1.5'
+        )}
       >
-        {data.map((props) => {
+        {data.map((user) => {
           return (
             <CommandMenuItem
+              key={user.id}
+              value={`${heading} ${user.displayName} ${user.username} ${user.bio}`}
               onSelect={async () => {
-                const profileUrl = `/${props.username}`.replace('@', '')
+                const profileUrl = `/${user.username}`.replace('@', '')
 
                 router.push(profileUrl)
                 closeDialog()
               }}
-              key={props.objectID}
-              {...props}
+              {...user}
             />
           )
         })}

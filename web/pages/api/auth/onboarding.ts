@@ -3,6 +3,10 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { prisma, requestHandler, saveUser } from '@/lib'
 
+import { getDescription } from '@/modules/Profile/Me'
+
+import { FindUserResponse } from '../profile/[username]'
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -25,10 +29,13 @@ export default async function handler(
       })
 
       await saveUser({
-        id: currentUser.id,
-        username,
-        displayName,
-        bio: '',
+        id: user.id,
+        avatarUrl: user.avatarUrl,
+        bio: getDescription(user as unknown as FindUserResponse),
+        createdAt: user.createdAt,
+        username: username,
+        displayName: displayName,
+        timestamp: Math.floor(user.createdAt.getTime() / 1000),
       })
 
       res.status(200).json(user)

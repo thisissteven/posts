@@ -31,6 +31,7 @@ export const getRecentlyJoined = async () => {
       'bio',
       'timestamp',
       'objectID',
+      'id',
     ],
   })
 

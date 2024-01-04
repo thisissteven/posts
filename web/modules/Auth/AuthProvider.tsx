@@ -8,6 +8,8 @@ import { useDialogState } from '@/hooks/useDialogState'
 
 import { SharedDialog } from '@/components/UI'
 
+import { useClearRecentlyViewed } from '@/store'
+
 import { AuthDialogContent } from '.'
 
 type AuthContextValues = {
@@ -63,6 +65,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [dialogState, pathname, status])
 
+  const clearRecentlyViewed = useClearRecentlyViewed()
+
   return (
     <AuthContext.Provider
       value={{
@@ -78,6 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
         signOut: async () => {
           await signOut({ redirect: false })
+          clearRecentlyViewed()
           window.location.href = '/'
         },
       }}

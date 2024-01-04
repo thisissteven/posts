@@ -41,7 +41,7 @@ export default function ProfilePage() {
         avatarUrl: user.avatarUrl,
         displayName: user.displayName!,
         bio: getDescription(user),
-        objectID: user.id,
+        id: user.id,
       })
     }
   }, [currentUser.id, pathname, updateRecentlyViewed, user])

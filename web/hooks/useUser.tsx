@@ -42,7 +42,7 @@ export function useUser() {
 
   return {
     user: {
-      avatarUrl: user?.avatarUrl,
+      avatarUrl: user?.avatarUrl ?? null,
       displayName: user?.displayName,
       username: user?.username ?? '',
       id: user?.id ?? '',
