@@ -153,9 +153,13 @@ export default async function handler(
     POST: async (currentUser) => {
       const embed = req.body.embed
 
+      const source =
+        typeof req.body.source === 'string' ? req.body.source : null
+
       const user = await prisma.thread.create({
         data: {
           ...req.body,
+          source,
           embed: embed
             ? {
                 create: {

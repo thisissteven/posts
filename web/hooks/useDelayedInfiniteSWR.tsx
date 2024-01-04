@@ -9,7 +9,7 @@ const defaultFetcher = (url: string) =>
   apiClient.get(url).then((res) => res.data)
 
 export function useDelayedInfiniteSWR<Data = unknown, Error = unknown>(
-  key: string,
+  key: string | null,
   config?: {
     duration?: number
     fetcher?: BareFetcher<Data>
@@ -24,7 +24,7 @@ export function useDelayedInfiniteSWR<Data = unknown, Error = unknown>(
   const { data, isLoading, isValidating, setSize, ...rest } = useSWRInfinite(
     (index, previousPageData) => {
       const cursor = previousPageData?.cursor
-      if (previousPageData && !cursor) return null
+      if ((previousPageData && !cursor) || !key) return null
 
       if (index === 0) {
         return key

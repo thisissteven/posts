@@ -18,8 +18,8 @@ type VirtualizedListProps<T> = {
 export function VirtualizedList<T>({
   children,
   data = [],
-  estimateSize = () => 600,
-  overscan = 3,
+  estimateSize = () => 500,
+  overscan = 7,
 }: VirtualizedListProps<T>) {
   const listRef = React.useRef<HTMLDivElement | null>(null)
 

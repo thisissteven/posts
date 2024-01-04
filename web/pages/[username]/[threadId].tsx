@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { useParams, useRouter } from 'next/navigation'
 import React from 'react'
 
-import { useDelayedSWR } from '@/hooks'
+import { useDelayedInfiniteSWR, useDelayedSWR } from '@/hooks'
 
 import { Seo } from '@/components/Seo'
 
@@ -52,67 +52,107 @@ export default function ThreadPage() {
     }
   )
 
+  const { data: threadReplies } = useDelayedInfiniteSWR<ThreadItem[]>(
+    data
+      ? `/thread/${data.thread.owner.username}/${data.thread.id}/replies`
+      : null,
+    {
+      duration: 300,
+      swrInfiniteConfig: {
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+      },
+    }
+  )
+
   const thread = data?.thread
 
   const pageTitle = data
     ? `${thread?.owner?.displayName} posted: ${thread?.textContent}`
     : 'Posts'
 
-  const router = useRouter()
-
-  const ref = React.useRef<HTMLDivElement>(null)
-
-  React.useEffect(() => {
-    if (!isLoading && data?.parentThread) {
-      setTimeout(() => {
-        ref.current?.scrollIntoView(true)
-      })
-    } else {
-      setTimeout(() => {
-        window.scrollTo(0, 0)
-      })
-    }
-  }, [threadId, isLoading, data?.parentThread])
+  const [scrollbarReady, setScrollbarReady] = React.useState(false)
 
   return (
     <>
       <Seo title={pageTitle} />
       <Header />
-      {withLoader({ isLoading, data: data }, ({ thread, parentThread }) => {
-        if (!thread) return null
+      {withLoader(
+        { isLoading: isLoading || !threadReplies, data: data },
+        ({ thread, parentThread }) => {
+          if (!thread) return null
 
-        return (
-          <div className="min-h-[200vh] pb-16">
-            <div className="flex flex-col">
-              {getParentThreads(parentThread).map((thread, index) => (
-                <Thread
-                  key={thread.id}
-                  onClick={() =>
-                    router.push(`/${thread.owner.username}/${thread.id}`)
-                  }
-                  thread={thread}
-                  isReply={index > 0}
-                  hasReplyTo={index > 0}
-                  isOnlyThread={false}
-                  isThreadDetail={true}
-                  isRootThread={index === 0}
+          return (
+            <div className="min-h-[200vh] pb-16 mt-1">
+              <MainThread
+                onScrollFinish={() => setScrollbarReady(true)}
+                thread={thread}
+                parentThread={parentThread}
+              />
+              {scrollbarReady && (
+                <ThreadDetailListTemplate
+                  threadId={thread.id}
+                  threadLevel={thread.level}
+                  url={`/thread/${thread.owner.username}/${thread.id}/replies`}
                 />
-              ))}
+              )}
             </div>
-            <div ref={ref} className="scroll-mt-[60px]">
-              <ThreadDetail thread={thread} />
-            </div>
-            <ThreadDetailListTemplate
-              threadId={thread.id}
-              threadLevel={thread.level}
-              url={`/thread/${thread.owner.username}/${thread.id}/replies`}
-            />
-          </div>
-        )
-      })}
+          )
+        }
+      )}
     </>
   )
 }
+
+const MainThread = React.memo(function MainThread({
+  thread,
+  parentThread,
+  onScrollFinish,
+}: {
+  thread: ThreadItem
+  parentThread: ThreadItem | null
+  onScrollFinish: () => void
+}) {
+  const router = useRouter()
+
+  const ref = React.useRef<HTMLDivElement>(null)
+
+  const hasAlreadyScrolled = React.useRef(false)
+
+  React.useEffect(() => {
+    if (parentThread && !hasAlreadyScrolled.current) {
+      ref.current?.scrollIntoView()
+      onScrollFinish()
+    } else {
+      onScrollFinish()
+    }
+  }, [onScrollFinish, parentThread])
+
+  return (
+    <>
+      <div className="flex flex-col">
+        {getParentThreads(parentThread).map((thread, index) => (
+          <Thread
+            key={thread.id}
+            onClick={() =>
+              router.push(`/${thread.owner.username}/${thread.id}`)
+            }
+            thread={thread}
+            isReply={index > 0}
+            hasReplyTo={index > 0}
+            isOnlyThread={false}
+            isThreadDetail={true}
+            isRootThread={index === 0}
+          />
+        ))}
+      </div>
+      <div ref={ref} className="scroll-mt-[60px]">
+        <ThreadDetail thread={thread} />
+      </div>
+    </>
+  )
+})
 
 function getParentThreads(thread: ThreadItem | null) {
   if (!thread) return []

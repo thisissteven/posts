@@ -110,7 +110,11 @@ export function ThreadDetail({
   return (
     <article
       role="article"
-      className={cn('px-6 border-b border-divider pt-4', className)}
+      className={cn(
+        'px-6 border-b border-divider',
+        !hasReplyTo && 'pt-4',
+        className
+      )}
     >
       {showRepost && repostedBy && (
         <div className="ml-6 mb-2 flex items-center gap-2.5 text-sm font-light text-span">
@@ -119,10 +123,8 @@ export function ThreadDetail({
       )}
 
       <div className="flex items-center gap-3">
-        <div className="relative">
-          {hasReplyTo && (
-            <div className="absolute left-1/2 -translate-x-1/2 -translate-y-full h-4 w-[2px] bg-soft-background"></div>
-          )}
+        <div className="relative flex flex-col items-center">
+          {hasReplyTo && <div className="h-3 w-[2px] bg-soft-background"></div>}
           <Avatar threadUser={thread.owner} />
         </div>
         <UserDisplayThreadDetail thread={thread} />

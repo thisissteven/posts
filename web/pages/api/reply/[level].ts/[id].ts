@@ -15,10 +15,13 @@ export default async function handler(
     },
     POST: async (currentUser) => {
       const embed = req.body.embed
+      const source =
+        typeof req.body.source === 'string' ? req.body.source : null
 
       const newThread = await prisma.thread.create({
         data: {
           ...req.body,
+          source,
           level: parseInt(level) + 1,
           embed: embed
             ? {

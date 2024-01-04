@@ -43,9 +43,31 @@ export function ThreadDetailListTemplate({
 
   const router = useRouter()
 
+  const listLength = React.useRef<number>()
+
+  if (!listLength.current) {
+    if (threadItems && threadItems.length > 0) {
+      listLength.current = threadItems.length
+    }
+  }
+
+  if (listLength.current && listLength.current < 10) {
+    return (
+      <div className="relative">
+        {threadItems?.map((thread) => {
+          return (
+            <ThreadDecider key={thread.id} thread={thread} router={router} />
+          )
+        })}
+
+        <LoadMore isEnd={isEnd} whenInView={loadMore} />
+      </div>
+    )
+  }
+
   return (
     <div className="relative">
-      <VirtualizedList data={threadItems} overscan={7}>
+      <VirtualizedList data={threadItems}>
         {(items, virtualizer) => {
           if (!threadItems) return null
 
@@ -54,7 +76,7 @@ export function ThreadDetailListTemplate({
 
             return (
               <VirtualizedList.Item
-                key={item.key}
+                key={thread.id}
                 virtualizer={virtualizer}
                 item={item}
               >
