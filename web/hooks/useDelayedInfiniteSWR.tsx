@@ -52,10 +52,11 @@ export function useDelayedInfiniteSWR<Data = unknown, Error = unknown>(
 
   const isEnd = data && !data[data.length - 1].cursor
 
-  const paginatedData: unknown[] = []
+  let paginatedData: unknown[] | undefined = undefined
   if (data) {
+    if (!paginatedData) paginatedData = []
     data.forEach((page) => {
-      paginatedData.push(...page.data)
+      paginatedData?.push(...page.data)
     })
   }
 

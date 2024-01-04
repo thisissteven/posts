@@ -41,7 +41,6 @@ export function Sidebar() {
       )}
     >
       <div className="relative w-full h-full">
-        <BottomBanner />
         <ul
           className={clsx(
             'grid xs:grid-rows-7 place-items-center gap-8',
@@ -115,6 +114,8 @@ export function Sidebar() {
             </Dialog>
           </li>
         </ul>
+
+        <BottomBanner />
       </div>
     </aside>
   )

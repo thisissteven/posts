@@ -132,6 +132,7 @@ export function getReplyIncludeParams(user: CurrentUser, category: Category) {
     case 'replies':
       return {
         include: {
+          ...getThreadBaseIncludeParams(user),
           replies: {
             take: 4,
             where: {
@@ -154,56 +155,6 @@ export function getReplyIncludeParams(user: CurrentUser, category: Category) {
               ...getThreadBaseIncludeParams(user),
             },
           },
-          owner: {
-            select: {
-              id: true,
-              avatarUrl: true,
-              isSupporter: true,
-              username: true,
-              displayName: true,
-            },
-          },
-          replyTo: {
-            select: {
-              owner: {
-                select: {
-                  username: true,
-                },
-              },
-            },
-          },
-          likes: !user
-            ? false
-            : {
-                where: {
-                  user: {
-                    id: user.id,
-                  },
-                },
-                select: {
-                  user: {
-                    select: {
-                      username: true,
-                    },
-                  },
-                },
-              },
-          reposts: !user
-            ? false
-            : {
-                where: {
-                  user: {
-                    id: user.id,
-                  },
-                },
-                select: {
-                  user: {
-                    select: {
-                      username: true,
-                    },
-                  },
-                },
-              },
         },
       } satisfies Prisma.ThreadFindManyArgs
     default:

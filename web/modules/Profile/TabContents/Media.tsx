@@ -41,47 +41,58 @@ export function Media() {
     },
   })
 
-  const router = useRouter()
-
   return useHasBlock(() => (
     <div className="relative">
       <EmptyPlaceholder visible={isEmpty} />
 
-      <ul className="p-2 columns-2 gap-2 space-y-2">
-        {medias?.map((media) => {
-          const { mediaType, source, width, height } = media
-          return (
-            <li
-              onClick={() => router.push(`/${username}/${media.id}`)}
-              key={media.id}
-              className="cursor-pointer relative rounded-lg overflow-hidden"
-            >
-              {mediaType === 'image' && (
-                <Image
-                  className="w-full"
-                  src={source}
-                  alt="thread"
-                  width={width}
-                  height={height}
-                />
-              )}
-
-              {mediaType === 'video' && (
-                <Video
-                  className="w-full"
-                  src={source}
-                  width={width}
-                  height={height}
-                />
-              )}
-            </li>
-          )
-        })}
-      </ul>
+      <MediaGrid medias={medias} />
 
       <LoadMore isEnd={isEnd} whenInView={loadMore} />
 
       <TabLoader visible={isLoading} overlayOnly={hasData} />
     </div>
   ))
+}
+
+function MediaGrid({ medias }: { medias?: Media[] }) {
+  const pathname = usePathname()
+
+  const username = pathname?.split('/')[1]
+
+  const router = useRouter()
+
+  if (!medias) return null
+  return (
+    <ul className="p-2 columns-2 gap-2 space-y-2">
+      {medias?.map((media) => {
+        const { mediaType, source, width, height } = media
+        return (
+          <li
+            onClick={() => router.push(`/${username}/${media.id}`)}
+            key={media.id}
+            className="cursor-pointer relative rounded-lg overflow-hidden"
+          >
+            {mediaType === 'image' && (
+              <Image
+                className="w-full"
+                src={source}
+                alt="thread"
+                width={width}
+                height={height}
+              />
+            )}
+
+            {mediaType === 'video' && (
+              <Video
+                className="w-full"
+                src={source}
+                width={width}
+                height={height}
+              />
+            )}
+          </li>
+        )
+      })}
+    </ul>
+  )
 }

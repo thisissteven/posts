@@ -60,6 +60,20 @@ export default function ThreadPage() {
 
   const router = useRouter()
 
+  const ref = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    if (!isLoading && data?.parentThread) {
+      setTimeout(() => {
+        ref.current?.scrollIntoView(true)
+      })
+    } else {
+      setTimeout(() => {
+        window.scrollTo(0, 0)
+      })
+    }
+  }, [threadId, isLoading, data?.parentThread])
+
   return (
     <>
       <Seo title={pageTitle} />
@@ -68,7 +82,7 @@ export default function ThreadPage() {
         if (!thread) return null
 
         return (
-          <div className="min-h-screen pb-16">
+          <div className="min-h-[200vh] pb-16">
             <div className="flex flex-col">
               {getParentThreads(parentThread).map((thread, index) => (
                 <Thread
@@ -85,7 +99,9 @@ export default function ThreadPage() {
                 />
               ))}
             </div>
-            <ThreadDetail thread={thread} />
+            <div ref={ref} className="scroll-mt-[60px]">
+              <ThreadDetail thread={thread} />
+            </div>
             <ThreadDetailListTemplate
               threadId={thread.id}
               threadLevel={thread.level}

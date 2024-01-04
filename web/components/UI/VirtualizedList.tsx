@@ -12,19 +12,21 @@ type VirtualizedListProps<T> = {
   ) => React.ReactNode
   data?: T[]
   estimateSize?: (index: number) => number
+  overscan?: number
 }
 
 export function VirtualizedList<T>({
   children,
   data = [],
   estimateSize = () => 600,
+  overscan = 3,
 }: VirtualizedListProps<T>) {
   const listRef = React.useRef<HTMLDivElement | null>(null)
 
   const virtualizer = useWindowVirtualizer({
     count: data.length,
     estimateSize,
-    overscan: 3,
+    overscan,
   })
 
   const items = virtualizer.getVirtualItems()

@@ -46,7 +46,7 @@ export default function ReplyPage() {
 
       <div
         className={clsx(
-          'duration-300 mt-1',
+          'duration-300',
           isLoading ? 'opacity-0' : 'opacity-100'
         )}
       >

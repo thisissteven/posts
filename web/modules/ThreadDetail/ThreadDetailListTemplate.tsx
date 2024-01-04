@@ -45,7 +45,7 @@ export function ThreadDetailListTemplate({
 
   return (
     <div className="relative">
-      <VirtualizedList data={threadItems}>
+      <VirtualizedList data={threadItems} overscan={7}>
         {(items, virtualizer) => {
           if (!threadItems) return null
 

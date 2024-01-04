@@ -23,8 +23,11 @@ export function DeletePost({
     <Popover.Item
       className="text-danger-soft"
       onSelect={async () => {
-        await trigger()
-        onDelete()
+        try {
+          await trigger()
+        } finally {
+          onDelete()
+        }
       }}
     >
       {status.state === 'loading' ? 'Deleting...' : 'Delete Post'}
