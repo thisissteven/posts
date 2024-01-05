@@ -42,7 +42,7 @@ export const saveUser = async (user: AlgoliaUser) => {
   await index.saveObject(record)
 }
 
-export const updateUser = async (user: AlgoliaUser) => {
+export const updateUser = async (user: Partial<AlgoliaUser>) => {
   const index = algoliaClient.initIndex('users')
 
   await index.partialUpdateObject({

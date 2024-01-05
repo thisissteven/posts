@@ -30,7 +30,7 @@ export function LikersDialog({
           {likeState.count} {likeState.count === 1 ? 'Like' : 'Likes'}
         </button>
       </Dialog.Trigger>
-      <Dialog.Content className="max-w-[540px]">
+      <Dialog.Content className="max-w-[540px] rounded-2xl">
         <LikersDialogContent thread={thread} />
       </Dialog.Content>
     </Dialog>
@@ -48,12 +48,14 @@ function LikersDialogContent({ thread }: { thread: ThreadItem }) {
   })
 
   return (
-    <div className="max-h-[1181px] max-w-[540px] h-[87vh] rounded-2xl">
+    <div className="max-h-[1181px] max-w-[540px] h-[87vh]">
       <div className="bg-background h-full w-full flex flex-col justify-between pb-4">
         <div className="px-8 pt-6 scrollbar overflow-y-auto">
           <h2 className="text-lg font-medium">Liked by</h2>
-          <Overlay visible={isLoading} />
-          {!!data && <UserListContent data={data} hasMe={!!state.status} />}
+          <div className="relative">
+            <Overlay visible={isLoading} />
+            {!!data && <UserListContent data={data} hasMe={!!state.status} />}
+          </div>
         </div>
         <div className="pt-4 mx-4 xs:mx-8 border-t border-divider flex justify-end">
           <Dialog.Close type="button" asChild>

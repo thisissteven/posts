@@ -29,7 +29,7 @@ export function RepostersDialog({
           {repostState.count} {repostState.count === 1 ? 'Repost' : 'Reposts'}
         </button>
       </Dialog.Trigger>
-      <Dialog.Content className="max-w-[480px]">
+      <Dialog.Content className="max-w-[540px] rounded-2xl">
         <RepostersDialogContent thread={thread} />
       </Dialog.Content>
     </Dialog>

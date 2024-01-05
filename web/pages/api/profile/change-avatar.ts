@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { prisma, requestHandler } from '@/lib'
+import { prisma, requestHandler, updateUser } from '@/lib'
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,6 +22,11 @@ export default async function handler(
         data: {
           avatarUrl,
         },
+      })
+
+      await updateUser({
+        id: user.id,
+        avatarUrl: user.avatarUrl,
       })
 
       res.status(200).json(user)

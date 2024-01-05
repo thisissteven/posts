@@ -7,11 +7,11 @@ import { useUser } from '@/hooks'
 import { UserNotificationStatus } from '@/pages/api/notifications/status'
 
 export function NotificationStatus() {
-  const { data, mutate } = useSWRImmutable<UserNotificationStatus>(
-    '/notifications/status'
-  )
+  const { user, isAuthenticated } = useUser()
 
-  const { user } = useUser()
+  const { data, mutate } = useSWRImmutable<UserNotificationStatus>(
+    isAuthenticated ? '/notifications/status' : null
+  )
 
   const isUnread = data?.status === 'UNREAD'
 

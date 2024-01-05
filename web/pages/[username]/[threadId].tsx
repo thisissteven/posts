@@ -41,7 +41,7 @@ export default function ThreadPage() {
   const threadId = params?.threadId
 
   const { data, isLoading } = useDelayedSWR<ThreadResponse>(
-    `/thread/${username}/${threadId}`,
+    username && threadId ? `/thread/${username}/${threadId}` : null,
     {
       duration: 300,
       swrConfig: {
