@@ -22,7 +22,7 @@ export function ProfileInformation({ username }: { username: string }) {
   return (
     <>
       <div className="px-6 py-4 flex items-center gap-4">
-        <div className="w-[92px] h-[92px] rounded-full bg-background border border-divider flex items-center justify-center overflow-hidden">
+        <div className="shrink-0 w-[92px] h-[92px] rounded-full bg-background border border-divider flex items-center justify-center overflow-hidden">
           {avatarUrl ? (
             <Image
               src={avatarUrl}

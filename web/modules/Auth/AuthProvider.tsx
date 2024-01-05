@@ -2,11 +2,14 @@ import { usePathname, useRouter } from 'next/navigation'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import React from 'react'
 import { isMobile } from 'react-device-detect'
+import { mutate } from 'swr'
 
 import { newWindow } from '@/lib'
 import { useDialogState } from '@/hooks/useDialogState'
 
 import { SharedDialog } from '@/components/UI'
+
+import { useClearRecentlyViewed } from '@/store'
 
 import { AuthDialogContent } from '.'
 
@@ -63,6 +66,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [dialogState, pathname, status])
 
+  const clearRecentlyViewed = useClearRecentlyViewed()
+
   return (
     <AuthContext.Provider
       value={{
@@ -78,7 +83,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
         signOut: async () => {
           await signOut({ redirect: false })
-          window.location.href = '/'
+          clearRecentlyViewed()
+          mutate(() => true, undefined, { revalidate: false })
+          router.replace('/')
         },
       }}
     >

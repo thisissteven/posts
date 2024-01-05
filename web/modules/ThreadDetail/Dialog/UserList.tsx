@@ -23,7 +23,7 @@ export function UserListContent({
   data: UserListContentData
   hasMe: boolean
 }) {
-  const { user: currentUser } = useUser()
+  const { user: currentUser, isAuthenticated } = useUser()
 
   const users = hasMe
     ? [
@@ -84,7 +84,7 @@ export function UserListContent({
               </div>
             </div>
 
-            {user.username !== currentUser.username && (
+            {user.username !== currentUser.username && isAuthenticated && (
               <div className="shrink-0">
                 <FollowButton user={user} />
               </div>

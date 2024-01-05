@@ -10,7 +10,7 @@ export default function Document() {
           crossOrigin="anonymous"
         />
       </Head>
-      <body className="overflow-x-hidden text-primary bg-background">
+      <body className="overflow-x-hidden text-primary bg-background  overflow-y-scroll">
         <Main />
         <NextScript />
       </body>

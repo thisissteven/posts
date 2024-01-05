@@ -1,9 +1,9 @@
 export type CommandMenuItemProps = {
-  avatar?: string | null
+  id: string
+  avatarUrl: string | null
   displayName: string
   username: string
-  description: string
-  alt: string
+  bio: string | null
   onSelect?: (value: string) => void
   value?: string
 }

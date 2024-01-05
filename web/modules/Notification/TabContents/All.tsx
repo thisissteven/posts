@@ -18,10 +18,12 @@ import {
 } from '../NotificationItem'
 
 export function All() {
-  const { user } = useUser()
+  const { user, isAuthenticated } = useUser()
 
   const { data: notificationStatus, mutate } =
-    useSWRImmutable<UserNotificationStatus>('/notifications/status')
+    useSWRImmutable<UserNotificationStatus>(
+      isAuthenticated ? '/notifications/status' : null
+    )
 
   const {
     data,

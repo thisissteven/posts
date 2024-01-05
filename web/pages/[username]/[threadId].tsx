@@ -41,7 +41,7 @@ export default function ThreadPage() {
   const threadId = params?.threadId
 
   const { data, isLoading } = useDelayedSWR<ThreadResponse>(
-    `/thread/${username}/${threadId}`,
+    username && threadId ? `/thread/${username}/${threadId}` : null,
     {
       duration: 300,
       swrConfig: {
@@ -127,7 +127,8 @@ const MainThread = React.memo(function MainThread({
     } else {
       onScrollFinish()
     }
-  }, [onScrollFinish, parentThread])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [parentThread])
 
   return (
     <>

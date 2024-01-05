@@ -23,11 +23,11 @@ export function CommandMenuProfileItem() {
           router.push(profileUrl)
           closeDialog()
         }}
-        username={user.username}
+        username=""
         displayName="View profile"
-        description=""
-        avatar={user.avatarUrl}
-        alt="view profile"
+        bio={null}
+        id={user.id}
+        avatarUrl={user.avatarUrl}
         value={`${user.displayName} ${user.username}`}
       />
     </Command.Group>
