@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 
-import { getRelativeTimeString } from '@/lib'
+import { getTimeAgo } from '@/lib'
 
 import { ThreadUserAvatar } from '@/components/UI'
 
@@ -55,7 +55,7 @@ export function UserDisplay({ thread }: { thread: ThreadItem }) {
           href={`/${threadOwner.username}/${thread.id}`}
           className="hover:underline underline-offset-[3px]"
         >
-          {getRelativeTimeString(new Date(createdAt))}
+          {getTimeAgo(createdAt)}
         </Link>
       </span>
     </p>

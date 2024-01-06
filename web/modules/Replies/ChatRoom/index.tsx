@@ -33,20 +33,25 @@ export function ChatRoom({
   }, [messages])
 
   React.useEffect(() => {
+    mutate(groupMessagesByDate(data.messages))
+  }, [data, mutate])
+
+  React.useEffect(() => {
     const channel = supabaseClient.channel(roomId)
 
     function messageReceived(
       message: GetRoomMessagesResponse['messages'][number]
     ) {
-      const newMessages = groupMessagesByDate([message], messages)
-      mutate(newMessages)
+      mutate((oldMessages) => groupMessagesByDate([message], oldMessages))
       rerender()
-      if (containerRef.current) {
-        containerRef.current.scrollTo({
-          top: containerRef.current.scrollHeight,
-          behavior: 'smooth',
-        })
-      }
+      setTimeout(() => {
+        if (containerRef.current) {
+          containerRef.current.scrollTo({
+            top: containerRef.current.scrollHeight,
+            behavior: 'smooth',
+          })
+        }
+      })
     }
 
     const realtimeChannel = channel
@@ -63,11 +68,11 @@ export function ChatRoom({
   return (
     <div
       ref={containerRef}
-      className="p-8 space-y-5 overflow-y-auto h-full scrollbar-none"
+      className="py-8 px-4 xs:px-8 space-y-5 overflow-y-auto h-full scrollbar-none"
     >
       {messages?.map((messageGroup) => {
         return (
-          <div key={messageGroup.date} className="space-y-4">
+          <div key={messageGroup.date} className="space-y-2">
             <div className="mx-auto text-xs text-soft-primary w-fit">
               {messageGroup.date}
             </div>
@@ -77,7 +82,7 @@ export function ChatRoom({
               return (
                 <div
                   key={messageGroupItem.id}
-                  className="flex gap-2 items-start"
+                  className="flex gap-2 items-start pt-4"
                 >
                   <SmallAvatar alt={username} avatarUrl={avatarUrl} />
                   <div className="flex-1">

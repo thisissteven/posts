@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import React from 'react'
 
-import { getRelativeTimeString } from '@/lib'
+import { getTimeAgo } from '@/lib'
 import { useDelayedSWR, useUser } from '@/hooks'
 
 import { TabLoader, ThreadUserAvatar } from '@/components/UI'
@@ -43,7 +43,7 @@ function RoomItem({
         <ThreadUserAvatar
           threadUser={{
             avatarUrl: avatarUrl,
-            username: receiverUsername!,
+            username: receiverUsername,
           }}
         />
         <div className="flex-1">
@@ -54,7 +54,7 @@ function RoomItem({
           </span>
         </div>
         <span className="text-span text-xs self-start mt-2 font-light tracking-wide">
-          {getRelativeTimeString(new Date(lastMessage.createdAt))}
+          {getTimeAgo(lastMessage.createdAt)}
         </span>
       </Link>
     </li>

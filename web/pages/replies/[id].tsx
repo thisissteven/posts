@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { useParams } from 'next/navigation'
 import * as React from 'react'
 
+import { CHAT_EVENT, supabaseClient } from '@/lib'
 import { useDelayedSWR, useMutation, useUser } from '@/hooks'
 
 import { Airplane } from '@/components/Icons'
@@ -50,7 +51,7 @@ export default function ReplyPage() {
           isLoading ? 'opacity-0' : 'opacity-100'
         )}
       >
-        <div className="h-[calc(100vh-195px)] xs:h-[calc(100vh-151px)]">
+        <div className="h-[calc(100vh-195px)] xs:h-[calc(100vh-145px)]">
           {!!data && <ChatRoom data={data} roomId={roomId} />}
         </div>
 
@@ -76,20 +77,39 @@ const ChatInput = React.memo(function ChatInput({
 
   const buttonRef = React.useRef() as React.MutableRefObject<HTMLButtonElement>
 
+  const sendMessage = async () => {
+    if (!roomId) return
+    const channel = supabaseClient.channel(roomId, {
+      config: {
+        broadcast: {
+          self: true,
+        },
+      },
+    })
+
+    const response = await trigger(
+      { content },
+      {
+        revalidate: false,
+      }
+    )
+
+    await channel.send({
+      type: 'broadcast',
+      event: CHAT_EVENT,
+      payload: response.data,
+    })
+  }
+
   if (!fromId) return null
 
   return (
     <div className="sticky bg-background px-4 xs:px-10 pt-4 pb-4 xs:pb-8 bottom-[61px] xs:bottom-0 left-0">
       <form
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault()
           if (content.length === 0) return
-          trigger(
-            { content },
-            {
-              revalidate: false,
-            }
-          )
+          await sendMessage()
           setContent('')
           textAreaRef.current.style.height = 'auto'
           textAreaRef.current.style.height = '36px'

@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { CHAT_EVENT, prisma, requestHandler, supabaseClient } from '@/lib'
+import { prisma, requestHandler } from '@/lib'
 
 export function getRoomId(firstId: string, secondId: string) {
   const compareResult = firstId.localeCompare(secondId)
@@ -27,6 +27,9 @@ async function getRoomMessages(roomIdentifier: string) {
       roomIdentifier,
     },
     take: 200,
+    orderBy: {
+      createdAt: 'desc',
+    },
     include: {
       sender: {
         select: {
@@ -86,7 +89,7 @@ export default async function handler(
       const roomDetails = await getRoomDetails(roomIdentifier)
 
       res.status(200).json({
-        messages,
+        messages: messages.reverse(),
         roomDetails,
       })
     },
@@ -124,20 +127,6 @@ export default async function handler(
           },
           content,
         },
-      })
-
-      const channel = supabaseClient.channel(roomId)
-
-      channel.subscribe(async (status) => {
-        if (status !== 'SUBSCRIBED') {
-          return null
-        }
-
-        await channel.send({
-          type: 'broadcast',
-          event: CHAT_EVENT,
-          payload: message,
-        })
       })
 
       await prisma.room.update({
