@@ -22,7 +22,7 @@ export function ProfileLoader({ children }: { children: React.ReactNode }) {
     useSWRImmutable<FollowList>(!isMe ? null : '/profile/following')
 
   const { isLoading: isLoadingUser, data: userData } =
-    useSWRImmutable<FindUserResponse>(isMe ? null : `/profile/${username}`)
+    useSWRImmutable<FindUserResponse>(username ? `/profile/${username}` : null)
 
   const hasData = isMe
     ? Boolean(followersData) && Boolean(followingData)
@@ -31,7 +31,7 @@ export function ProfileLoader({ children }: { children: React.ReactNode }) {
   const isLoading =
     isLoadingFollowers || isLoadingFollowing || isLoadingUser || !username
 
-  if (hasData) return children
+  if (hasData && !isLoading) return children
 
   return (
     <div

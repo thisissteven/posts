@@ -148,7 +148,7 @@ const MainThread = React.memo(function MainThread({
           />
         ))}
       </div>
-      <div ref={ref} className="scroll-mt-[60px]">
+      <div ref={ref} className="scroll-mt-[61px]">
         <ThreadDetail thread={thread} />
       </div>
     </>

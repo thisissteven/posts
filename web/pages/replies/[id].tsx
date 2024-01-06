@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { useParams } from 'next/navigation'
-import React from 'react'
+import * as React from 'react'
 
 import { useDelayedSWR, useMutation, useUser } from '@/hooks'
 
@@ -51,7 +51,7 @@ export default function ReplyPage() {
         )}
       >
         <div className="h-[calc(100vh-195px)] xs:h-[calc(100vh-151px)]">
-          <ChatRoom data={data} />
+          {!!data && <ChatRoom data={data} roomId={roomId} />}
         </div>
 
         <ChatInput roomId={roomId} fromId={fromId} />
@@ -83,7 +83,13 @@ const ChatInput = React.memo(function ChatInput({
       <form
         onSubmit={(e) => {
           e.preventDefault()
-          trigger({ content })
+          if (content.length === 0) return
+          trigger(
+            { content },
+            {
+              revalidate: false,
+            }
+          )
           setContent('')
           textAreaRef.current.style.height = 'auto'
           textAreaRef.current.style.height = '36px'

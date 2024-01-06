@@ -11,7 +11,7 @@ type NotificationUpdateArgs = {
   type: NotificationType
 }
 
-export const CHAT_EVENT = 'chat-event'
+export const NOTIFICATION_EVENT = 'notification-event'
 
 export async function handleNotificationUpdate(args: NotificationUpdateArgs) {
   allowError(async () => {
@@ -35,7 +35,7 @@ async function sendNotificationToChannel(recipientId: string) {
 
     await channel.send({
       type: 'broadcast',
-      event: CHAT_EVENT,
+      event: NOTIFICATION_EVENT,
     })
   })
 }

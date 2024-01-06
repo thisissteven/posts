@@ -83,8 +83,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
         signOut: async () => {
           await signOut({ redirect: false })
+          await mutate(() => true, undefined, { revalidate: false })
           clearRecentlyViewed()
-          mutate(() => true, undefined, { revalidate: false })
           router.replace('/')
         },
       }}
