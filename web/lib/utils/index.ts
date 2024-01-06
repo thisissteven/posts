@@ -1,6 +1,7 @@
 export * from './api-client'
 export * from './cn'
 export * from './extract-metadata'
+export * from './message'
 export * from './new-window'
 export * from './notification'
 export * from './request-handler'

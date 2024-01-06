@@ -33,6 +33,10 @@ export type ThreadItem = {
     image?: string
   }
 
+  recipient?: {
+    username: string
+  }
+
   level: number
 
   replies?: ThreadItem[]

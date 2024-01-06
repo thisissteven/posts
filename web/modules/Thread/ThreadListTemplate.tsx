@@ -15,6 +15,44 @@ import { Thread } from './Thread'
 
 import { ThreadItem } from '@/types'
 
+export function getThreadEstimateHeight(thread: ThreadItem) {
+  const availableWidth = 500
+  const maxCharsPerLine = 56
+  const baseThreadHeight = 121
+
+  let threadHeight = baseThreadHeight
+
+  const hasReplyTo = Boolean(thread.replyTo)
+  if (hasReplyTo) {
+    threadHeight += 24
+  }
+
+  const replyTo = thread.replyTo?.owner.username
+  if (replyTo !== undefined) {
+    threadHeight += 20
+  }
+
+  if (thread.textContent !== null) {
+    const textGroup = thread.textContent?.split('\n')
+    textGroup?.forEach((text) => {
+      const textLength = text.length
+      const textLines = Math.ceil(textLength / maxCharsPerLine)
+      threadHeight += textLines * 24
+    })
+  }
+
+  if (thread.embed !== null) {
+    threadHeight += 350
+  }
+
+  if (thread.width && thread.height) {
+    const ratio = thread.width / availableWidth
+    threadHeight += thread.height / ratio
+  }
+
+  return threadHeight
+}
+
 export function ThreadListTemplate({
   url,
   useBuffer = false,

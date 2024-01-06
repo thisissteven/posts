@@ -1,7 +1,7 @@
 import * as React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
-import { CHAT_EVENT, supabaseClient } from '@/lib'
+import { NOTIFICATION_EVENT, supabaseClient } from '@/lib'
 import { useUser } from '@/hooks'
 
 import { UserNotificationStatus } from '@/pages/api/notifications/status'
@@ -27,7 +27,7 @@ export function NotificationStatus() {
     }
 
     const realtimeChannel = channel
-      .on('broadcast', { event: CHAT_EVENT }, messageReceived)
+      .on('broadcast', { event: NOTIFICATION_EVENT }, messageReceived)
       .subscribe()
 
     return () => {

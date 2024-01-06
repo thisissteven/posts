@@ -93,6 +93,7 @@ function SendMessageDialogContent() {
           variant="secondary"
           isLoading={isMutating}
           onClick={() => {
+            if (content.length === 0) return
             trigger(
               { content },
               {

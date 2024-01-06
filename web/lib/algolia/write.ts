@@ -1,5 +1,8 @@
 import algoliasearch from 'algoliasearch'
 
+const usersIndex =
+  process.env.NODE_ENV === 'development' ? 'users_dev' : 'users'
+
 export const algoliaClient = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIA_APP_ID as string,
   process.env.ALGOLIA_WRITE_API_KEY as string
@@ -17,7 +20,7 @@ export type AlgoliaUser = {
 
 export const saveManyUsers = async (users: AlgoliaUser[]) => {
   try {
-    const index = algoliaClient.initIndex('users')
+    const index = algoliaClient.initIndex(usersIndex)
     const records = users.map((user) => {
       return {
         objectID: user.id,
@@ -33,7 +36,7 @@ export const saveManyUsers = async (users: AlgoliaUser[]) => {
 }
 
 export const saveUser = async (user: AlgoliaUser) => {
-  const index = algoliaClient.initIndex('users')
+  const index = algoliaClient.initIndex(usersIndex)
   const record = {
     objectID: user.id,
     ...user,
@@ -43,7 +46,7 @@ export const saveUser = async (user: AlgoliaUser) => {
 }
 
 export const updateUser = async (user: Partial<AlgoliaUser>) => {
-  const index = algoliaClient.initIndex('users')
+  const index = algoliaClient.initIndex(usersIndex)
 
   await index.partialUpdateObject({
     objectID: user.id,
@@ -52,7 +55,7 @@ export const updateUser = async (user: Partial<AlgoliaUser>) => {
 }
 
 export const deleteUser = async (id: string) => {
-  const index = algoliaClient.initIndex('users')
+  const index = algoliaClient.initIndex(usersIndex)
 
   await index.deleteObject(id)
 }

@@ -1,81 +1,105 @@
 import React from 'react'
+import useSWRImmutable from 'swr/immutable'
 
-import { getAMPM, getRelativeTimeString } from '@/lib'
+import { CHAT_EVENT, getAMPM, supabaseClient } from '@/lib'
+import { groupMessagesByDate, MessageGroupByDate } from '@/lib/utils/message'
 
 import { SmallAvatar } from '@/components/UI'
 
 import { GetRoomMessagesResponse } from '@/pages/api/message/[receiverId]'
 
-type GroupedMessages = {
-  [timeString: string]: GetRoomMessagesResponse['messages'][number][]
-}
-
-export function ChatRoom({ data }: { data?: GetRoomMessagesResponse }) {
+export function ChatRoom({
+  data,
+  roomId,
+}: {
+  data: GetRoomMessagesResponse
+  roomId: string
+}) {
   const containerRef = React.useRef<HTMLDivElement>(null)
 
+  const rerender = React.useReducer(() => ({}), {})[1]
+
+  const { data: messages, mutate } = useSWRImmutable<MessageGroupByDate[]>(
+    roomId,
+    () => groupMessagesByDate(data.messages)
+  )
+
   React.useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight
+    if (containerRef.current && messages) {
+      containerRef.current.scrollTo({
+        top: containerRef.current.scrollHeight,
+      })
     }
-  }, [data])
+  }, [messages])
 
-  if (!data) return null
+  React.useEffect(() => {
+    const channel = supabaseClient.channel(roomId)
 
-  // Group messages by time string
-  const groupedMessages: GroupedMessages = data?.messages.reduce(
-    (groups, message) => {
-      const timeString = getRelativeTimeString(new Date(message.createdAt))
-      const timeSenderString = `${timeString}-${message.sender.username}`
-
-      if (!groups[timeSenderString]) {
-        groups[timeSenderString] = []
+    function messageReceived(
+      message: GetRoomMessagesResponse['messages'][number]
+    ) {
+      const newMessages = groupMessagesByDate([message], messages)
+      mutate(newMessages)
+      rerender()
+      if (containerRef.current) {
+        containerRef.current.scrollTo({
+          top: containerRef.current.scrollHeight,
+          behavior: 'smooth',
+        })
       }
+    }
 
-      groups[timeSenderString].push(message)
-      return groups
-    },
-    {} as GroupedMessages
-  )
+    const realtimeChannel = channel
+      .on('broadcast', { event: CHAT_EVENT }, ({ payload }) => {
+        messageReceived(payload)
+      })
+      .subscribe()
 
-  // Create a sorted array based on timeSenderString keys
-  const sortedMessages = Object.keys(groupedMessages).map(
-    (timeSenderString) => ({
-      timeSenderString,
-      messages: groupedMessages[timeSenderString],
-    })
-  )
+    return () => {
+      realtimeChannel.unsubscribe()
+    }
+  }, [messages, mutate, rerender, roomId])
 
   return (
     <div
       ref={containerRef}
       className="p-8 space-y-5 overflow-y-auto h-full scrollbar-none"
     >
-      {sortedMessages.map((messageGroup) => {
-        const alt = messageGroup.messages[0].sender.username
-        const avatarUrl = messageGroup.messages[0].sender.avatarUrl
+      {messages?.map((messageGroup) => {
         return (
-          <div
-            key={messageGroup.timeSenderString}
-            className="flex gap-2 items-start"
-          >
-            <SmallAvatar alt={alt} avatarUrl={avatarUrl} />
-            <div className="flex-1">
-              {messageGroup.messages.map((message) => {
-                return (
-                  <div
-                    key={message.id}
-                    className="flex items-center gap-3 group py-1"
-                  >
-                    <p className="text-sm font-light text-soft-primary flex-1">
-                      {message.content}
-                    </p>
-                    <div className="mt-2 text-xs font-light text-span opacity-0 group-hover:opacity-100 transition">
-                      {getAMPM(new Date(message.createdAt))}
-                    </div>
-                  </div>
-                )
-              })}
+          <div key={messageGroup.date} className="space-y-4">
+            <div className="mx-auto text-xs text-soft-primary w-fit">
+              {messageGroup.date}
             </div>
+            {messageGroup.messageGroups.map((messageGroupItem) => {
+              const { username, avatarUrl } = messageGroupItem
+
+              return (
+                <div
+                  key={messageGroupItem.id}
+                  className="flex gap-2 items-start"
+                >
+                  <SmallAvatar alt={username} avatarUrl={avatarUrl} />
+                  <div className="flex-1">
+                    {messageGroupItem.messages.map((message) => {
+                      return (
+                        <div
+                          key={message.id}
+                          className="flex items-center gap-3 group py-1"
+                        >
+                          <p className="text-sm font-light text-soft-primary flex-1">
+                            {message.content}
+                          </p>
+                          <div className="mt-2 text-xs font-light text-span opacity-0 group-hover:opacity-100 transition">
+                            {getAMPM(new Date(message.createdAt))}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })}
           </div>
         )
       })}

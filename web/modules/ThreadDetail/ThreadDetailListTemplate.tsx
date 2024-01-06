@@ -51,7 +51,7 @@ export function ThreadDetailListTemplate({
     }
   }
 
-  if (listLength.current && listLength.current < 10) {
+  if (listLength.current && listLength.current < 5) {
     return (
       <div className="relative">
         {threadItems?.map((thread) => {

@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import {
   CurrentUser,
   getCursor,
-  getReplyIncludeParams,
+  getThreadBaseIncludeParams,
   prisma,
   requestHandler,
 } from '@/lib'
@@ -80,7 +80,18 @@ async function getUserNotifications(
         },
       },
       thread: {
-        ...getReplyIncludeParams(currentUser, 'replies'),
+        include: {
+          ...getThreadBaseIncludeParams(currentUser),
+          replyTo: {
+            select: {
+              owner: {
+                select: {
+                  username: true,
+                },
+              },
+            },
+          },
+        },
       },
       likedByNotification: {
         take: 4,

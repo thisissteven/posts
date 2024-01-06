@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { prisma, requestHandler } from '@/lib'
+import { CHAT_EVENT, prisma, requestHandler, supabaseClient } from '@/lib'
 
 export function getRoomId(firstId: string, secondId: string) {
   const compareResult = firstId.localeCompare(secondId)
@@ -26,6 +26,7 @@ async function getRoomMessages(roomIdentifier: string) {
     where: {
       roomIdentifier,
     },
+    take: 200,
     include: {
       sender: {
         select: {
@@ -92,7 +93,17 @@ export default async function handler(
     POST: async (currentUser) => {
       const { content } = req.body
 
+      const roomId = getRoomId(currentUser.id, receiverId)
+
       const message = await prisma.message.create({
+        include: {
+          sender: {
+            select: {
+              username: true,
+              avatarUrl: true,
+            },
+          },
+        },
         data: {
           sender: {
             connect: {
@@ -102,17 +113,31 @@ export default async function handler(
           room: {
             connectOrCreate: {
               create: {
-                identifier: getRoomId(currentUser.id, receiverId),
+                identifier: roomId,
                 senderId: currentUser.id,
                 receiverId: receiverId,
               },
               where: {
-                identifier: getRoomId(currentUser.id, receiverId),
+                identifier: roomId,
               },
             },
           },
           content,
         },
+      })
+
+      const channel = supabaseClient.channel(roomId)
+
+      channel.subscribe(async (status) => {
+        if (status !== 'SUBSCRIBED') {
+          return null
+        }
+
+        await channel.send({
+          type: 'broadcast',
+          event: CHAT_EVENT,
+          payload: message,
+        })
       })
 
       await prisma.room.update({
