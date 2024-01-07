@@ -14,6 +14,7 @@ export default function Home() {
   return (
     <>
       <Seo />
+
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <OnYourMind />

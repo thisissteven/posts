@@ -31,7 +31,7 @@ export default async function handler(
   })
 }
 
-const TAKE = 10
+const TAKE = 30
 
 async function getUserNotifications(
   currentUser: CurrentUser,

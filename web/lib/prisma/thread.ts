@@ -181,7 +181,7 @@ export function getCursor(previousCursor?: string | null) {
   return cursor
 }
 
-const TAKE = 10
+const TAKE = 30
 
 export async function getPaginatedThreads({
   currentUser,

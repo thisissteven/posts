@@ -30,40 +30,38 @@ function UserListContent({ data }: { data?: FollowList }) {
         return (
           <div
             key={data.id}
-            className="flex items-center justify-between gap-5"
+            className="flex items-center justify-between gap-3"
           >
-            <div className="flex items-center gap-3">
-              <div className="shrink-0 relative w-12 h-12 bg-black rounded-full overflow-hidden">
-                {data.avatarUrl ? (
-                  <Image
-                    src={data.avatarUrl}
-                    width={48}
-                    height={48}
-                    alt={data.username}
-                    className="object-cover w-full h-full"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-background">
-                    <DefaultProfileLarge />
-                  </div>
-                )}
-              </div>
-              <div>
-                <a
-                  href={`/${data.username}`}
-                  target="_blank"
-                  className="text-sm font-light tracking-wide hover:underline underline-offset-[3px] line-clamp-1"
-                >
-                  {data.displayName}
-                </a>
-                <a
-                  href={`/${data.username}`}
-                  target="_blank"
-                  className="text-xs font-light tracking-wide text-span hover:underline underline-offset-[3px] line-clamp-1"
-                >
-                  @{data.username}
-                </a>
-              </div>
+            <div className="shrink-0 relative w-12 h-12 bg-black rounded-full overflow-hidden">
+              {data.avatarUrl ? (
+                <Image
+                  src={data.avatarUrl}
+                  width={48}
+                  height={48}
+                  alt={data.username}
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <div className="w-full h-full bg-background">
+                  <DefaultProfileLarge />
+                </div>
+              )}
+            </div>
+            <div className="flex-1 flex flex-col overflow-hidden">
+              <a
+                href={`/${data.username}`}
+                target="_blank"
+                className="text-sm font-light tracking-wide hover:underline underline-offset-[3px] whitespace-nowrap text-ellipsis overflow-hidden"
+              >
+                {data.displayName}
+              </a>
+              <a
+                href={`/${data.username}`}
+                target="_blank"
+                className="text-xs font-light tracking-wide text-span hover:underline underline-offset-[3px] whitespace-nowrap text-ellipsis overflow-hidden"
+              >
+                @{data.username}
+              </a>
             </div>
 
             <div className="shrink-0">

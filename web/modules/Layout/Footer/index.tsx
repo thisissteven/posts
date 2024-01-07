@@ -1,5 +1,8 @@
 import React from 'react'
 
+import { Github } from '@/components/Icons'
+import { LinkButton } from '@/components/UI'
+
 import { FooterButton } from './FooterButton'
 import { JobListings } from './JobListings'
 
@@ -54,6 +57,14 @@ export function Footer() {
           </ul>
 
           <FooterButton />
+
+          <LinkButton
+            variant="filled"
+            href="https://github.com/thisissteven/posts"
+            className="flex items-center justify-center gap-2 text-sm mt-2"
+          >
+            <Github className="w-5 h-fit" /> View github source
+          </LinkButton>
         </div>
 
         <JobListings />
