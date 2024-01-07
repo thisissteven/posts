@@ -133,6 +133,15 @@ export function getReplyIncludeParams(user: CurrentUser, category: Category) {
       return {
         include: {
           ...getThreadBaseIncludeParams(user),
+          replyTo: {
+            select: {
+              owner: {
+                select: {
+                  username: true,
+                },
+              },
+            },
+          },
           replies: {
             take: 4,
             where: {

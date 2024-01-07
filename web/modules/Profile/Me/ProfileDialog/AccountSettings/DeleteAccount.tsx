@@ -1,7 +1,7 @@
 import React from 'react'
 import useSWRImmutable from 'swr/immutable'
 
-import { apiClient, getRelativeTimeStringLong } from '@/lib'
+import { apiClient, getTimeAgo } from '@/lib'
 import { useMutation, useUser } from '@/hooks'
 
 import { Input, RegularButton } from '@/components/UI'
@@ -68,8 +68,6 @@ export function DeleteAccount() {
 
   const createdAt = new Date(user?.createdAt ?? 0)
 
-  const joinedAt = getRelativeTimeStringLong(createdAt)
-
   const [deleteMode, toggleDeleteMode] = React.useReducer(
     (state) => !state,
     false
@@ -80,7 +78,10 @@ export function DeleteAccount() {
   }
 
   return (
-    <SettingGroup title="Account" subtitle={`Joined ${joinedAt} ago`}>
+    <SettingGroup
+      title="Account"
+      subtitle={`Joined ${getTimeAgo(createdAt)} ago`}
+    >
       <RegularButton
         className="text-danger"
         variant="secondary"

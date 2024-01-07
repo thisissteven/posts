@@ -58,7 +58,7 @@ async function createUsers() {
       .toLowerCase()
 
     const createdAt = faker.date.between({
-      from: '2023-01-25',
+      from: '2024-01-01',
       to: new Date(),
     })
 
