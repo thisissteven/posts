@@ -96,18 +96,12 @@ export default async function handler(
                 },
             reposts: {
               where: {
-                OR: [
-                  {
-                    user: {
-                      username,
-                    },
-                  },
-                  {
-                    user: {
-                      username: currentUser.username,
-                    },
-                  },
-                ],
+                user: {
+                  username:
+                    username !== currentUser.username
+                      ? username
+                      : currentUser.username,
+                },
               },
               select: {
                 user: {

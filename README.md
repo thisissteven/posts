@@ -1,6 +1,6 @@
 <br>
 
-![](/assets/og-image-posts.jpg)
+[![posts](/assets/og-image-posts.jpg)](https://posts-cv.vercel.app)
 
 <p align="center">
   Posts.cv clone built in Next.js + Prisma + TypeScript + Tailwind CSS
@@ -95,4 +95,10 @@ Here are the steps to run the project locally.
 
    ```bash
    pnpm dev
+   ```
+
+1. Need to seed the database? The following command will create random amount of users and posts.
+
+   ```bash
+   pnpm prisma db seed
    ```

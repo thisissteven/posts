@@ -14,20 +14,8 @@ const nextConfig = {
         protocol: 'https',
       },
       {
-        hostname: 'picsum.photos',
+        hostname: 'avatars.githubusercontent.com',
         pathname: '/**',
-        port: '',
-        protocol: 'https',
-      },
-      {
-        hostname: 'cloudflare-ipfs.com',
-        pathname: '/ipfs/**',
-        port: '',
-        protocol: 'https',
-      },
-      {
-        hostname: 'lh3.googleusercontent.com',
-        pathname: '/a/**',
         port: '',
         protocol: 'https',
       },

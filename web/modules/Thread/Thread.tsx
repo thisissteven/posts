@@ -38,9 +38,7 @@ function getRepostedBy(isMyThread: boolean, thread: ThreadItem) {
     return reposts[0]?.user?.username
   }
 
-  return reposts[0]?.user?.username === thread.owner.username
-    ? reposts[0]?.user?.username
-    : null
+  return reposts[0]?.user?.username
 }
 
 export function Thread({

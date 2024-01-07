@@ -18,6 +18,11 @@ export type AlgoliaUser = {
   timestamp: number
 }
 
+export const deleteAllUsers = async () => {
+  const index = algoliaClient.initIndex(usersIndex)
+  await index.clearObjects()
+}
+
 export const saveManyUsers = async (users: AlgoliaUser[]) => {
   try {
     const index = algoliaClient.initIndex(usersIndex)
