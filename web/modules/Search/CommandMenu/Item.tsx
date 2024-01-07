@@ -19,7 +19,7 @@ export function CommandMenuItem({
       onSelect={onSelect}
       className="cursor-pointer w-full px-2 py-1.5 flex items-center rounded-xl data-[selected=true]:bg-divider active:bg-divider select-none text-sm font-light gap-3"
     >
-      <div className="shrink-0 w-9 h-9 rounded-full bg-background overflow-hidden">
+      <div className="relative shrink-0 w-9 h-9 rounded-full bg-background overflow-hidden">
         {avatarUrl ? (
           <Image
             draggable={false}
@@ -27,6 +27,7 @@ export function CommandMenuItem({
             alt={displayName}
             width={36}
             height={36}
+            className="object-cover w-full h-full"
           />
         ) : (
           <svg
